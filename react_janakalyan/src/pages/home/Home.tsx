@@ -1,4 +1,4 @@
-import ActivitiesGallery from '../../components/Activities_gallery';
+// import ActivitiesGallery from '../../components/Activities_gallery';
 import Banner from '../../components/Banner';
 import FAQ from '../../components/FAQ';
 import Feature from '../../components/Feature';
@@ -6,11 +6,11 @@ import Hero from '../../components/Hero'
 import MessageFromPrincipal from '../../components/MessageFromPrincipal';
 import OurTeam from '../../components/OurTeam';
 import SchoolIntroduction_Notice from '../../components/SchoolIntroduction_Notice';
-import UpcomingEvents from '../../components/UpcomingEvents';
+// import UpcomingEvents from '../../components/UpcomingEvents';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 
-const Home = ({posts}:any) =>{
+const Home = () =>{
     // console.log(posts)
 
 // const scroll = new LocomotiveScroll();
@@ -24,9 +24,9 @@ const Home = ({posts}:any) =>{
             <Banner/>
             <SchoolIntroduction_Notice/>
             <MessageFromPrincipal/>
-            <UpcomingEvents/>
+            {/* <UpcomingEvents/> */}
             <Feature/>
-            <ActivitiesGallery/>
+            {/* <ActivitiesGallery/> */}
             <FAQ/>
             <OurTeam/>
             <Footer/>

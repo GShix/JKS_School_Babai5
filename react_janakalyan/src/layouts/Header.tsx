@@ -45,11 +45,11 @@ const Header = () => {
 
     useEffect(() => {
         // Function to check and handle clicks outside of the menu
-        interface NavLink {
-            title: string;
-            // icon?: string;
-            href: string;
-        }
+        // interface NavLink {
+        //     title: string;
+        //     // icon?: string;
+        //     href: string;
+        // }
 
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
