@@ -5,37 +5,37 @@ const Header = () => {
     const navLinks = [
         {
             title:"Home",
-            // icon:"ri-home-6-fill text-sm",
+            icon:"ri-home-6-fill text-sm",
             href:"/"
         },
         {
             title:"About",
-            // icon:"ri-group-fill text-sm",
+            icon:"ri-group-fill text-sm",
             href:"/about"
         },
         {
             title:"Academic Programs",
-            // icon:"ri-article-fill text-sm",
+            icon:"ri-article-fill text-sm",
             href:"/academic-programs"
         },
         {
             title:"Notice",
-            // icon:"ri-calendar-event-fill text-sm",
+            icon:"ri-calendar-event-fill text-sm",
             href:"/notice"
         },
         {
             title:"Download",
-            // icon:"ri-calendar-event-fill text-sm",
+            icon:"ri-calendar-event-fill text-sm",
             href:"/download"
         },
         {
             title:"Contatct Us",
-            // icon:"ri-calendar-event-fill text-sm",
+            icon:"ri-calendar-event-fill text-sm",
             href:"/contact-us"
         },
         {
             title:"Career",
-            // icon:"ri-calendar-event-fill text-sm",
+            icon:"ri-calendar-event-fill text-sm",
             href:"/career"
         },
 
