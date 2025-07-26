@@ -1,6 +1,6 @@
 const MessageFromPrincipal = () => {
   return (
-    <div className='max-sm:flex-col sm:flex px-4 sm:px-11 gap-4 w-full sm:h-[95vh] py-10 bg-gray0'>
+    <div className='max-sm:flex-col sm:flex px-4 sm:px-11 gap-4 w-full py-10 bg-gray0'>
         <div className="photo sm:w-2/3 ]">
             <img className='w-full h-auto rounded-xl' src="/img/principal.jpg" alt="Principal" />
         </div>

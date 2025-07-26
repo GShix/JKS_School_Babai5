@@ -26,7 +26,7 @@ export default function Feature(){
         <section className="py-5 pt-14 bg-white mb-10 px-4 sm:px-11 flex justify-center w-full">
             <div className="mx-auto">
                 <div className="text-center">
-                    <div className="inline-flex justify-center px-4 py-1.5 mx-auto rounded-full bg-gradient-to-r from-fuchsia-600 to-blue-600">
+                    <div className="flex justify-center px-4 py-1.5 mx-auto rounded-full bg-gradient-to-r from-fuchsia-600 to-blue-600">
                         <p className="text-md sm:text-xl font-semibold tracking-widest text-white uppercase">Why Janakalyan Secondary School</p>
                     </div>
                     <div className="feature flex justify-center w-full">
