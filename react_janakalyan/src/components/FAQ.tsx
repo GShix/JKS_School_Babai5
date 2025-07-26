@@ -56,12 +56,12 @@ function FAQ() {
         {filteredFaqs.map((faq, index) => (
           <li key={index} className="mb-4">
             <button
-              className="w-full text-left p-4 bg-gray-100 rounded-t shadow hover:bg-[#E3D6B4]"
+              className="w-full text-left p-4 bg-gray-100 rounded-t cursor-pointer shadow hover:bg-yellow-400"
               onClick={() => toggleFAQ(index)}>
               {index + 1}. <span className="question">{faq.question}</span>
             </button>
             {faq.open && (
-              <div className="p-4 bg-white border rounded-b shadow-inner">
+              <div className="p-4 bg-white border-b rounded-md shadow-inner">
                 <div className="answer max-sm:text-sm">{faq.answer}</div>
               </div>
             )}
