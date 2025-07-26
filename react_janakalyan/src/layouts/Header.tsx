@@ -69,17 +69,17 @@ const Header = () => {
   return (
     <div className="header w-full">
         <div className="header-top bg-[#035CB0] text-white flex justify-between items-center w-full gap-5 max-sm:text-2xl py-2.5 px-4 sm:px-11 text-[15px]">
-            <ul className="header-top-list flex items-center gap-5 justify-content-center font-['poppins'] max-sm:text-sm">
+            <ul className="header-top-list flex items-center gap-3 sm:gap-5 justify-center font-['poppins'] max-sm:text-sm">
                 <li className="border-r-2 pr-6 hover:text-yellow-400">
                     <a href="tel">
                         <i className="ri-phone-fill mr-2"></i>
-                        <span className="text-xs text-nowrap">+977 9844929502</span>
+                        <span className="max-sm:text-xs text-nowrap">+977 9844929502</span>
                     </a>
                 </li>
                 <li className=" hover:text-yellow-400">
                     <a href="mailto">
                         <i className="ri-mail-send-line mr-2"></i>
-                        <span className="info-text">jksschoolp5@gmail.com</span>
+                        <span className="max-sm:text-xs info-text ">jksschoolp5@gmail.com</span>
                     </a>
                 </li>
             </ul>

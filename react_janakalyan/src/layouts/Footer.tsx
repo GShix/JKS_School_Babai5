@@ -64,7 +64,7 @@ const Footer = () => {
             </div>
         </div>
 
-        <div className="copyright bg-[#035CB0] py-5 text-white">
+        <div className="copyright bg-[#035CB0] py-5 text-white px-4">
             <p className="w-full text-center text-sm">&copy; 2025 | Janakalyan Secondary School | All Rights Reserved</p>
         </div>
     </footer>
