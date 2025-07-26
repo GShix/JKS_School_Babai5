@@ -15,8 +15,8 @@ const SchoolIntroduction_Notice = () => {
         }
     ]
   return (
-    <div className='w-full bg-white p-5 flex gap-14 px-11 mt-4'>
-        <div className="intro w-2/3">
+    <div className='w-full bg-white p-5 sm:flex max-sm:flex-col gap-14 px-4 sm:px-11 mt-4'>
+        <div className="intro  sm:w-2/3">
             <h1 className='text-3xl mb-2 font-bold'>School Introduction</h1>
             <p className='text-gray-700 font-light leading-7 text-justify'>Welcome to our school! We are dedicated to providing a high-quality education to our students.
                 Our experienced faculty and innovative curriculum ensure that every child reaches their full potential.
@@ -26,7 +26,7 @@ const SchoolIntroduction_Notice = () => {
             </p>
             <button className='py-2.5 px-5 bg-[#035CB0] text-white rounded-md mt-4 hover:text-yellow-400 text-nowrap'>Read More</button>
         </div>
-        <div className="notice w-1/2 shadow-gray-600 shadow-lg h-80 rounded-md">
+        <div className="notice sm:w-1/2 shadow-gray-600 shadow-lg sm:h-80 rounded-md max-sm:mt-4">
             <h1 className='text-xl font-bold p-4 bg-[#035CB0] text-white rounded-t-md'>Recent Notices</h1>
             <ul className='list-none p-5 flex flex-col gap-3'>
                 {Notices.map((notice, index) => (

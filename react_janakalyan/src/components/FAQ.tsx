@@ -40,7 +40,7 @@ function FAQ() {
   };
 
   return (
-    <div className="py-8 px-5 sm:px-8 bg-white rounded shadow pb-14">
+    <div className="py-8 px-5 sm:px-8 bg-white rounded shadow">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 max-sm:items-start">
         <h1 className="text-2xl font-bold mb-4 sm:mb-0 max-sm:hidden">Frequently Asked Questions</h1>
         <h1 className="text-2xl font-bold mb-4 sm:hidden sm:mb-0">FAQs</h1>

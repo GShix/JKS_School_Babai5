@@ -101,10 +101,10 @@ const Header = () => {
             </div>
         </div>
 
-        <nav className="navbar relative bg-white text-white sm:flex justify-between items-center w-full gap-5 max-sm:text-3xl px-4 sm:px-10 py-4">
+        <nav className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl px-2 sm:px-10 py-4">
 
             {/* Large Nav Link */}
-            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col">
+            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col sm:py-4">
                 <div className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                     <img className="h-14" src="/img/logo.png" alt="" srcSet="" />
                     <div className="schoolname max-sm:text-center">
@@ -112,7 +112,7 @@ const Header = () => {
                         <h2 className="text-red-500 font-bold text-xl">माध्यमिक विद्यालय</h2>
                     </div>
                 </div>
-                <div className="two flex  items-center gap-2.5 w-2/2">
+                <div className="two flex  items-center gap-2.5 w-2/2 justify-between">
                     <div className="nav-cta hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
                         <i className="fas fa-map hover:text-yellow-400 text-nowrap"></i>बबई-५, पदमपुर, दाङ
                     </div>
@@ -120,25 +120,41 @@ const Header = () => {
                         <a href="/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#035CB0] hover:border hover:border-[#035CB0] hover:text-yellow-400 text-nowrap font-['Poppins']"><i className="fas fa-user mr-1 text-yellow-400"></i> LOG IN</a>
                     </div>
                 </div>
+
             </div>
-            
-            {/* Small Nav */}
-            <div className="nav-menu text-4xl sm:hidden relative text-[#035CB0] w-[20px]" ><i className={`${ clickMenu?"ri-close-line":"ri-menu-fill"} transition-transform ease-in-out cursor-pointer`}onClick={() => setClickMenu(!clickMenu)}></i></div>
-            {clickMenu ? (
-            <div className="small-nav-link bg-[#035CB0] w-full flex flex-col gap-4 absolute right-0 top-50 z-50 text-base bg-trnsparent sm:hidden pl-5 py-3">
-                <ul>
+            <div className="navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden pl-5 py-3">
+                <ul className="flex items-center gap-8">
                     {navLinks.map((link,index)=>(
-                    <li key={index} className="mb-3">
+                    <li key={index} className="mb-3 flex items-center">
                         <a  className="nav-link-item hover:text-[#035CB0] flex items-center" href={link.href}>
-                            <i className={`${link.icon} mr-2`}></i>
-                            <span className="block font-sans leading-none font-normal hover:text-yellow-400">{link.title}</span>
+                            <span className="block font-sans leading-none font-semibold text-xl hover:text-yellow-400">{link.title}</span>
                         </a>
                     </li>
                     ))}
                 </ul>
-                <div className="nav-cta w-full sm:hidden flex items-center justify-between gap-8 h-12">
-                    <div><a href="/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#000000] hover:border-2 hover:border-[#035CB0]"><i className="fas fa-user mr-1 text-yellow-400"></i>LOG IN</a></div>
-
+            </div>
+            
+            {/* Small Nav */}
+            <div className="nav-menu text-4xl bg-[#035CB0] p-2 h-auto w-full sm:hidden relative text-white mt-4" >
+                <i className={`${ clickMenu?"ri-close-line":"ri-menu-fill"} transition-transform ease-in-out cursor-pointer`}onClick={() => setClickMenu(!clickMenu)}></i>
+            </div>
+            {clickMenu ? (
+            <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-53 z-50 text-base sm:hidden px-4 py-3 mx-2">
+                <ul>
+                    {navLinks.map((link,index)=>(
+                    <li key={index} className="mb-3 ">
+                        <a  className="nav-link-item hover:text-yellow-400 flex items-center" href={link.href}>
+                            <i className={`${link.icon} mr-2`}></i>
+                            <span className="block font-sans font-normal">{link.title}</span>
+                        </a>
+                    </li>
+                    ))}
+                </ul>
+                <div className="nav-cta w-full sm:hidden flex items-center justify-center gap-8 h-12">
+                    <a href="/login" className="py-2.5 rounded-md px-5 bg-gray-100 text-red-600 font-semibold hover:border hover:border-white hover:bg-[#035CB0]">
+                        <i className="ri-login-full mr-1"></i>
+                        LOG IN
+                    </a>
                 </div>
             </div>
             ) : ""}

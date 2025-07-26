@@ -16,7 +16,7 @@ const Home = ({posts}:any) =>{
 // const scroll = new LocomotiveScroll();
 // console.log(posts)
     return (
-        <div className='h-full bg-white w-full'>
+        <div className='h-full bg-white w-full relative'>
             {/* <h1 className="text-red-500">This is Home Page</h1> */}
             <Header/>
 

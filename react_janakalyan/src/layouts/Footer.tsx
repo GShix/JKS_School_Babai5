@@ -3,11 +3,11 @@
 const Footer = () => {
   return (
     <footer className="bg-[#ffff] w-full">
-        <div className="footer-nav flex justify-between max-gap-10 flex-wrap sm:flex-nowrap px-6 py-5 sm:px-8 lg:px-11">
-            <div className="footer-info justify-center text-teal-600">
-                <li className="list-none flex flex-col gap-4 text-gray-900">
+        <div className="footer-nav flex max-sm:flex-col justify-between max-gap-10 px-6 py-5 sm:px-8 lg:px-11">
+            <div className="footer-info text-teal-600">
+                <li className="list-none flex flex-col sm:items-center gap-4 text-gray-900">
                     <a href="" className="flex gap-2 items-center border-b border-gray-300">
-                        <img className="max-sm:h-24 sm:h-32 cursor-pointer py-2" src="/img/logo.png" alt="JanakalyanMaVi Logo"/>
+                        <img className="max-sm:h-24 sm:h-32 cursor-pointer mb-2" src="/img/logo.png" alt="JanakalyanMaVi Logo"/>
                     </a>
                     <a href="tel:flex gap-2 items-center border-b-2 border-gray-800">
                         <i className="fas fa-phone mr-1 text-gray-900"></i>
@@ -22,11 +22,11 @@ const Footer = () => {
                         <span className="info-text">Babai-5, Padampur, Dang</span>
                     </a>
                     <a href="#" rel="noreferrer" target="_blank" className="text-gray-900 transition hover:text-gray-900/75">
-                        <i className="ri-facebook-circle-fill text-blue-600 text-2xl"></i>
+                        <i className="ri-facebook-circle-fill text-blue-600 text-2xl leading-none"></i>
                     </a>
                 </li>
             </div>
-            <div className="footer-about">
+            <div className="footer-about max-sm:mt-5">
                 <h1 className="text-lg font-semibold mb-4">About</h1>
                 <ul>
                     <li className="flex flex-col gap-4">
@@ -39,7 +39,7 @@ const Footer = () => {
                     </li>
                 </ul>
             </div>
-            <div className="footer-academic-programs">
+            <div className="footer-academic-programs max-sm:mt-5">
                 <h1 className="text-lg font-semibold mb-4">Academic Programs</h1>
                 <ul className="">
                     <li className="flex flex-col gap-4">
@@ -50,7 +50,7 @@ const Footer = () => {
                     </li>
                 </ul>
             </div>
-            <div className="footer-important-links">
+            <div className="footer-important-links max-sm:mt-5">
                 <h1 className="text-lg font-semibold mb-4">Important Links</h1>
                 <ul className="">
                     <li className="flex flex-col gap-4">
@@ -65,7 +65,7 @@ const Footer = () => {
         </div>
 
         <div className="copyright bg-[#035CB0] py-5 text-white">
-            <p className="w-full text-center text-sm">&copy; 2025 | JanakalyanMaVi | All Rights Reserved</p>
+            <p className="w-full text-center text-sm">&copy; 2025 | Janakalyan Secondary School | All Rights Reserved</p>
         </div>
     </footer>
   )
