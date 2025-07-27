@@ -1,10 +1,10 @@
 const MessageFromPrincipal = () => {
   return (
-    <div className='max-sm:flex-col sm:flex px-4 sm:px-11 gap-4 w-full py-10 bg-gray0'>
+    <div className='max-sm:flex-col sm:flex px-4 sm:px-11 gap-4 w-full py-10 bg-gray0 mt-4'>
         <div className="photo sm:w-2/3 ]">
-            <img className='w-full h-auto rounded-xl' src="/img/principal.jpg" alt="Principal" />
+            <img className='w-full h-auto rounded-md' src="/img/principal.jpg" alt="Principal" />
         </div>
-        <div className="message bg-[#F8F8F8] sm:w-[95%] p-4 rounded-md">
+        <div className="message sm:w-[95%] py-4">
             <h2 className='text-3xl font-bold text-[#035CB0] mb-5'>Message from the Principal</h2>
             <p className='text-lg mt-2 text-justify'>Welcome to our school! We are dedicated to providing a nurturing and challenging environment for our students. Our mission is to foster a love for learning and to prepare our students for success in their future endeavors.
             </p>

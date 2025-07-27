@@ -34,7 +34,7 @@ export default function Feature(){
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 mt-5 sm:grid-cols-4 lg:mt-12 lg:gap-x-6 max-sm:p-4">
+                <div className="grid grid-cols-1 gap-3 mt-5 sm:grid-cols-4 lg:mt-12 lg:gap-x-6 max-sm:p-2">
                     {features.map((feature,index)=>(
                     <div key={index} className="feature-item transition-all duration-200 rounded-md" style={{boxShadow:"0px 0px 10px 2px #e3d6b4"}}>
                         <div className="feature-box py-3 px-2 flex flex-col items-center text-center hover:text-yellow-500 cursor-pointer">

@@ -30,8 +30,8 @@ export default function Banner() {
         },
     ]
   return (
-    <div className="large-nav-link bg-[#035CB0] flex justify-between font-normal mx-4 sm:mx-11 py-8 px-10 sm:px-20 rounded-md mt-2">
-        <ul className="flex max-sm:flex-col items-center gap-10 sm:gap-20 text-[#fff]">
+    <div className="large-nav-link bg-[#035CB0] flex justify-between font-normal mx-4 sm:mx-11 py-8 px-4 sm:px-20 rounded-md mt-2">
+        <ul className="flex max-sm:flex-col w-full items-center gap-10 sm:gap-20 text-[#fff]">
         {navLinks.map((link,index)=>(
             <li key={index} className=''>
                 <a className="nav-div-item hover:text-yellow-400 flex max-sm:flex-col justify-center items-center" href={link.href}>

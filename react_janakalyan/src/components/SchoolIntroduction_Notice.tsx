@@ -15,7 +15,7 @@ const SchoolIntroduction_Notice = () => {
         }
     ]
   return (
-    <div className='w-full bg-white p-5 sm:flex max-sm:flex-col gap-14 px-4 sm:px-11 mt-4'>
+    <div className='w-full bg-white sm:flex max-sm:flex-col gap-14 px-4 sm:px-11 mt-4'>
         <div className="intro  sm:w-2/3">
             <h1 className='text-3xl mb-2 font-bold'>School Introduction</h1>
             <p className='text-gray-700 font-light leading-7 text-justify'>Welcome to our school! We are dedicated to providing a high-quality education to our students.
