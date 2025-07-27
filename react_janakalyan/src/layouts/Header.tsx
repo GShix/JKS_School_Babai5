@@ -106,15 +106,15 @@ const Header = () => {
             {/* Large Nav Link */}
             <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col sm:py-4">
                 <div className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
-                    <img className="h-14" src="/img/logo.png" alt="" srcSet="" />
+                    <img className="h-24" src="/img/icon.png" alt="" srcSet="" />
                     <div className="schoolname max-sm:text-center">
                         <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">श्री जनकल्याण</h1>
                         <h2 className="text-red-500 font-bold text-xl">माध्यमिक विद्यालय</h2>
                     </div>
                 </div>
                 <div className="two flex  items-center gap-2.5 w-2/2 justify-between">
-                    <div className="nav-cta hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
-                        <i className="fas fa-map hover:text-yellow-400 text-nowrap"></i>बबई-५, पदमपुर, दाङ
+                    <div className="nav-location hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
+                        <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>बबई-५, पदमपुर, दाङ
                     </div>
                     <div className="nav-cta hidden sm:flex gap-5 items-center text-sm">
                         <a href="/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#035CB0] hover:border hover:border-[#035CB0] hover:text-yellow-400 text-nowrap font-['Poppins']"><i className="fas fa-user mr-1 text-yellow-400"></i> LOG IN</a>
