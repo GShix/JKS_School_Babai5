@@ -101,7 +101,7 @@ const Header = () => {
             </div>
         </div>
 
-        <nav className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl px-2 sm:px-10 py-4">
+        <nav className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl px-2 sm:px-10">
 
             {/* Large Nav Link */}
             <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col sm:py-4">
@@ -122,10 +122,10 @@ const Header = () => {
                 </div>
 
             </div>
-            <div className="navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden pl-5 py-3">
-                <ul className="flex items-center gap-8">
+            <div className="navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden py-6 px-10 items-center sticky top-0 left-10 right-10 z-50">
+                <ul className="flex items-center justify-between text-white gap-10">
                     {navLinks.map((link,index)=>(
-                    <li key={index} className="mb-3 flex items-center">
+                    <li key={index} className="flex items-center">
                         <a  className="nav-link-item hover:text-[#035CB0] flex items-center" href={link.href}>
                             <span className="block font-sans leading-none font-semibold text-xl hover:text-yellow-400">{link.title}</span>
                         </a>
@@ -139,7 +139,7 @@ const Header = () => {
                 <i className={`${ clickMenu?"ri-close-line":"ri-menu-fill"} transition-transform ease-in-out cursor-pointer`}onClick={() => setClickMenu(!clickMenu)}></i>
             </div>
             {clickMenu ? (
-            <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-53 z-50 text-base sm:hidden px-4 py-3 mx-2">
+            <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-60 z-50 text-base sm:hidden px-4 py-3 mx-2">
                 <ul>
                     {navLinks.map((link,index)=>(
                     <li key={index} className="mb-3 ">
