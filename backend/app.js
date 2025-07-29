@@ -1,7 +1,7 @@
 let app = require('express')();
 
 
-
+require('./database/connection');
 
 
 
