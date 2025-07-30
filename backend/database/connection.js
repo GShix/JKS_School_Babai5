@@ -15,4 +15,10 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+db.programs = require('./models/programModel')(sequelize, DataTypes);
+db.activities = require('./models/activityModel')(sequelize, DataTypes);
+
+sequelize.sync({ alter: false}).then(()=>{
+  console.log('Database & tables created!');
+})
 module.exports = db;
