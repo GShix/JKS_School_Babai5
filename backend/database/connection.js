@@ -21,4 +21,7 @@ db.activities = require('./models/activityModel')(sequelize, DataTypes);
 sequelize.sync({ alter: false}).then(()=>{
   console.log('Database & tables created!');
 })
-module.exports = db;
+module.exports = db; 
+// exports programs and activities models
+exports.programs = db.programs;
+exports.activities = db.activities;
