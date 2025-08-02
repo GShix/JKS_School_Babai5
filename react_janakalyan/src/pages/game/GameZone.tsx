@@ -10,12 +10,14 @@ const GameZone = () => {
     };
   return (
     <div className="game-zone w-full h-full flex flex-col items-center justify-center p-10">
-      <h1 className="font-bold text-4xl mb-5">Manipulate number</h1>
-      <p className="text-blue-500 text-2xl">Current number:<span className="text-yellow-800"> {number}</span></p>
-      <div className="buttons flex gap-4 mt-5">
-        <button onClick={increment} className="bg-green-500 px-4 py-2 text-white rounded-md cursor-pointer">Increment</button>
-        <button onClick={decrement} className="bg-red-500 px-4 py-2 text-white rounded-md cursor-pointer">Decrement</button>
-      </div>
+        <h1 className="font-bold text-4xl mb-10">Manipulate number</h1>
+        <div className="content">
+            <p className="text-black text-2xl mb-5">Current number:<span className="text-red-600"> {number}</span></p>
+        </div>
+        <div className="buttons flex gap-4 mt-5">
+            <button onClick={increment} className="bg-green-500 px-4 py-2 text-white rounded-md cursor-pointer">Increment</button>
+            <button onClick={decrement} className="bg-red-500 px-4 py-2 text-white rounded-md cursor-pointer">Decrement</button>
+        </div>
     </div>
   )
 }
