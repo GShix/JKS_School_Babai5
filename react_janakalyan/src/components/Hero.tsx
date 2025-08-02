@@ -1,6 +1,6 @@
 export default function Hero() {
     return (
-      <div className="overflow-hidden bg-white ">
+      <div className="overflow-idden bg-white ">
         <img className="w-full max-sm:w-[100%] h-[400px] object-fit object-cover " src="img/janakalyan_ma_vi.jpg" alt="" srcSet="" />
         {/* <div className="pb-10">
           <div className="px-2 sm:px-3 lg:px-4 flex justify-between items-center max-sm:flex-col-reverse">
