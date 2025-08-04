@@ -106,7 +106,7 @@ const Header = () => {
         <nav className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl px-2 sm:px-10">
 
             {/* Large Nav Link */}
-            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col sm:py-4">
+            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4">
                 <Link to="/" className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                     <img className="h-24" src="/img/icon.png" alt="" srcSet="" />
                     <div className="schoolname max-sm:text-center">
