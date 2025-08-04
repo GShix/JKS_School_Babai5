@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
     const [clickMenu, setClickMenu] = useState(false);
@@ -117,7 +118,7 @@ const Header = () => {
                         <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>बबई-५, पदमपुर, दाङ
                     </div>
                     <div className="nav-cta hidden sm:flex gap-5 items-center text-sm">
-                        <a href="/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#035CB0] hover:border hover:border-[#035CB0] hover:text-yellow-400 text-nowrap font-['Poppins']"><i className="fas fa-user mr-1 text-yellow-400"></i> LOG IN</a>
+                        <Link to="/admin/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#035CB0] hover:border hover:border-[#035CB0] hover:text-yellow-400 text-nowrap font-['Poppins']"><i className="fas fa-user mr-1 text-yellow-400"></i> LOG IN</Link>
                     </div>
                 </div>
 
@@ -151,10 +152,10 @@ const Header = () => {
                     ))}
                 </ul>
                 <div className="nav-cta w-full sm:hidden flex items-center justify-center gap-8 h-12">
-                    <a href="/login" className="py-2.5 rounded-md px-5 bg-gray-100 text-red-600 font-semibold hover:border hover:border-white hover:bg-[#035CB0]">
+                    <Link to="/admin/login" className="py-2.5 rounded-md px-5 bg-gray-100 text-red-600 font-semibold hover:border hover:border-white hover:bg-[#035CB0]">
                         <i className="ri-login-full mr-1"></i>
                         LOG IN
-                    </a>
+                    </Link>
                 </div>
             </div>
             ) : ""}
