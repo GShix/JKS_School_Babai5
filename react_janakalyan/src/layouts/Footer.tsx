@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 
 
 const Footer = () => {
@@ -6,24 +7,24 @@ const Footer = () => {
         <div className="footer-nav flex max-sm:flex-col justify-between max-gap-10 px-6 py-5 sm:px-8 lg:px-11">
             <div className="footer-info text-teal-600">
                 <li className="list-none flex flex-col sm:items-center gap-4 text-gray-900">
-                    <a href="" className="flex gap-2 items-center border-b border-gray-300">
-                        <img className="max-sm:h-24 sm:h-32 cursor-pointer mb-2" src="/img/logo.png" alt="JanakalyanMaVi Logo"/>
-                    </a>
-                    <a href="tel:flex gap-2 items-center border-b-2 border-gray-800">
-                        <i className="fas fa-phone mr-1 text-gray-900"></i>
+                    <Link to="/" className="flex gap-2 items-center border-b border-gray-300">
+                        <img className="max-sm:h-24 sm:h-32 cursor-pointer mb-2" src="/img/icon.png" alt="JanakalyanMaVi Logo"/>
+                    </Link>
+                    <Link to="tel:+9779844929502" className="flex gap-2 items-center ">
+                        <i className="ri-phone-fill text-gray-900"></i>
                         <span className="info-text">+977 9844929502</span>
-                    </a>
-                    <a href="mail flex gap-2 items-center border border-b-2 border-gray-800">
-                        <i className="fas fa-envelope mr-2 text-gray-900"></i>
+                    </Link>
+                    <Link to="mailto:jksschoolp5@gmail.com" className="flex gap-2 items-center ">
+                        <i className="ri-mail-fill text-gray-900"></i>
                         <span className="info-text">jksschoolp5@gmail.com</span>
-                    </a>
-                    <a href="address flex gap-2 items-center border border-b-2 border-gray-800">
-                        <i className="fas fa-map mr-2 text-gray-900"></i>
+                    </Link>
+                    <Link to="address" className="flex gap-2 items-center ">
+                        <i className="ri-map-pin-2-fill text-gray-900"></i>
                         <span className="info-text">Babai-5, Padampur, Dang</span>
-                    </a>
-                    <a href="#" rel="noreferrer" target="_blank" className="text-gray-900 transition hover:text-gray-900/75">
+                    </Link>
+                    <Link to="https://www.facebook.com/janakalyana.ma.bi.padamapura.dana" rel="noreferrer" target="_blank" className="text-gray-900 transition hover:text-gray-900/75">
                         <i className="ri-facebook-circle-fill text-blue-600 text-2xl leading-none"></i>
-                    </a>
+                    </Link>
                 </li>
             </div>
             <div className="footer-about max-sm:mt-5">

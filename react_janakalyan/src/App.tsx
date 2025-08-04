@@ -7,6 +7,9 @@ import Register from './pages/auth/Register'
 import About from './pages/about/About'
 import GameZone from './pages/game/GameZone'
 import AllBlogs from './pages/blogs/AllBlogs'
+import CreateBlog from './pages/blogs/CreateBlog'
+import SingleBlog from './pages/blogs/SingleBlog'
+import EditBlog from './pages/blogs/EditBlog'
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
             <Route path='/' element={<Home/>}/>
             <Route path='/about' element={<About/>}/>
             <Route path='/blogs' element={<AllBlogs/>}/>
+            <Route path='/blogs/create' element={<CreateBlog/>}/>
+            <Route path='/blogs/:id' element={<SingleBlog/>}/>
+            <Route path='/blogs/:id/edit' element={<EditBlog/>}/>
             <Route path='/admin/login' element={<Login/>}/>
             <Route path='/user/register' element={<Register/>}/>
             <Route path='/game-zone' element={<GameZone/>}/>
