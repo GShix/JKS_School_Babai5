@@ -6,6 +6,7 @@ import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import About from './pages/about/About'
 import GameZone from './pages/game/GameZone'
+import AllBlogs from './pages/blogs/AllBlogs'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='/about' element={<About/>}/>
+            <Route path='/blogs' element={<AllBlogs/>}/>
             <Route path='/admin/login' element={<Login/>}/>
             <Route path='/user/register' element={<Register/>}/>
             <Route path='/game-zone' element={<GameZone/>}/>

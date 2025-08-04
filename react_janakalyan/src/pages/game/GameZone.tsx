@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "../../layouts/Header";
+import Footer from "../../layouts/Footer";
 
 const GameZone = () => {
     const [number, setNumber] = useState<number>(0);
@@ -22,6 +23,7 @@ const GameZone = () => {
                 <button onClick={decrement} className="bg-red-500 px-4 py-2 text-white rounded-md cursor-pointer">Decrement</button>
             </div>
         </div>
+        <Footer/>
     </div>
   )
 }

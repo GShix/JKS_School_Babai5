@@ -94,7 +94,8 @@ const Header = () => {
                         <a href="#">Admission</a>
                     </li>
                     <li className=" hover:text-yellow-400">
-                        <a href="https://amarjyoti.edu.np/articles">Blogs</a></li>
+                        <Link to="/blogs">Blogs</Link>
+                    </li>
                 </ul>
                 <ul className="header-top-social">
                     <li><a href="https://www.facebook.com/janakalyana.ma.bi.padamapura.dana" target="_blank"><i className="ri-facebook-fill hover:text-yellow-400"></i></a></li>
@@ -106,13 +107,13 @@ const Header = () => {
 
             {/* Large Nav Link */}
             <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col sm:py-4">
-                <div className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
+                <Link to="/" className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                     <img className="h-24" src="/img/icon.png" alt="" srcSet="" />
                     <div className="schoolname max-sm:text-center">
                         <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">श्री जनकल्याण</h1>
                         <h2 className="text-red-500 font-bold text-xl">माध्यमिक विद्यालय</h2>
                     </div>
-                </div>
+                </Link>
                 <div className="two flex  items-center gap-2.5 w-2/2 justify-between">
                     <div className="nav-location hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
                         <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>बबई-५, पदमपुर, दाङ

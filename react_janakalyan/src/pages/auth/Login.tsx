@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (     
@@ -6,7 +7,7 @@ const Login = () => {
     <div className="text-center pb-6">
       <img src="/img/icon.png" width={150} className="mx-auto" />
       <div className="mt-5">
-        <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
+        <h3 className="text-[#035CB0] text-2xl font-bold sm:text-3xl">
           Admin Login
         </h3>
       </div>
@@ -28,9 +29,15 @@ const Login = () => {
         </div>
         <a href="javascript:void(0)" className="text-center text-red-600 hover:text-red-500">Forgot password?</a>
       </div>
-      <button className="w-full px-4 py-2 text-white font-medium bg-red-600 hover:bg-red-500 active:bg-red-600 rounded-lg duration-150">
-        LOG IN
-      </button>
+      <div className="buttons flex justify-between">
+        <Link to="/" className="w-[100px] px-4 py-2 text-white font-medium bg-[#035CB0] hover:text-yellow-400 active:bg-[#26445fe9] rounded-lg duration-150">
+          <i className="ri-home-4-line mr-1"></i>
+          Home
+        </Link>
+        <button className="w-2/3 px-4 py-2 text-white font-medium bg-red-600 hover:bg-red-500 active:bg-red-600 rounded-lg duration-150 cursor-pointer">
+          LOG IN
+        </button>
+      </div>
     </form>
   </div>
 </main>
