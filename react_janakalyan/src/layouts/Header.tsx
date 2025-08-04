@@ -137,8 +137,9 @@ const Header = () => {
             </div>
             
             {/* Small Nav */}
-            <div className="nav-menu text-4xl bg-[#035CB0] p-2 h-auto w-full sm:hidden relative text-white mt-4" >
+            <div className="nav-menu text-4xl bg-[#035CB0] p-2 h-auto w-full sm:hidden relative text-white mt-4 flex justify-between" >
                 <i className={`${ clickMenu?"ri-close-line":"ri-menu-fill"} transition-transform ease-in-out cursor-pointer`}onClick={() => setClickMenu(!clickMenu)}></i>
+                <Link to="/blogs" className="flex items-center gap-2.5 text-lg">Blogs</Link>
             </div>
             {clickMenu ? (
             <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-60 z-50 text-base sm:hidden px-4 py-3 mx-2">
