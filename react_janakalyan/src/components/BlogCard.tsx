@@ -24,7 +24,7 @@ const BlogCard = ({ blog }: BlogCardProps) => {
         <div className="flex flex-1 flex-col justify-between bg-white p-6">
             <div className="flex-1">
                 <p className="text-sm font-medium text-indigo-600">
-                    <a href="#" className="hover:underline">{blog.blogCategory || "Blog Post"}</a>
+                    <a href="#" className="hover:underline">{blog.blogCategory || "Blog Category"}</a>
                 </p>
                 <a href="#" className="mt-2 block">
                     <p className="text-xl font-semibold text-gray-900">{blog.blogTitle || "Untitled Blog Post"}</p>
