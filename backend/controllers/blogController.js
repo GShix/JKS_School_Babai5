@@ -1,16 +1,17 @@
-const e = require("express");
+
 const { blogs } = require("../database/connection");
 
 exports.createBlog = async(req, res) => {
   try {
     console.log('Request body:', req.body);
-    const { blogTitle, blogDescription, blogAuthor, blogStatus, blogImage } = req.body;
+    const { blogTitle, blogDescription, blogAuthor, blogStatus, blogImage, blogCategory } = req.body;
     const newBlog = await blogs.create({
       blogTitle,
       blogDescription,
       blogAuthor,
       blogStatus,
-      blogImage
+      blogImage,
+      blogCategory
     });
     res.status(201).json({
       message: 'Blog created successfully',
@@ -26,10 +27,10 @@ exports.createBlog = async(req, res) => {
 }
 exports.fetchBlogs= async(req, res) => {
   try {
-    const blogs = await blogs.findAll();
+    const allBlogs = await blogs.findAll();
     res.json({
       message: 'Blogs fetched successfully',
-      data: blogs
+      data: allBlogs
     });
   } catch (error) {
     res.status(500).json({
@@ -62,7 +63,7 @@ exports.fetchSingleBlog = async(req, res) => {
 exports.updateBlog = async(req, res) => {
     const { id } = req.params;
     try {
-        const { blogTitle, blogDescription, blogAuthor, blogStatus, blogImage } = req.body;
+        const { blogTitle, blogDescription, blogAuthor, blogStatus, blogImage, blogCategory } = req.body;
         const blog = await blogs.findByPk(id);
         if (blog) {
         blog.blogTitle = blogTitle || blog.blogTitle;
@@ -70,6 +71,7 @@ exports.updateBlog = async(req, res) => {
         blog.blogAuthor = blogAuthor || blog.blogAuthor;
         blog.blogStatus = blogStatus || blog.blogStatus;
         blog.blogImage = blogImage || blog.blogImage;
+        blog.blogCategory = blogCategory || blog.blogCategory;
     
         await blog.save();
         res.json({

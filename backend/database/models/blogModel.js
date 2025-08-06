@@ -12,6 +12,10 @@ const blogModel = (sequelize, DataTypes) => {
             type:DataTypes.STRING,
             allowNull: false,
         },
+        authorImage:{
+            type:DataTypes.STRING,
+            allowNull: true,
+        },
         blogStatus:{
             type:DataTypes.STRING,
             allowNull: false,
@@ -19,6 +23,10 @@ const blogModel = (sequelize, DataTypes) => {
         },
         blogImage:{
             type:DataTypes.STRING,
+            allowNull: true,
+        },
+        blogCategory:{
+            type: DataTypes.STRING,
             allowNull: true,
         },
     });
@@ -32,5 +40,6 @@ module.exports = blogModel;
 //     "blogDescription": "This is the first blog",
 //     "blogAuthor": "John Doe",
 //     "blogStatus": "published",
-//     "blogImage": "https://example.com/image1.jpg"
+//     "blogImage": "https://example.com/image1.jpg",
+//     "blogCategory": "Technology"
 // }

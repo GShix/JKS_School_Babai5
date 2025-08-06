@@ -19,7 +19,7 @@ db.blogs = require('./models/blogModel')(sequelize, DataTypes);
 db.programs = require('./models/programModel')(sequelize, DataTypes);
 db.activities = require('./models/activityModel')(sequelize, DataTypes);
 
-sequelize.sync({ alter: true}).then(()=>{
+sequelize.sync({ alter: false}).then(()=>{
   console.log('Database & tables created!');
 })
 module.exports = db; 

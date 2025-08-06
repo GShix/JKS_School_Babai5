@@ -4,15 +4,17 @@ const express = require('express');
 const programRoute = require('./routes/programRoute')
 const blogRoute = require('./routes/blogRoute');
 const app = express();
+const cors = require('cors');
 
 app.use(express.json());
 
-// const cors = require('cors');
-// app.use(cors({
-//   origin: '*',
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//   allowedHeaders: ['Content-Type', 'Authorization']
-// }));  
+app.use(cors({
+  origin: '*', // Allows all origins
+  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  // allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: false // Set to true if you need to send cookies
+}));  
+
 app.use("/api/", programRoute)
 app.use("/api/",blogRoute)
 
