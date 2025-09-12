@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
     const [clickMenu, setClickMenu] = useState(false);
+    const [isSticky, setIsSticky] = useState(false);
+    const navRef = useRef<HTMLDivElement | null>(null);
     const navLinks = [
         {
             title:"Home",
@@ -22,12 +24,12 @@ const Header = () => {
         {
             title:"Notice",
             icon:"ri-calendar-event-fill text-sm",
-            href:"/notice"
+            href:"/notices"
         },
         {
             title:"Download",
             icon:"ri-calendar-event-fill text-sm",
-            href:"/download"
+            href:"/downloads"
         },
         {
             title:"Contatct Us",
@@ -46,26 +48,29 @@ const Header = () => {
 
     useEffect(() => {
         // Function to check and handle clicks outside of the menu
-        // interface NavLink {
-        //     title: string;
-        //     // icon?: string;
-        //     href: string;
-        // }
-
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-            setClickMenu(false);
+                setClickMenu(false);
             }
         };
 
-        // Add event listener for clicks
-        document.addEventListener('mousedown', handleClickOutside);
+        // Sticky navigation handler
+        const handleScroll = () => {
+            if (navRef.current) {
+                const navTop = navRef.current.offsetTop;
+                const scrollTop = window.scrollY;
+                setIsSticky(scrollTop > navTop);
+            }
+        };
 
-        // Cleanup event listener on component unmount
+        document.addEventListener('mousedown', handleClickOutside);
+        window.addEventListener('scroll', handleScroll);
+
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('scroll', handleScroll);
         };
-    }, [menuRef]);
+    }, []);
 
   return (
     <div className="header w-full">
@@ -106,7 +111,7 @@ const Header = () => {
         <nav className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl px-2 sm:px-10">
 
             {/* Large Nav Link */}
-            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4">
+            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 ">
                 <Link to="/" className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                     <img className="h-24" src="/img/icon.png" alt="" srcSet="" />
                     <div className="schoolname max-sm:text-center">
@@ -124,7 +129,13 @@ const Header = () => {
                 </div>
 
             </div>
-            <div className="navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden py-6 px-10 items-center sticky top-0 left-10 right-10 z-50">
+            <div
+                ref={navRef}
+                className={`navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden px-10 items-center transition-all duration-200 ${isSticky ? 'fixed top-0 left-4 right-4 z-50 shadow-lg py-2 mx-7 rounded-b-md' : 'relative top-0 left-0 right-0 z-50 py-4'}`}
+            >
+                {isSticky && (
+                    <img className="h-16 mr-4 transition-all duration-500 ease-out" src="/img/icon.png" alt="Logo" />
+                )}
                 <ul className="flex items-center justify-between text-white gap-10">
                     {navLinks.map((link,index)=>(
                     <li key={index} className="flex items-center">

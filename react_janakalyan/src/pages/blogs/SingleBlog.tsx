@@ -216,6 +216,15 @@ const SingleBlog = () => {
                 <span>Save</span>
               </button>
 
+                <div className="edit-btn">
+                  <Link 
+                    to={`/blogs/edit/${blog.id}`}
+                    className="flex items-center space-x-1 px-3 py-1 rounded-lg text-gray-600 hover:text-[#035CB0] hover:bg-blue-50 transition-colors"
+                  >
+                    <i className="ri-edit-line"></i>
+                    <span>Edit</span>
+                  </Link>
+                </div>
               {/* Share Button */}
               <div className="relative">
                 <button 

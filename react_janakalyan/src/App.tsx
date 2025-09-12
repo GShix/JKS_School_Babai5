@@ -10,6 +10,9 @@ import AllBlogs from './pages/blogs/AllBlogs'
 import CreateBlog from './pages/blogs/CreateBlog'
 import SingleBlog from './pages/blogs/SingleBlog'
 import EditBlog from './pages/blogs/EditBlog'
+import ContactUs from './pages/contactUs/ContactUs'
+import Notices from './pages/notices/Notices'
+import Downloads from './pages/download/Downloads'
 
 function App() {
   return (
@@ -18,10 +21,14 @@ function App() {
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='/about' element={<About/>}/>
+            <Route path='/contact-us' element={<ContactUs/>}/>
+            <Route path='/notices' element={<Notices/>}/>
+            <Route path='/downloads' element={<Downloads/>}/>
+            <Route path='/career' element={<ContactUs/>}/>
             <Route path='/blogs' element={<AllBlogs/>}/>
             <Route path='/blogs/create' element={<CreateBlog/>}/>
             <Route path='/blogs/:id' element={<SingleBlog/>}/>
-            <Route path='/blogs/:id/edit' element={<EditBlog/>}/>
+            <Route path='/blogs/edit/:id' element={<EditBlog/>}/>
             <Route path='/admin/login' element={<Login/>}/>
             <Route path='/user/register' element={<Register/>}/>
             <Route path='/game-zone' element={<GameZone/>}/>
