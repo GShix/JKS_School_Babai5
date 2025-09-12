@@ -77,7 +77,7 @@ const Header = () => {
         <div className="header-top bg-[#035CB0] text-white flex justify-between items-center w-full gap-5 max-sm:text-2xl py-2.5 px-3 sm:px-11 text-[15px]">
             <ul className="header-top-list flex items-center gap-3 sm:gap-5 justify-center font-['poppins'] max-sm:text-sm">
                 <li className="border-r-2 max-sm:pr-3 sm:pr-6 hover:text-yellow-400">
-                    <a href="tel">
+                    <a href="tel" className=" transition-all duration-500 ease-in-out">
                         <i className="ri-phone-fill mr-2"></i>
                         <span className="max-sm:text-xs text-nowrap">+977 9844929502</span>
                     </a>
@@ -108,10 +108,10 @@ const Header = () => {
             </div>
         </div>
 
-        <nav className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl px-2 sm:px-10">
+        <nav className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl">
 
             {/* Large Nav Link */}
-            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 ">
+            <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 sm:px-10">
                 <Link to="/" className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                     <img className="h-24" src="/img/icon.png" alt="" srcSet="" />
                     <div className="schoolname max-sm:text-center">
@@ -131,7 +131,7 @@ const Header = () => {
             </div>
             <div
                 ref={navRef}
-                className={`navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden px-10 items-center transition-all duration-200 ${isSticky ? 'fixed top-0 left-4 right-4 z-50 shadow-lg py-2 mx-7 rounded-b-md' : 'relative top-0 left-0 right-0 z-50 py-4'}`}
+                className={`navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden px-10 items-center transition-all duration-500 ease-in-out ${isSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg py-2' : 'relative top-0 left-0 right-0 z-50 py-4'}`}
             >
                 {isSticky && (
                     <img className="h-16 mr-4 transition-all duration-500 ease-out" src="/img/icon.png" alt="Logo" />
