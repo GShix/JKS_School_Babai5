@@ -35,22 +35,22 @@ export default function Hero() {
             alt="carousel"
             // style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8, transition: 'opacity 0.5s' }}
           />
-          {/* <button
+          <button
             className="carousel-button prev"
             style={{ position: 'absolute', top: '50%', left: 10, transform: 'translateY(-50%)', background: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
             onClick={prevImage}
             aria-label="Previous"
           >
             &#8592;
-          </button> */}
-          {/* <button
+          </button>
+          <button
             className="carousel-button next"
             style={{ position: 'absolute', top: '50%', right: 10, transform: 'translateY(-50%)', background: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
             onClick={nextImage}
             aria-label="Next"
           >
             &#8594;
-          </button> */}
+          </button>
         </div>
         <div style={{ textAlign: 'center', marginTop: 8 }}>
           {images.map((_, idx) => (
