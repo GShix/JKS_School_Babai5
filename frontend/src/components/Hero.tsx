@@ -1,29 +1,73 @@
+import React from "react";
+
 export default function Hero() {
-    return (
-      <div className="overflow-idden bg-white ">
-        <img className="w-full max-sm:w-[100%] h-[400px] object-fit object-cover " src="img/janakalyan_ma_vi.jpg" alt="" srcSet="" />
-        {/* <video className="w-full max-sm:w-[100%] h-[500px] object-fit object-cover "autoPlay loop muted playsInline>
-          <source src="/videos/gallery_video1.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video> */}
-        {/* <div className="pb-10">
-          <div className="px-2 sm:px-3 lg:px-4 flex justify-between items-center max-sm:flex-col-reverse">
-            <div className="md:w-1/2 pt-6">
-              <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-5xl max-sm:text-center">
-                Join The Biggest <span className="text-[#c7ae6a] sm:text-[50px] text-3xl text-nowrap leading-normal">Student Community</span><br></br> in Nepal
-              </h1>
-              <p className="mt-4 text-base sm:text-xl text-gray-600 text-justify">
-                In today’s digital age, there is a growing need for platforms that connect Nepalese college students. Our platform offers tailored features for students to manage their accounts, verify their identities, and engage in activities like sharing posts and joining virtual events.
-              </p>
-              <div className="join-btn mt-5 md:w-1/2 max-sm:text-center">
-                <a href="/login" className="inline-block rounded-md border border-transparent bg-[#1a1a1a] px-4 py-2.5 text-center font-medium text-white hover:bg-[#c7ae6a] hover:border hover:border-[#1a1a1a]">Join now</a>
-              </div>
-            </div>
-            <div className="hero-img pb-4">
-                <img className="md:w-full max-sm:w-[100%]" src="img/janakalyan_ma_vi.jpg" alt="" srcSet="" />
-            </div>
+  const images = [
+    "img/running-shield.jpg",
+    "img/running-shield-1.jpg",
+    // "img/running-shield-3.jpg",
+    "img/running-shield-4.jpg",
+    "img/running-shield-5.jpg"
+  ];
+  const [current, setCurrent] = React.useState(0);
+  const prevImage = () => setCurrent((current - 1 + images.length) % images.length);
+  const nextImage = () => setCurrent((current + 1) % images.length);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      nextImage();
+    }, 3000); // Change image every 3 seconds
+    return () => clearInterval(interval);
+  }, [current]);
+
+  return (
+    <div className="overflow-idden bg-white ">
+      {/* <img className="w-full max-sm:w-[100%] h-[400px] object-fit object-cover " src="img/janakalyan_ma_vi.jpg" alt="" srcSet="" /> */}
+      {/* <video className="w-full max-sm:w-[100%] h-[500px] object-fit object-cover "autoPlay loop muted playsInline>
+        <source src="/videos/gallery_video1.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video> */}
+      {/* Image carousel with left/right arrow navigation */}
+      <div className="image-carousel w-full max-sm:w-[100%] h-[600px] px0">
+        <div className="carousel-wrapper relative overflow-hidden h-full">
+          <img
+            className="carousel-image w-full max-sm:w-[100%] h-full object-fit object-cover transition-border duration-500"
+            src={images[current]}
+            alt="carousel"
+            // style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8, transition: 'opacity 0.5s' }}
+          />
+          {/* <button
+            className="carousel-button prev"
+            style={{ position: 'absolute', top: '50%', left: 10, transform: 'translateY(-50%)', background: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+            onClick={prevImage}
+            aria-label="Previous"
+          >
+            &#8592;
+          </button> */}
+          {/* <button
+            className="carousel-button next"
+            style={{ position: 'absolute', top: '50%', right: 10, transform: 'translateY(-50%)', background: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+            onClick={nextImage}
+            aria-label="Next"
+          >
+            &#8594;
+          </button> */}
         </div>
-      </div> */}
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          {images.map((_, idx) => (
+            <span
+              key={idx}
+              style={{
+                display: 'inline-block',
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                background: idx === current ? '#333' : '#ccc',
+                margin: '0 4px'
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
-    )
-  }
+  );
+}
