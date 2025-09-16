@@ -51,9 +51,15 @@ const Footer = () => {
                     </li>
                 </ul>
             </div>
-            <div className="footer-important-links max-sm:mt-5">
-                <h1 className="text-lg font-semibold mb-4">Important Links</h1>
-                <ul className="">
+            <div className="footer-fb-page max-sm:mt-5">
+                <h1 className="text-lg font-semibold mb-4">Official Facebeook Page</h1>
+                <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fjanakalyana.ma.bi.padamapura.dana&tabs=timeline&width=400&height=300&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true&appId" width="400" height="300" scrolling="no" frameBorder="0" 
+                className="border-0 overflow-hidden"
+                allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                {/* <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3516.6370459737786!2d82.1354621!3d28.187951699999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39981ddb63b5812f%3A0x459611dac3a9d5cc!2sJanakalyan%20H.S.S.%20Padampur!5e0!3m2!1sen!2snp!4v1757949161711!5m2!1sen!2snp" width="600" height="450" allowFullScreen={true} loading="lazy" 
+                className="border-0 w-full h-48 rounded-md"
+                referrerPolicy="no-referrer-when-downgrade"></iframe> */}
+                {/* <ul className="">
                     <li className="flex flex-col gap-4">
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Notices</a>
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Contact Us</a>
@@ -61,7 +67,7 @@ const Footer = () => {
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Admission</a>
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Results</a>
                     </li>
-                </ul>
+                </ul> */}
             </div>
         </div>
 

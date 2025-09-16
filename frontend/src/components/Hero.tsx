@@ -33,7 +33,6 @@ export default function Hero() {
             className="carousel-image w-full max-sm:w-[100%] h-full object-fit object-cover transition-border duration-500"
             src={images[current]}
             alt="carousel"
-            // style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8, transition: 'opacity 0.5s' }}
           />
           <button
             className="carousel-button prev"
@@ -52,7 +51,7 @@ export default function Hero() {
             &#8594;
           </button>
         </div>
-        <div style={{ textAlign: 'center', marginTop: 8 }}>
+        <div className="text-center mt-8">
           {images.map((_, idx) => (
             <span
               key={idx}
