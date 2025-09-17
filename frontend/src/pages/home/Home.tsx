@@ -2,7 +2,6 @@
 import { AcademicPrograms } from '../../components/AcademicPrograms';
 import Banner from '../../components/Banner';
 import FAQ from '../../components/FAQ';
-import Feature from '../../components/Feature';
 import Hero from '../../components/Hero'
 import MessageFromPrincipal from '../../components/MessageFromPrincipal';
 import OurTeam from '../../components/OurTeam';
