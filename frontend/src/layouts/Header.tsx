@@ -32,7 +32,7 @@ const Header = () => {
             href:"/downloads"
         },
         {
-            title:"Contatct Us",
+            title:"Gallery",
             icon:"ri-calendar-event-fill text-sm",
             href:"/contact-us"
         },
@@ -93,17 +93,17 @@ const Header = () => {
             <div className="header-top flex justify-between gap-10 max-sm:hidden">
                 <ul className="header-top-list flex items-center gap-5 justify-content-center">
                     <li className="border-r-2 pr-6 hover:text-yellow-400hover:text-yellow-400">
-                        <a href="https://amarjyoti.edu.np/results" className="">Result</a>
+                        <Link to="https://amarjyoti.edu.np/results" className="">Result</Link>
                     </li>
                     <li className="border-r-2 pr-6 hover:text-yellow-400">
-                        <a href="#">Admission</a>
+                        <Link to="#">Admission</Link>
                     </li>
                     <li className=" hover:text-yellow-400">
                         <Link to="/blogs">Blogs</Link>
                     </li>
                 </ul>
                 <ul className="header-top-social">
-                    <li><a href="https://www.facebook.com/janakalyana.ma.bi.padamapura.dana" target="_blank"><i className="ri-facebook-fill hover:text-yellow-400"></i></a></li>
+                    <li><Link to="https://www.facebook.com/janakalyana.ma.bi.padamapura.dana" target="_blank"><i className="ri-facebook-fill hover:text-yellow-400"></i></Link></li>
                 </ul>
             </div>
         </div>
@@ -139,9 +139,9 @@ const Header = () => {
                 <ul className="flex items-center justify-between text-white gap-10">
                     {navLinks.map((link,index)=>(
                     <li key={index} className="flex items-center">
-                        <a  className="nav-link-item hover:text-[#035CB0] flex items-center" href={link.href}>
+                        <Link  className="nav-link-item hover:text-[#035CB0] flex items-center" to={link.href}>
                             <span className="block font-sans leading-none font-semibold text-xl hover:text-yellow-400">{link.title}</span>
-                        </a>
+                        </Link>
                     </li>
                     ))}
                 </ul>
