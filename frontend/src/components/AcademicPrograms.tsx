@@ -17,13 +17,13 @@ export const AcademicPrograms = () => {
         }
     }
     return (
-        <div className="academic-programs px-4 sm:px-12 w-full sm:h-[400px] bg-[#F7F7F7] py-2 sm-mb-10">
+        <div className="academic-programs px-4 sm:px-12 w-full h-full bg-[#F7F7F7] py-2 sm-mb-10">
             <h1 className="text-3xl mb-2 font-bold text-[#035CB0]">Academic Programs</h1>
             <div className="tab-and-contents flex max-sm:flex-col w-full">
                 <div className="max-sm:w-full w-[40%] max-sm:hidden">
-                    {tab=="education" && <img className="w-full h-[400px] rounded-l-md" src="/img/aca-education.jpg" alt="Education" />}
-                    {tab=="agriculture" && <img className="w-full h-[400px] rounded-l-md" src="/img/aca-agriculture.jpg" alt="Agriculture" />}
-                    {tab=="management" && <img className="w-full h-[400px] rounded-l-md" src="/img/aca-management.jpeg" alt="Management" />}
+                    {tab=="education" && <img className="w-full h-full rounded-l-md" src="/img/aca-education.jpg" alt="Education" />}
+                    {tab=="agriculture" && <img className="w-full h-full rounded-l-md" src="/img/aca-agriculture.jpg" alt="Agriculture" />}
+                    {tab=="management" && <img className="w-full h-full rounded-l-md" src="/img/aca-management.jpeg" alt="Management" />}
                 </div>
                 <div className="max-sm:w-full sm:w-[60%]">
                     <div className="tabs flex sm:text-2xl font-semibold flex-wrap">
@@ -31,7 +31,7 @@ export const AcademicPrograms = () => {
                         <h1 className={`px-5 py-4 cursor-pointer ${tab === "agriculture" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`} onClick={() => {setTab("agriculture")}}>Agriculture</h1>
                         <h1 className={`px-5 py-4 cursor-pointer ${tab === "management" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`} onClick={() => {setTab("management")}}>Management</h1>
                     </div>
-                    <div className="tab-content bg-[#035CB0] text-white p-2 sm:p-6 min-h-[200px] sm:h-[344px] sm:rounded-r-md rounded-b-md text-justify">
+                    <div className="tab-content bg-[#035CB0] text-white p-2 sm:p-6 min-h-[200px] sm:rounded-r-md max-sm:rounded-b-md text-justify">
                         {tab=="education" && (
                             <div>
                                 <h1 className="font-semibold text-2xl mb-2">{content.education.title}</h1>
