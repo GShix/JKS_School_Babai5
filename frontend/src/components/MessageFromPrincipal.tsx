@@ -4,7 +4,7 @@ const MessageFromPrincipal = () => {
         <div className="photo sm:w-2/3 ]">
             <img className='w-full h-full rounded-md' src="/img/headmaster-2.jpg" alt="Headmaster" />
         </div>
-        <div className="message sm:w-[95%]">
+        <div className="message sm:w-[95%] max-sm:mt-2">
             <h2 className='text-3xl font-bold leading-none text-[#035CB0] mb-5'>Message from the Principal</h2>
             <p className='text-lg mt-2 text-justify'>Welcome to our school! We are dedicated to providing a nurturing and challenging environment for our students. Our mission is to foster a love for learning and to prepare our students for success in their future endeavors.
             </p>

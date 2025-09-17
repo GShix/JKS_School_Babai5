@@ -22,9 +22,9 @@ const Footer = () => {
                         <i className="ri-map-pin-2-fill text-gray-900 md:pl-2"></i>
                         <span className="info-text">Babai-5, Padampur, Dang</span>
                     </Link>
-                    <Link to="https://www.facebook.com/janakalyana.ma.bi.padamapura.dana" rel="noreferrer" target="_blank" className="text-gray-900 transition hover:text-gray-900/75">
+                    {/* <Link to="https://www.facebook.com/janakalyana.ma.bi.padamapura.dana" rel="noreferrer" target="_blank" className="text-gray-900 transition hover:text-gray-900/75">
                         <i className="ri-facebook-circle-fill text-blue-600 text-2xl leading-none"></i>
-                    </Link>
+                    </Link> */}
                 </li>
             </div>
             <div className="footer-about max-sm:mt-5">
