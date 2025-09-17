@@ -20,7 +20,7 @@ export default function Hero() {
   }, [current]);
 
   return (
-    <div className="overflow-idden bg-white ">
+    <div className="overflow-idden bg-white">
       {/* <img className="w-full max-sm:w-[100%] h-[400px] object-fit object-cover " src="img/janakalyan_ma_vi.jpg" alt="" srcSet="" /> */}
       {/* <video className="w-full max-sm:w-[100%] h-[500px] object-fit object-cover "autoPlay loop muted playsInline>
         <source src="/videos/gallery_video1.mp4" type="video/mp4" />
@@ -51,7 +51,7 @@ export default function Hero() {
             &#8594;
           </button>
         </div>
-        <div className="text-center mt-8">
+        {/* <div className="text-center mt-4">
           {images.map((_, idx) => (
             <span
               key={idx}
@@ -65,7 +65,7 @@ export default function Hero() {
               }}
             />
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

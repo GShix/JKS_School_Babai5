@@ -34,7 +34,7 @@ const Header = () => {
         {
             title:"Gallery",
             icon:"ri-calendar-event-fill text-sm",
-            href:"/contact-us"
+            href:"/gallery"
         },
         {
             title:"Career",
