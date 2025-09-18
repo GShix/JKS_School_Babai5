@@ -14,7 +14,11 @@ const Header = () => {
         {
             title:"About",
             icon:"ri-group-fill text-sm",
-            href:"/about"
+            href:"/about",
+            subNav: [
+                { title: "About JKSS", href: "/about/jkss" },
+                { title: "JKSS Team", href: "/about/jkss-team" },
+            ]
         },
         {
             title:"Academic Programs",
@@ -137,14 +141,39 @@ const Header = () => {
                     <img className="h-16 mr-4 transition-all duration-500 ease-out" src="/img/icon.png" alt="Logo" />
                 )}
                 <ul className="flex items-center justify-between text-white gap-10">
-                    {navLinks.map((link,index)=>(
-                    <li key={index} className="flex items-center">
-                        <Link  className="nav-link-item hover:text-[#035CB0] flex items-center" to={link.href}>
-                            <span className="block font-sans leading-none font-semibold text-xl hover:text-yellow-400">{link.title}</span>
-                        </Link>
-                    </li>
+                    {navLinks.map((link, index) => (
+                        <li
+                        key={index}
+                        className="relative group flex items-center">
+                            <Link
+                                className="nav-link-item flex items-center font-sans leading-none font-semibold text-xl hover:text-yellow-400"
+                                to={link.href}>
+                                {link.title}
+                            </Link>
+
+                            {/* dropdown */}
+                            {link.subNav && link.subNav.length > 0 && (
+                                <ul
+                                className="
+                                    absolute left-0 mt-2 top-5 w-48 bg-white text-black rounded-lg shadow-lg 
+                                    opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                    transition-opacity duration-200">
+                                {link.subNav.map((subLink, subIndex) => (
+                                    <li key={subIndex}>
+                                    <Link
+                                        to={subLink.href}
+                                        className="block px-4 py-2 hover:bg-gray-100 hover:text-[#035CB0]"
+                                    >
+                                        {subLink.title}
+                                    </Link>
+                                    </li>
+                                ))}
+                                </ul>
+                            )}
+                        </li>
                     ))}
                 </ul>
+
             </div>
             
             {/* Small Nav */}

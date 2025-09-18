@@ -22,7 +22,7 @@ export const AcademicPrograms = () => {
             <div className="tab-and-contents flex max-sm:flex-col w-full">
                 <div className="max-sm:w-full w-[40%] max-sm:hidden">
                     {tab=="education" && <img className="w-full h-full rounded-l-md" src="/img/aca-education.jpg" alt="Education" />}
-                    {tab=="agriculture" && <img className="w-full h-full rounded-l-md" src="/img/aca-agriculture.jpg" alt="Agriculture" />}
+                    {tab=="agriculture" && <img className="w-full h-100 rounded-l-md" src="/img/aca-agriculture.jpg" alt="Agriculture" />}
                     {tab=="management" && <img className="w-full h-full rounded-l-md" src="/img/aca-management.jpeg" alt="Management" />}
                 </div>
                 <div className="max-sm:w-full sm:w-[60%]">
