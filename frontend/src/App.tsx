@@ -14,6 +14,7 @@ import Notices from './pages/notices/Notices'
 import Downloads from './pages/download/Downloads'
 import Career from './pages/career/Career'
 import Gallery from './pages/Gallery/Gallery'
+import OurTeam from './pages/ourTeam/OurTeam'
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Home/>}/>
-            <Route path='/about' element={<About/>}/>
+            <Route path='/about/jkss' element={<About/>}/>
+            <Route path='/about/jkss-team' element={<OurTeam/>}/>
             <Route path='/gallery' element={<Gallery/>}/>
             <Route path='/notices' element={<Notices/>}/>
             <Route path='/downloads' element={<Downloads/>}/>

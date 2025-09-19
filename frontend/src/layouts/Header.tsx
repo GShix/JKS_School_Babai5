@@ -14,7 +14,7 @@ const Header = () => {
         {
             title:"About",
             icon:"ri-group-fill text-sm",
-            href:"/about",
+            href:"#",
             subNav: [
                 { title: "About JKSS", href: "/about/jkss" },
                 { title: "JKSS Team", href: "/about/jkss-team" },
@@ -135,18 +135,18 @@ const Header = () => {
             </div>
             <div
                 ref={navRef}
-                className={`navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden px-11 items-center transition-all duration-500 ease-in-out ${isSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg py-2' : 'relative top-0 left-0 right-0 z-50 py-5'}`}
+                className={`navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden px-11 items-center transition-all duration-500 ease-in-out ${isSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg py-2' : 'relative top-0 left-0 right-0 z-50'}`}
             >
                 {isSticky && (
                     <img className="h-16 mr-4 transition-all duration-500 ease-out" src="/img/icon.png" alt="Logo" />
                 )}
-                <ul className="flex items-center justify-between text-white gap-10">
+                <ul className="flex items-center justify-between text-white gap-8">
                     {navLinks.map((link, index) => (
                         <li
                         key={index}
                         className="relative group flex items-center">
                             <Link
-                                className="nav-link-item flex items-center font-sans leading-none font-semibold text-xl hover:text-yellow-400"
+                                className="nav-link-item flex items-center font-sans leading-none font-semibold text-xl hover:text-yellow-400 py-5 px-1"
                                 to={link.href}>
                                 {link.title}
                             </Link>
@@ -155,7 +155,7 @@ const Header = () => {
                             {link.subNav && link.subNav.length > 0 && (
                                 <ul
                                 className="
-                                    absolute left-0 mt-2 top-5 w-48 bg-white text-black rounded-lg shadow-lg 
+                                    absolute left-0 mt-2 top-13 w-48 bg-white text-black rounded- shadow-lg 
                                     opacity-0 invisible group-hover:opacity-100 group-hover:visible 
                                     transition-opacity duration-200">
                                 {link.subNav.map((subLink, subIndex) => (

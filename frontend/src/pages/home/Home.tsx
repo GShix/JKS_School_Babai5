@@ -4,7 +4,7 @@ import Banner from '../../components/Banner';
 import FAQ from '../../components/FAQ';
 import Hero from '../../components/Hero'
 import MessageFromPrincipal from '../../components/MessageFromPrincipal';
-import OurTeam from '../../components/OurTeam';
+import OurTeam from '../ourTeam/OurTeam';
 import SchoolIntroduction_Notice from '../../components/SchoolIntroduction_Notice';
 // import UpcomingEvents from '../../components/UpcomingEvents';
 import Footer from '../../layouts/Footer';
