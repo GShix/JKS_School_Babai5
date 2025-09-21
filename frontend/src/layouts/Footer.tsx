@@ -8,7 +8,7 @@ const Footer = () => {
             <div className="footer-info text-teal-600">
                 <li className="list-none flex flex-col sm:items-center gap-4 text-gray-900">
                     <Link to="/" className="flex gap-2 items-center border-b border-gray-300">
-                        <img className="max-sm:h-24 sm:h-32 cursor-pointer mb-2" src="/img/icon.png" alt="JanakalyanMaVi Logo"/>
+                        <img className="max-sm:h-24 sm:h-32 cursor-pointer mb-2" src="/img/jkss_logo.png" alt="JanakalyanMaVi Logo"/>
                     </Link>
                     <Link to="tel:+9779844929502" className="flex gap-2 items-center ">
                         <i className="ri-phone-fill text-gray-900"></i>

@@ -117,7 +117,7 @@ const Header = () => {
             {/* Large Nav Link */}
             <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 sm:px-11">
                 <Link to="/" className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
-                    <img className="h-24" src="/img/icon.png" alt="" srcSet="" />
+                    <img className="h-24" src="/img/jkss_logo.png" alt="" srcSet="" />
                     <div className="schoolname max-sm:text-center">
                         <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">श्री जनकल्याण</h1>
                         <h2 className="text-red-500 font-bold text-xl">माध्यमिक विद्यालय</h2>
@@ -138,7 +138,7 @@ const Header = () => {
                 className={`navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden px-11 items-center transition-all duration-500 ease-in-out ${isSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg py-2' : 'relative top-0 left-0 right-0 z-50'}`}
             >
                 {isSticky && (
-                    <img className="h-16 mr-4 transition-all duration-500 ease-out" src="/img/icon.png" alt="Logo" />
+                    <img className="h-16 mr-4 transition-all duration-500 ease-out" src="/img/jkss_logo.png" alt="Logo" />
                 )}
                 <ul className="flex items-center justify-between text-white gap-8">
                     {navLinks.map((link, index) => (

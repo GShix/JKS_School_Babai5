@@ -19,7 +19,7 @@ const BlogCard = ({ blog }: BlogCardProps) => {
             <div className="flex-shrink-0">
                 <img 
                     className="h-48 w-full object-cover" 
-                    src={blog.blogImage || "/img/icon.png"} 
+                    src={blog.blogImage || "/img/jkss_logo.png"} 
                     alt={blog.blogTitle || "Blog post"} 
                 />
             </div>

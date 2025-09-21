@@ -245,7 +245,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ onSubmit }) => {
                 name="blogImage"
                 value={formData.blogImage}
                 onChange={handleInputChange}
-                placeholder="/img/icon.png"
+                placeholder="/img/jkss_logo.png"
                 className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
               />
             </div>

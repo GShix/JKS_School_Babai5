@@ -166,7 +166,7 @@ const SingleBlog = () => {
             <div className="flex items-center justify-center space-x-6 text-sm">
               <div className="flex items-center space-x-2">
                 <img 
-                  src={blog.authorImage || "/img/icon.png"} 
+                  src={blog.authorImage || "/img/jkss_logo.png"} 
                   alt={blog.blogAuthor}
                   className="w-8 h-8 rounded-full border-2 border-white"
                 />
@@ -296,7 +296,7 @@ const SingleBlog = () => {
             {/* Author Info */}
             <div className="flex items-center space-x-4 mb-8 pb-6 border-b">
               <img 
-                src={blog.authorImage || "/img/icon.png"} 
+                src={blog.authorImage || "/img/jkss_logo.png"} 
                 alt={blog.blogAuthor}
                 className="w-12 h-12 rounded-full"
               />
