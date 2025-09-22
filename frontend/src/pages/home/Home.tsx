@@ -4,7 +4,6 @@ import Banner from '../../components/Banner';
 import FAQ from '../../components/FAQ';
 import Hero from '../../components/Hero'
 import MessageFromPrincipal from '../../components/MessageFromPrincipal';
-import OurTeam from '../ourTeam/OurTeam';
 import SchoolIntroduction_Notice from '../../components/SchoolIntroduction_Notice';
 // import UpcomingEvents from '../../components/UpcomingEvents';
 import Footer from '../../layouts/Footer';
@@ -29,7 +28,6 @@ const Home = () =>{
             <AcademicPrograms/>
             {/* <ActivitiesGallery/> */}
             <FAQ/>
-            <OurTeam/>
             <Footer/>
             {/* <CTA/> */}
             {/* <div className="text-black">

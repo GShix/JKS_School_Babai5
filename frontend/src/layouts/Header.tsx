@@ -47,6 +47,7 @@ const Header = () => {
         },
 
     ]
+    const [smallNavClick, setSmallNavClick] = useState(false);
     // console.log(navLinks)
     const menuRef = useRef<HTMLDivElement | null>(null); // Reference to the nav menu
 
@@ -178,18 +179,34 @@ const Header = () => {
             
             {/* Small Nav */}
             <div className="nav-menu text-4xl bg-[#035CB0] p-2 h-auto w-full sm:hidden relative text-white mt-4 flex justify-between" >
-                <i className={`${ clickMenu?"ri-close-line":"ri-menu-fill"} transition-transform ease-in-out cursor-pointer`}onClick={() => setClickMenu(!clickMenu)}></i>
+                <i className={`${ clickMenu?"ri-close-line":"ri-menu-fill"} transition-transform ease-in-out cursor-pointer`}onClick={() => setClickMenu(!clickMenu)}>Menu</i>
                 <Link to="/blogs" className="flex items-center gap-2.5 text-lg">Blogs</Link>
             </div>
             {clickMenu ? (
             <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-60 z-50 text-base sm:hidden px-4 py-3 mx-2">
                 <ul>
                     {navLinks.map((link,index)=>(
-                    <li key={index} className="mb-3 ">
-                        <a  className="nav-link-item hover:text-yellow-400 flex items-center" href={link.href}>
+                    <li key={index} className="mb-3 font-sans " onClick={()=>setSmallNavClick(!smallNavClick)}>
+                        <Link  className="nav-link-item hover:text-yellow-400 flex items-center" to={link.href}>
                             <i className={`${link.icon} mr-2`}></i>
-                            <span className="block font-sans font-normal">{link.title}</span>
-                        </a>
+                            <span className="block font-normal">{link.title}</span>
+                        </Link>
+                            {/* dropdown */}
+                            {smallNavClick && link.subNav && link.subNav.length > 0 && (
+                                <ul
+                                className="transition-opacity duration-200">
+                                {link.subNav.map((subLink, subIndex) => (
+                                    <li key={subIndex}>
+                                    <Link
+                                        to={subLink.href}
+                                        className="block px-4 py-2 hover:bg-gray-100 hover:text-[#035CB0]"
+                                    >
+                                        {subLink.title}
+                                    </Link>
+                                    </li>
+                                ))}
+                                </ul>
+                            )}
                     </li>
                     ))}
                 </ul>
