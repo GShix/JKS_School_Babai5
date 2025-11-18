@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const AcademicPrograms = () => {
+export const AcademicProgramsCard = () => {
     const [tab, setTab] = useState<string>("education");
     const content = {
         education: {
