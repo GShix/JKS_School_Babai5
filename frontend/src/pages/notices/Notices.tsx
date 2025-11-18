@@ -28,7 +28,7 @@ const Notices = () => {
                 <div className="md:w-2/3 ">
                     <div className="notices border-b border-gray-300 pb-2 mb-2">
                         <Link to={`/notices/1`} className='font-semibold text-lg hover:text-[#035CB0] cursor-pointer'>सिलबन्दी दरभाउपत्र आहवानकाे सूचना</Link>
-                        <p className='author text-sm mt-2'>By <span className='text-md font-semibold text-[#035CB0]'>Kankali Secondary School </span><span>May 15, 2025</span></p>
+                        <p className='author text-sm mt-2'>By <span className='text-md font-semibold text-[#035CB0]'>Jankalyan Secondary School </span><span>May 15, 2025</span></p>
                     </div>
                 </div>
                 <div className="md:w-1/3">
