@@ -1,5 +1,6 @@
 // import ActivitiesGallery from '../../components/Activities_gallery';
-import { AcademicPrograms } from '../../components/AcademicPrograms';
+
+import { AcademicProgramsCard } from '../../components/AcademicProgramsCard';
 import Banner from '../../components/Banner';
 import FAQ from '../../components/FAQ';
 import Hero from '../../components/Hero'
@@ -25,7 +26,7 @@ const Home = () =>{
             <MessageFromPrincipal/>
             {/* <UpcomingEvents/> */}
             {/* <Feature/> */}
-            <AcademicPrograms/>
+            <AcademicProgramsCard/>
             {/* <ActivitiesGallery/> */}
             <FAQ/>
             <Footer/>
