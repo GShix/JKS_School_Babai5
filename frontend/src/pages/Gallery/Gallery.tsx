@@ -12,7 +12,7 @@ type ImageItem = {
 }
 
 const sampleImages: ImageItem[] = [
-  { id: 'g1', title: 'Science Tour 2024', category: 'Tours', src: '/img/event1.jpg', date: '2024-05-12' },
+  { id: 'g1', title: 'Science Tour 2024', category: 'Tours', src: '/img/aca-basic-level.jpeg', date: '2024-05-12' },
   { id: 'g2', title: 'Annual Program - Stage', category: 'Programs', src: '/img/event2.jpg', date: '2024-03-10' },
   { id: 'g3', title: 'Friday Activity: Sports', category: 'Friday Programs', src: '/img/event3.jpg', date: '2024-07-21' },
   { id: 'g4', title: 'Classroom Learning', category: 'Academics', src: '/img/classroom.svg', date: '2024-01-18' },
@@ -63,7 +63,7 @@ const Gallery = () => {
           {filtered.map(img => (
             <div key={img.id} className="bg-white rounded shadow-sm overflow-hidden">
               <button onClick={() => setLightbox(img)} className="w-full h-48 overflow-hidden block">
-                <img src={img.src} alt={img.title} className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200" />
+                <img src={img.src} alt={img.title} className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200 cursor-pointer" />
               </button>
               <div className="p-3">
                 <div className="font-semibold text-sm">{img.title}</div>
@@ -78,7 +78,7 @@ const Gallery = () => {
             <div className="max-w-3xl w-full bg-white rounded overflow-hidden" onClick={e => e.stopPropagation()}>
               <div className="p-3 flex items-center justify-between">
                 <div className="font-semibold">{lightbox.title}</div>
-                <button onClick={() => setLightbox(null)} className="px-3 py-1 bg-gray-100 rounded">Close</button>
+                <button onClick={() => setLightbox(null)} className="px-3 py-1 bg-gray-100 rounded hover:bg-red-500 hover:text-white cursor-pointer">Close</button>
               </div>
               <img src={lightbox.src} alt={lightbox.title} className="w-full h-[60vh] object-contain bg-black" />
               <div className="p-3 text-sm text-gray-600">Category: {lightbox.category} • Date: {lightbox.date}</div>

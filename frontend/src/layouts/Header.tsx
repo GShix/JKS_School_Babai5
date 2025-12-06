@@ -109,7 +109,7 @@ const Header = () => {
                         <Link to="/results" className="">Result</Link>
                     </li>
                     <li className="border-r-2 pr-6 hover:text-yellow-400">
-                        <Link to="#">Admission</Link>
+                        <Link to="/admission">Admission</Link>
                     </li>
                     <li className=" hover:text-yellow-400">
                         <Link to="/blogs">Blogs</Link>

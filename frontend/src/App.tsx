@@ -20,6 +20,7 @@ import Education from './pages/academicPrograms/Education'
 import Agriculture from './pages/academicPrograms/Agriculture'
 import Management from './pages/academicPrograms/Management'
 import Results from './pages/results/Results'
+import Admission from './pages/admission/Admission'
 
 function App() {
   return (
@@ -28,8 +29,12 @@ function App() {
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='/results' element={<Results/>}/>
+            <Route path='/admission' element={<Admission/>}/>
             <Route path='/about/jkss' element={<About/>}/>
             <Route path='/about/jkss-team' element={<OurTeam/>}/>
+
+            {/* Group the academic program routes together */}
+            
             <Route path='/academic-programs/' element={<AcademicPrograms/>}/>
             <Route path='/academic-programs/education' element={<Education/>}/>
             <Route path='/academic-programs/agriculture' element={<Agriculture/>}/>
