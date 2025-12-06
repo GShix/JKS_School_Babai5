@@ -10,8 +10,8 @@ import SchoolIntroduction_Notice from '../../components/SchoolIntroduction_Notic
 // import UpcomingEvents from '../../components/UpcomingEvents';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import { initialNotices } from '../notices/Notices';
-import { Link } from 'react-router-dom';
+// import { initialNotices } from '../notices/Notices';
+// import { Link } from 'react-router-dom';
 
 const Home = () =>{
     // console.log(posts)
