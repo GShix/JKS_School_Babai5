@@ -39,7 +39,7 @@ const positions: Position[] = [
 export default function Career() {
   const [selected, setSelected] = React.useState<Position | null>(null);
   const [viewing, setViewing] = React.useState<Position | null>(null);
-  const [showIntro, setShowIntro] = React.useState(false);
+  // const [showIntro, setShowIntro] = React.useState(false);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [phone, setPhone] = React.useState('');
@@ -53,15 +53,15 @@ export default function Career() {
     setName(''); setEmail(''); setPhone(''); setCover(''); setResume(null); setErrors({});
   }
 
-  React.useEffect(() => {
-    try {
-      const dismissed = sessionStorage.getItem('careerIntroDismissed')
-      if (!dismissed) setShowIntro(true)
-    } catch (err) {
-      // ignore sessionStorage errors
-      setShowIntro(true)
-    }
-  }, [])
+  // React.useEffect(() => {
+  //   try {
+  //     const dismissed = sessionStorage.getItem('careerIntroDismissed')
+  //     if (!dismissed) setShowIntro(true)
+  //   } catch (err) {
+  //     // ignore sessionStorage errors
+  //     setShowIntro(true)
+  //   }
+  // }, [])
 
   const validate = () => {
     const e: Record<string,string> = {};
