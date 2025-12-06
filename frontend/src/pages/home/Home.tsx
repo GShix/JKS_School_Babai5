@@ -37,7 +37,7 @@ const Home = () =>{
             {/* Notices intro modal on first open */}
             {showNoticesIntro && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                    <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded shadow-lg h-screen overflow-auto">
+                    <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded shadow-lg h-[90vh] overflow-auto">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h2 className="text-xl font-semibold">Recent Notices</h2>
