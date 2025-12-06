@@ -90,7 +90,6 @@ const faqs: FAQ[] = [
 ];
 
 export default function Admission() {
-  const [selectedLevel, setSelectedLevel] = React.useState<AdmissionLevel | null>(null);
   const [showForm, setShowForm] = React.useState(false);
 
   // Application form state
@@ -195,7 +194,7 @@ export default function Admission() {
                 </div>
                 <p className="text-gray-700 text-sm mb-4">{level.description}</p>
                 <button 
-                  onClick={() => { setSelectedLevel(level); setApplyingFor(level.title); setShowForm(true); }}
+                  onClick={() => { setApplyingFor(level.title); setShowForm(true); }}
                   className="w-full px-4 py-2 bg-[#035CB0] text-white rounded hover:text-yellow-400 transition cursor-pointer"
                 >
                   Apply Now

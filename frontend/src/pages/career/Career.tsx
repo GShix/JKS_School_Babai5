@@ -255,7 +255,7 @@ export default function Career() {
 
                 <div>
                   <label className="block text-sm font-medium">Resume (PDF/DOC)</label>
-                  <input type="file" accept=".pdf,.doc,.docx" onChange={e => setResume(e.target.files?.[0] ?? null)} className="w-full" />
+                  <input type="file" accept=".pdf,.doc,.docx" onChange={e => setResume(e.target.files?.[0] ?? null)} className="w-full cursor-pointer hover:text-yellow-400" />
                   {errors.resume && <div className="text-red-600 text-sm mt-1">{errors.resume}</div>}
                   {resume && <div className="text-sm text-gray-600 mt-2">Selected: {resume.name}</div>}
                 </div>
