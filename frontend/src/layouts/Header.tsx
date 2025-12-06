@@ -27,8 +27,8 @@ const Header = () => {
                 { title: "Management", href: "/academic-programs/management" },
                 { title: "Education", href: "/academic-programs/education" },
                 { title: "Agriculture", href: "/academic-programs/agriculture" },
-                { title: "आधारभूत शिक्षा", href: "/academic-programs/आधारभूत शिक्षा" },
-                { title: "माध्यमिक शिक्षा", href: "/academic-programs/माध्यमिक शिक्षा" },
+                { title: "आधारभूत शिक्षा", href: "/academic-programs/basic-level" },
+                { title: "माध्यमिक शिक्षा", href: "/academic-programs/secondary-level" },
 
             ]
         },

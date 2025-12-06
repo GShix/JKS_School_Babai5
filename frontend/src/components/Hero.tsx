@@ -27,7 +27,7 @@ export default function Hero() {
         Your browser does not support the video tag.
       </video> */}
       {/* Image carousel with left/right arrow navigation */}
-      <div className="image-carousel w-full max-sm:w-[100%] h-[600px] px0">
+      <div className="image-carousel w-full max-sm:w-[100%] h-[500px] px0">
         <div className="carousel-wrapper relative overflow-hidden h-full">
           <img
             className="carousel-image w-full max-sm:w-[100%] h-full object-fit object-cover transition-border duration-500"

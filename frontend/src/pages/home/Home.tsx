@@ -37,17 +37,17 @@ const Home = () =>{
             {/* Notices intro modal on first open */}
             {showNoticesIntro && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                    <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded shadow-lg max-h-[80vh] overflow-auto">
+                    <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded shadow-lg h-screen overflow-auto">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h2 className="text-xl font-semibold">Recent Notices</h2>
-                                <p className="text-sm text-gray-600">Latest announcements from the school. You can open the Notices page to read all.</p>
                             </div>
                             <button className="px-3 py-1 border rounded hover:bg-red-500 hover:text-white cursor-pointer" onClick={() => setShowNoticesIntro(false)}>Close</button>
                         </div>
 
-                        <div className="mt-4 space-y-3">
-                            {initialNotices.slice(0,5).map(n => (
+                        <div className="mt-4 space-y-3 max-h-80">
+                            <img src="/img/notice.jpg" alt="Notices" className="w-full h-full object-cover rounded" />
+                            {/* {initialNotices.slice(0,5).map(n => (
                                 <div key={n.id} className="p-3 border rounded flex items-start justify-between">
                                     <div>
                                         <div className="font-semibold">{n.title}</div>
@@ -57,13 +57,13 @@ const Home = () =>{
                                         <Link to="/notices" className="px-3 py-1 bg-[#035CB0] text-white rounded text-sm">Read</Link>
                                     </div>
                                 </div>
-                            ))}
+                            ))} */}
                         </div>
 
-                        <div className="mt-4 flex justify-end gap-2">
+                        {/* <div className="mt-4 flex justify-end gap-2">
                             <button className="px-3 py-2 border rounded" onClick={() => setShowNoticesIntro(false)}>Read</button>
                             <button className="px-3 py-2 bg-red-600 text-white rounded" onClick={() => { try { sessionStorage.setItem('homeNoticesDismissed','1') } catch(e){} setShowNoticesIntro(false) }}>Skip (Don't show again)</button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             )}

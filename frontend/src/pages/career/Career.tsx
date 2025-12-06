@@ -97,7 +97,7 @@ export default function Career() {
         <h1 className="text-5xl font-medium text-center my-8 text-white">Career</h1>
       </div>
       {/* Intro modal shown on first open (can skip permanently) */}
-      {showIntro && (
+      {/* {showIntro && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded shadow-lg max-h-[80vh] overflow-auto">
             <div className="flex items-start justify-between">
@@ -116,7 +116,6 @@ export default function Career() {
                     <div className="text-sm text-gray-500">{p.department} • {p.type}</div>
                   </div>
                   <div className="flex gap-2">
-                    {/* Open a read-only vacancy view (not the apply form) */}
                     <button className="px-3 py-1 bg-[#035CB0] text-white rounded text-sm" onClick={() => { setViewing(p); setShowIntro(false); }}>View</button>
                   </div>
                 </div>
@@ -129,9 +128,8 @@ export default function Career() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       <main className="container mx-auto px-4 sm:px-12 py-8">
-        <h1 className="text-2xl font-bold text-[#035CB0] mb-4">Careers at JKSS</h1>
         <p className="text-gray-700 mb-6">We occasionally have vacancies for teaching and non-teaching roles. Below are current openings — click a position to view details and apply online.</p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

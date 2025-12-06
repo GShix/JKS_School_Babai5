@@ -21,6 +21,8 @@ import Agriculture from './pages/academicPrograms/Agriculture'
 import Management from './pages/academicPrograms/Management'
 import Results from './pages/results/Results'
 import Admission from './pages/admission/Admission'
+import SecondaryLevelProgram from './pages/academicPrograms/SecondaryLevelProgram'
+import BasicLevelProgram from './pages/academicPrograms/BasicLevelProgram'
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
             <Route path='/academic-programs/education' element={<Education/>}/>
             <Route path='/academic-programs/agriculture' element={<Agriculture/>}/>
             <Route path='/academic-programs/management' element={<Management/>}/>
+            <Route path='/academic-programs/secondary-level' element={<SecondaryLevelProgram/>}/>
+            <Route path='/academic-programs/basic-level' element={<BasicLevelProgram/>}/>
             <Route path='/gallery' element={<Gallery/>}/>
             <Route path='/notices' element={<Notices/>}/>
             <Route path='/downloads' element={<Downloads/>}/>
