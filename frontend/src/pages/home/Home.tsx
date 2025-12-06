@@ -23,7 +23,10 @@ const Home = () =>{
             <Hero/>
             <Banner/>
             <SchoolIntroduction_Notice/>
-            <MessageFromPrincipal/>
+            <div id="message_from_principal">
+                <MessageFromPrincipal/>
+            </div>
+
             {/* <UpcomingEvents/> */}
             {/* <Feature/> */}
             <AcademicProgramsCard/>

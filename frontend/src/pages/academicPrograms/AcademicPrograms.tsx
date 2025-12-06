@@ -45,7 +45,7 @@ const AcademicPrograms = () => {
 		<div className="programs-page">
 			<Header />
 			<main className="min-h-screen">
-				<div className="bg-[#f5f8fb] py-8 px-4 sm:px-12">
+				{/* <div className="bg-[#f5f8fb] py-8 px-4 sm:px-12">
 					<div className="container mx-auto">
 						<h1 className="text-4xl font-semibold text-gray-800">
 							Academic Programs
@@ -54,7 +54,11 @@ const AcademicPrograms = () => {
 							Explore the programs we offer. Click a program to view details.
 						</p>
 					</div>
-				</div>
+				</div> */}
+        <div className="about-top w-full h-[300px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
+          <h1 className="text-4xl sm:text-5xl font-medium text-center my-8 text-white">Academic Programs</h1>
+          
+        </div>
 
 				<div className="container mx-auto px-4 sm:px-12 py-8 mb-4">
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

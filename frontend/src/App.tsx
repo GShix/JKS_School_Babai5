@@ -19,6 +19,7 @@ import AcademicPrograms from './pages/academicPrograms/AcademicPrograms'
 import Education from './pages/academicPrograms/Education'
 import Agriculture from './pages/academicPrograms/Agriculture'
 import Management from './pages/academicPrograms/Management'
+import Results from './pages/results/Results'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Home/>}/>
+            <Route path='/results' element={<Results/>}/>
             <Route path='/about/jkss' element={<About/>}/>
             <Route path='/about/jkss-team' element={<OurTeam/>}/>
             <Route path='/academic-programs/' element={<AcademicPrograms/>}/>

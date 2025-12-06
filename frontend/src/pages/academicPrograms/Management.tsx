@@ -8,8 +8,8 @@ const Management = () => {
 			<Header />
 			<main className="min-h-screen">
 				{/* Banner / Breadcrumb */}
-				<div className="program-banner bg-[#f5f8fb] px-4 sm:px-12 py-8">
-					<div className="container mx-auto">
+				{/* <div className="program-banner bg-[#f5f8fb] px-4 sm:px-12 py-8">
+					<div className="container mx-auto" >
 						<nav className="text-sm text-gray-500 mb-4">
 							<Link to="/" className="hover:underline">Home</Link>
 							<span className="mx-2">/</span>
@@ -21,18 +21,21 @@ const Management = () => {
 						<h2 className="text-4xl font-semibold text-gray-800">Management</h2>
 						<p className="text-sm text-gray-600 mt-3"><i className="ri-calendar-line mr-2"></i> Last Update .. 23, 2025</p>
 					</div>
-				</div>
+				</div> */}
+                <div className="about-top w-full h-[300px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
+                <h1 className="text-4xl sm:text-5xl font-medium text-center my-8 text-white">Management</h1>
+                </div>
 
 				{/* Content + Sidebar */}
 				<div className="container mx-auto px-4 sm:px-10 py-2 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-5">
 					{/* Main content */}
 					<div className="lg:col-span-8">
 						{/* Tabs */}
-						<div className="bg-[#f1f4f7] rounded-md px-4 py-2 mb-8">
-							<div className="flex gap-4">
-								<button className="px-6 py-2 bg-white rounded-md shadow-sm text-[#035CB0] font-medium">Overview</button>
-								<button className="px-6 py-2 text-gray-500">Curriculum</button>
-								<button className="px-6 py-2 text-gray-500">Faculty Members</button>
+						<div className="bg-[#f1f4f7] rounded-md sm:px-2 py-1 mb-3">
+							<div className="flex gap-3 sm:gap-4">
+								<button className="px-3 max-sm:text-sm sm:px-6 sm:py-2 bg-white rounded-md shadow-sm text-[#035CB0] font-medium">Overview</button>
+								<button className="px-3 max-sm:text-sm sm:px-6 sm:py-2 text-gray-500">Curriculum</button>
+								<button className="px-3 max-sm:text-sm sm:px-6 sm:py-2 text-gray-500">Faculty Members</button>
 							</div>
 						</div>
 

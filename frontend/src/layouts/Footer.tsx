@@ -31,11 +31,10 @@ const Footer = () => {
                 <h1 className="text-lg font-semibold mb-4">About</h1>
                 <ul>
                     <li className="flex flex-col gap-4">
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">About School</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">School's Facilities</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Management Committee</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/about/jkss">About School</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/about/jkss-team">School's Team</a>
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Faculty Members</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Message From Principal</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#message_from_principal">Message From Principal</a>
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Message From Chairperson</a>
                     </li>
                 </ul>
@@ -44,10 +43,10 @@ const Footer = () => {
                 <h1 className="text-lg font-semibold mb-4">Academic Programs</h1>
                 <ul className="">
                     <li className="flex flex-col gap-4">
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Agriculture</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Management</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Education</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">आधारभूत शिक्षा</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/academic-programs/agriculture">Agriculture</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/academic-programs/management">Management</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/academic-programs/education">Education</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/academic-programs/आधारभूत शिक्षा">आधारभूत शिक्षा</a>
                     </li>
                 </ul>
             </div>

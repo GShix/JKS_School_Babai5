@@ -22,7 +22,7 @@ const Header = () => {
         {
             title:"Academic Programs",
             icon:"ri-arrow-drop-down-line ml-1",
-            href:"/academic-programs",
+            href:"#",
             subNav: [
                 { title: "Management", href: "/academic-programs/management" },
                 { title: "Education", href: "/academic-programs/education" },
@@ -49,7 +49,7 @@ const Header = () => {
         },
         {
             title:"Career",
-            icon:"ri-arrow-drop-down-line ml-1",
+            // icon:"ri-arrow-drop-down-line ml-1",
             href:"/career"
         },
 
@@ -106,7 +106,7 @@ const Header = () => {
             <div className="header-top flex justify-between gap-10 max-sm:hidden">
                 <ul className="header-top-list flex items-center gap-5 justify-content-center">
                     <li className="border-r-2 pr-6 hover:text-yellow-400hover:text-yellow-400">
-                        <Link to="https://amarjyoti.edu.np/results" className="">Result</Link>
+                        <Link to="/results" className="">Result</Link>
                     </li>
                     <li className="border-r-2 pr-6 hover:text-yellow-400">
                         <Link to="#">Admission</Link>
