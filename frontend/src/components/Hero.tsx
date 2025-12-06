@@ -4,9 +4,9 @@ export default function Hero() {
   const images = [
     "img/running-shield.jpg",
     "img/running-shield-1.jpg",
-    // "img/running-shield-3.jpg",
+    "img/running-shield-2.jpg",
+    "img/janakalyan_ma_vi.jpg",
     "img/running-shield-4.jpg",
-    "img/running-shield-5.jpg"
   ];
   const [current, setCurrent] = React.useState(0);
   const prevImage = () => setCurrent((current - 1 + images.length) % images.length);
@@ -44,7 +44,7 @@ export default function Hero() {
           </button>
           <button
             className="carousel-button next"
-            style={{ position: 'absolute', top: '55%', right: 10, transform: 'translateY(-50%)', background: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+            style={{ position: 'absolute', top: '50%', right: 10, transform: 'translateY(-50%)', background: '#fff', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
             onClick={nextImage}
             aria-label="Next"
           >

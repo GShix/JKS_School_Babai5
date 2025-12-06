@@ -8,12 +8,11 @@ const Header = () => {
     const navLinks = [
         {
             title:"Home",
-            icon:"ri-home-6-fill text-sm",
             href:"/"
         },
         {
             title:"About",
-            icon:"ri-group-fill text-sm",
+            icon:"ri-arrow-drop-down-line ml-1",
             href:"#",
             subNav: [
                 { title: "About JKSS", href: "/about/jkss" },
@@ -22,32 +21,41 @@ const Header = () => {
         },
         {
             title:"Academic Programs",
-            icon:"ri-article-fill text-sm",
-            href:"/academic-programs"
+            icon:"ri-arrow-drop-down-line ml-1",
+            href:"/academic-programs",
+            subNav: [
+                { title: "Management", href: "/academic-programs/management" },
+                { title: "Education", href: "/academic-programs/education" },
+                { title: "Agriculture", href: "/academic-programs/agriculture" },
+                { title: "आधारभूत शिक्षा", href: "/academic-programs/आधारभूत शिक्षा" },
+                { title: "माध्यमिक शिक्षा", href: "/academic-programs/माध्यमिक शिक्षा" },
+
+            ]
         },
         {
             title:"Notice",
-            icon:"ri-calendar-event-fill text-sm",
+            // icon:"ri-arrow-drop-down-line ml-1",
             href:"/notices"
         },
         {
             title:"Download",
-            icon:"ri-calendar-event-fill text-sm",
+            // icon:"ri-arrow-drop-down-line ml-1",
             href:"/downloads"
         },
         {
             title:"Gallery",
-            icon:"ri-calendar-event-fill text-sm",
+            // icon:"ri-arrow-drop-down-line ml-1",
             href:"/gallery"
         },
         {
             title:"Career",
-            icon:"ri-calendar-event-fill text-sm",
+            icon:"ri-arrow-drop-down-line ml-1",
             href:"/career"
         },
 
     ]
-    const [smallNavClick, setSmallNavClick] = useState(false);
+    // which small-nav (mobile) submenu is open; null = none
+    const [openSmallIndex, setOpenSmallIndex] = useState<number | null>(null);
     // console.log(navLinks)
     const menuRef = useRef<HTMLDivElement | null>(null); // Reference to the nav menu
 
@@ -149,7 +157,7 @@ const Header = () => {
                             <Link
                                 className="nav-link-item flex items-center font-sans leading-none font-semibold text-xl hover:text-yellow-400 py-5 px-1"
                                 to={link.href}>
-                                {link.title}
+                                {link.title} {<i className={`${link.icon} text-md`}></i>}
                             </Link>
 
                             {/* dropdown */}
@@ -186,24 +194,37 @@ const Header = () => {
             <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-69 z-50 text-base sm:hidden px-4 py-3 mx-2">
                 <ul>
                     {navLinks.map((link,index)=>(
-                    <li key={index} className="mb-3 font-sans " onClick={()=>setSmallNavClick(!smallNavClick)}>
-                        <Link  className="nav-link-item hover:text-yellow-400 flex items-center" to={link.href}>
-                            <i className={`${link.icon} mr-2`}></i>
-                            <span className="block font-normal">{link.title}</span>
-                        </Link>
-                            {/* dropdown */}
-                            {smallNavClick && link.subNav && link.subNav.length > 0 && (
-                                <ul
-                                className="transition-opacity duration-200">
+                    <li key={index} className="mb-3 font-sans">
+                            <div
+                                className="nav-link-item hover:text-yellow-400 flex items-center justify-between cursor-pointer"
+                                onClick={() => {
+                                    // if this nav item has a submenu, toggle only this submenu
+                                    if (link.subNav && link.subNav.length > 0) {
+                                        setOpenSmallIndex(openSmallIndex === index ? null : index);
+                                    } else {
+                                        // no submenu: close mobile menu after navigating
+                                        setClickMenu(false);
+                                    }
+                                }}
+                            >
+                                <Link to={link.href} className="block font-normal">
+                                    {link.title}
+                                </Link>
+                                <i className={`${link.icon} ml-2`}></i>
+                            </div>
+                            {/* dropdown for this item */}
+                            {openSmallIndex === index && link.subNav && link.subNav.length > 0 && (
+                                <ul className="transition-opacity duration-200 mt-2">
                                 {link.subNav.map((subLink, subIndex) => (
-                                    <li key={subIndex}>
-                                    <Link
-                                        to={subLink.href}
-                                        className="block px-4 py-2 hover:bg-gray-100 hover:text-[#035CB0]"
-                                    >
-                                        {subLink.title}
-                                    </Link>
-                                    </li>
+                                        <li key={subIndex}>
+                                        <Link
+                                                to={subLink.href}
+                                                onClick={() => setClickMenu(false)}
+                                                className="block px-4 py-2 hover:bg-gray-100 hover:text-[#035CB0]"
+                                        >
+                                                {subLink.title}
+                                        </Link>
+                                        </li>
                                 ))}
                                 </ul>
                             )}

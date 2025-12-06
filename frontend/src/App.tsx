@@ -16,6 +16,9 @@ import Career from './pages/career/Career'
 import Gallery from './pages/Gallery/Gallery'
 import OurTeam from './pages/ourTeam/OurTeam'
 import AcademicPrograms from './pages/academicPrograms/AcademicPrograms'
+import Education from './pages/academicPrograms/Education'
+import Agriculture from './pages/academicPrograms/Agriculture'
+import Management from './pages/academicPrograms/Management'
 
 function App() {
   return (
@@ -25,7 +28,10 @@ function App() {
             <Route path='/' element={<Home/>}/>
             <Route path='/about/jkss' element={<About/>}/>
             <Route path='/about/jkss-team' element={<OurTeam/>}/>
-            <Route path='/academic-programs' element={<AcademicPrograms/>}/>
+            <Route path='/academic-programs/' element={<AcademicPrograms/>}/>
+            <Route path='/academic-programs/education' element={<Education/>}/>
+            <Route path='/academic-programs/agriculture' element={<Agriculture/>}/>
+            <Route path='/academic-programs/management' element={<Management/>}/>
             <Route path='/gallery' element={<Gallery/>}/>
             <Route path='/notices' element={<Notices/>}/>
             <Route path='/downloads' element={<Downloads/>}/>
