@@ -10,6 +10,9 @@ type Position = {
   location: string;
   posted: string;
   description: string;
+  // optional notice file uploaded by admin (pdf/image)
+  noticeFileName?: string;
+  noticeFileUrl?: string;
 }
 
 const positions: Position[] = [
@@ -35,6 +38,7 @@ const positions: Position[] = [
 
 export default function Career() {
   const [selected, setSelected] = React.useState<Position | null>(null);
+  const [viewing, setViewing] = React.useState<Position | null>(null);
   const [showIntro, setShowIntro] = React.useState(false);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -101,7 +105,7 @@ export default function Career() {
                 <h2 className="text-xl font-semibold">Current Openings</h2>
                 <p className="text-sm text-gray-600">A quick list of available positions. You can view details or skip this popup.</p>
               </div>
-              <button className="px-3 py-1 border rounded" onClick={() => setShowIntro(false)}>Close</button>
+              <button className="px-3 py-1 border rounded hover:bg-red-500 hover:text-white cursor-pointer" onClick={() => setShowIntro(false)}>Close</button>
             </div>
 
             <div className="mt-4 space-y-3">
@@ -112,7 +116,8 @@ export default function Career() {
                     <div className="text-sm text-gray-500">{p.department} • {p.type}</div>
                   </div>
                   <div className="flex gap-2">
-                    <button className="px-3 py-1 bg-[#035CB0] text-white rounded text-sm" onClick={() => { setSelected(p); setShowIntro(false); }}>View</button>
+                    {/* Open a read-only vacancy view (not the apply form) */}
+                    <button className="px-3 py-1 bg-[#035CB0] text-white rounded text-sm" onClick={() => { setViewing(p); setShowIntro(false); }}>View</button>
                   </div>
                 </div>
               ))}
@@ -143,7 +148,7 @@ export default function Career() {
                   </div>
                   <p className="mt-3 text-gray-600">{pos.description}</p>
                   <div className="mt-4 flex gap-2">
-                    <button className="px-4 py-2 bg-[#035CB0] text-white rounded" onClick={() => setSelected(pos)}>Apply</button>
+                    <button className="px-4 py-2 bg-[#035CB0] text-white rounded cursor-pointer" onClick={() => setSelected(pos)}>Apply</button>
                     <button className="px-4 py-2 border rounded" onClick={() => navigator.clipboard?.writeText(pos.title)}>Share</button>
                   </div>
                 </div>
@@ -167,6 +172,40 @@ export default function Career() {
           </aside>
         </div>
 
+        {/* Vacancy viewing modal (read-only) */}
+        {viewing && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" onClick={() => setViewing(null)}>
+            <div className="bg-white w-11/12 md:w-3/4 lg:w-2/5 p-6 rounded shadow-lg max-h-[90vh] overflow-auto" onClick={e => e.stopPropagation()}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold mb-1">{viewing.title}</h3>
+                  <div className="text-sm text-gray-500">{viewing.department} • {viewing.type} • {viewing.location}</div>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => setViewing(null)} className="px-3 py-1 border rounded">Close</button>
+                  <button onClick={() => { setSelected(viewing); setViewing(null); }} className="px-3 py-1 bg-[#035CB0] text-white rounded">Apply</button>
+                </div>
+              </div>
+              <div className="mt-4 text-gray-700 whitespace-pre-line">{viewing.description}</div>
+              {viewing.noticeFileUrl && (
+                <div className="mt-4">
+                  {/* simple preview: images inline, pdf as link/iframe */}
+                  {/(\.jpg|\.jpeg|\.png|\.gif)$/i.test(viewing.noticeFileName || '') ? (
+                    <img src={viewing.noticeFileUrl} alt={viewing.noticeFileName} className="w-full rounded" />
+                  ) : /\.pdf$/i.test(viewing.noticeFileName || '') ? (
+                    <div>
+                      <a href={viewing.noticeFileUrl} target="_blank" rel="noreferrer" className="text-[#035CB0] underline">Open PDF Notice</a>
+                      <iframe src={viewing.noticeFileUrl} className="w-full h-80 mt-2" title="notice-pdf" />
+                    </div>
+                  ) : (
+                    <a href={viewing.noticeFileUrl} target="_blank" rel="noreferrer" className="text-[#035CB0] underline">Open Attachment</a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Application form modal (centered) */}
         {selected && (
           <div
@@ -182,7 +221,7 @@ export default function Career() {
                   <h3 className="text-xl font-semibold mb-1">Apply for: {selected.title}</h3>
                   <div className="text-sm text-gray-500">{selected.department} • {selected.type} • {selected.location}</div>
                 </div>
-                <button onClick={() => { setSelected(null); resetForm(); }} className="px-3 py-1 border rounded">Close</button>
+                <button onClick={() => { setSelected(null); resetForm(); }} className="px-3 py-1 border rounded hover:bg-red-500 hover:text-white cursor-pointer">Close</button>
               </div>
 
               <form onSubmit={submitApplication} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

@@ -29,7 +29,7 @@ const sampleResults: Result[] = [
 export default function Results() {
   const [year, setYear] = React.useState('2025');
   const [className, setClassName] = React.useState('Grade 1');
-  const [examType, setExamType] = React.useState('Final');
+  const [examType, setExamType] = React.useState('First-term');
   const [iemisNo, setIemisNo] = React.useState('');
   const [results, setResults] = React.useState<Result[]>([]);
 
@@ -41,7 +41,22 @@ export default function Results() {
     'Class XI - Agriculture','Class XI - Education','Class XI - Management',
     'Class XII - Agriculture','Class XII - Education','Class XII - Management'
   ];
-  const examTypes = ['First-term', 'Half-annual', 'Final','Pratical', 'Assessment'];
+  const baseExamTypes = ['First-term', 'Half-annual', 'Final', 'Practical', 'Assessment'];
+
+  // For Grade 10 and Class XII (NEB), Final exam results are not published here — hide 'Final'
+  const availableExamTypes = React.useMemo(() => {
+    if (className.includes('Grade 10') || className.includes('Class XII')) {
+      return baseExamTypes.filter(t => t !== 'Final')
+    }
+    return baseExamTypes
+  }, [className])
+
+  // Keep examType state consistent with available options
+  React.useEffect(() => {
+    if (!availableExamTypes.includes(examType)) {
+      setExamType(availableExamTypes[0])
+    }
+  }, [availableExamTypes])
 
   const search = React.useCallback(() => {
     // Simple client-side filter over sampleResults
@@ -75,22 +90,22 @@ export default function Results() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
             <div>
               <label className="sr-only">Select Year</label>
-              <select value={year} onChange={e => setYear(e.target.value)} className="w-full border rounded px-4 py-3">
+              <select value={year} onChange={e => setYear(e.target.value)} className="w-full border rounded px-4 py-3 cursor-pointer">
                 {years.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
 
             <div>
               <label className="sr-only">Class</label>
-              <select value={className} onChange={e => setClassName(e.target.value)} className="w-full border rounded px-4 py-3">
+              <select value={className} onChange={e => setClassName(e.target.value)} className="w-full border rounded px-4 py-3 cursor-pointer">
                 {classes.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
 
             <div>
               <label className="sr-only">Exam Type</label>
-              <select value={examType} onChange={e => setExamType(e.target.value)} className="w-full border rounded px-4 py-3">
-                {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
+              <select value={examType} onChange={e => setExamType(e.target.value)} className="w-full border rounded px-4 py-3 cursor-pointer">
+                {availableExamTypes.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
 

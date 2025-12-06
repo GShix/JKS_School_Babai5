@@ -90,13 +90,13 @@ const Header = () => {
         <div className="header-top bg-[#035CB0] text-white flex justify-between items-center w-full gap-5 max-sm:text-2xl py-2.5 px-3 sm:px-11 text-[15px]">
             <ul className="header-top-list flex items-center gap-3 sm:gap-5 justify-center font-['poppins'] max-sm:text-sm">
                 <li className="border-r-2 max-sm:pr-3 sm:pr-6 hover:text-yellow-400">
-                    <a href="tel" className=" transition-all duration-500 ease-in-out">
+                    <a href="tel:+9779844929502" className=" transition-all duration-500 ease-in-out">
                         <i className="ri-phone-fill mr-2"></i>
                         <span className="max-sm:text-xs text-nowrap">+977 9844929502</span>
                     </a>
                 </li>
                 <li className=" hover:text-yellow-400">
-                    <a href="mailto">
+                    <a href="mailto:jksschoolp5@gmail.com">
                         <i className="ri-mail-send-line mr-2"></i>
                         <span className="max-sm:text-xs info-text ">jksschoolp5@gmail.com</span>
                     </a>
@@ -207,7 +207,7 @@ const Header = () => {
                                     }
                                 }}
                             >
-                                <Link to={link.href} className="block font-normal">
+                                <Link to={link.href} className="block font-normal w-full">
                                     {link.title}
                                 </Link>
                                 <i className={`${link.icon} ml-2`}></i>

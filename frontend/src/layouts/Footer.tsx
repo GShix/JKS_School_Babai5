@@ -18,7 +18,7 @@ const Footer = () => {
                         <i className="ri-mail-fill text-gray-900"></i>
                         <span className="info-text">jksschoolp5@gmail.com</span>
                     </Link>
-                    <Link to="address" className="flex gap-2 items-center ">
+                    <Link to="https://www.google.com/maps/place/Janakalyan+H.S.S.+Padampur/@28.187952,82.135462,16z/data=!4m6!3m5!1s0x39981ddb63b5812f:0x459611dac3a9d5cc!8m2!3d28.1879517!4d82.1354621!16s%2Fg%2F11h596y6vy?hl=en&entry=ttu&g_ep=EgoyMDI1MTIwMi4wIKXMDSoASAFQAw%3D%3D" className="flex gap-2 items-center ">
                         <i className="ri-map-pin-2-fill text-gray-900 md:pl-2"></i>
                         <span className="info-text">Babai-5, Padampur, Dang</span>
                     </Link>

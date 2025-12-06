@@ -43,7 +43,7 @@ const Home = () =>{
                                 <h2 className="text-xl font-semibold">Recent Notices</h2>
                                 <p className="text-sm text-gray-600">Latest announcements from the school. You can open the Notices page to read all.</p>
                             </div>
-                            <button className="px-3 py-1 border rounded" onClick={() => setShowNoticesIntro(false)}>Close</button>
+                            <button className="px-3 py-1 border rounded hover:bg-red-500 hover:text-white cursor-pointer" onClick={() => setShowNoticesIntro(false)}>Close</button>
                         </div>
 
                         <div className="mt-4 space-y-3">
