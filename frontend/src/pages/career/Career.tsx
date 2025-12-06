@@ -35,6 +35,7 @@ const positions: Position[] = [
 
 export default function Career() {
   const [selected, setSelected] = React.useState<Position | null>(null);
+  const [showIntro, setShowIntro] = React.useState(false);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [phone, setPhone] = React.useState('');
@@ -47,6 +48,16 @@ export default function Career() {
   const resetForm = () => {
     setName(''); setEmail(''); setPhone(''); setCover(''); setResume(null); setErrors({});
   }
+
+  React.useEffect(() => {
+    try {
+      const dismissed = sessionStorage.getItem('careerIntroDismissed')
+      if (!dismissed) setShowIntro(true)
+    } catch (err) {
+      // ignore sessionStorage errors
+      setShowIntro(true)
+    }
+  }, [])
 
   const validate = () => {
     const e: Record<string,string> = {};
@@ -81,6 +92,39 @@ export default function Career() {
       <div className="about-top w-full h-[300px] bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
         <h1 className="text-5xl font-medium text-center my-8 text-white">Career</h1>
       </div>
+      {/* Intro modal shown on first open (can skip permanently) */}
+      {showIntro && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded shadow-lg max-h-[80vh] overflow-auto">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">Current Openings</h2>
+                <p className="text-sm text-gray-600">A quick list of available positions. You can view details or skip this popup.</p>
+              </div>
+              <button className="px-3 py-1 border rounded" onClick={() => setShowIntro(false)}>Close</button>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {positions.map(p => (
+                <div key={p.id} className="p-3 border rounded flex items-start justify-between">
+                  <div>
+                    <div className="font-semibold">{p.title}</div>
+                    <div className="text-sm text-gray-500">{p.department} • {p.type}</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="px-3 py-1 bg-[#035CB0] text-white rounded text-sm" onClick={() => { setSelected(p); setShowIntro(false); }}>View</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button className="px-3 py-2 border rounded" onClick={() => setShowIntro(false)}>Read</button>
+              <button className="px-3 py-2 bg-red-600 text-white rounded" onClick={() => { try { sessionStorage.setItem('careerIntroDismissed','1') } catch(e){} setShowIntro(false) }}>Skip (Don't show again)</button>
+            </div>
+          </div>
+        </div>
+      )}
       <main className="container mx-auto px-4 sm:px-12 py-8">
         <h1 className="text-2xl font-bold text-[#035CB0] mb-4">Careers at JKSS</h1>
         <p className="text-gray-700 mb-6">We occasionally have vacancies for teaching and non-teaching roles. Below are current openings — click a position to view details and apply online.</p>

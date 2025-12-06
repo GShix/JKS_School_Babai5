@@ -43,15 +43,15 @@ const Gallery = () => {
       <div className="about-top w-full h-[300px] bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
         <h1 className="text-5xl font-medium text-center my-8 text-white">Gallery</h1>
       </div>
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-4 sm:px-6 py-8">
         {/* <h1 className="text-2xl font-bold text-[#035CB0] mb-2">Gallery</h1> */}
         <p className="text-gray-600 mb-6">Browse photos from tours, programs, Friday activities, academics and more. Click an image to preview.</p>
 
-        <div className="bg-white p-4 rounded-md shadow mb-6">
-          <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-            <div className="flex items-center gap-2">
-              <input value={query} onChange={e => setQuery(e.target.value)} className="border px-3 py-2 rounded w-64" placeholder="Search images by title..." />
-              <select value={category} onChange={e => setCategory(e.target.value)} className="border px-3 py-2 rounded">
+        <div className="bg-white sm:p-4 rounded-md shadow mb-6">
+          <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between p-2">
+            <div className="flex items-center gap-2 max-sm:justify-center">
+              <input value={query} onChange={e => setQuery(e.target.value)} className="border px-3 py-2 rounded w-50 sm:w-64" placeholder="Search images by title..." />
+              <select value={category} onChange={e => setCategory(e.target.value)} className="border px-3 py-2 rounded max-sm:w-20">
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>

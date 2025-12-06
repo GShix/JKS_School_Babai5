@@ -12,7 +12,7 @@ type Notice = {
     fileUrl?: string
 }
 
-const initialNotices: Notice[] = [
+export const initialNotices: Notice[] = [
     {
         id: 'n1',
         title: 'Admission Open for Grade 11',
@@ -119,9 +119,9 @@ export default function Notices() {
                         {/* <h1 className="text-2xl font-bold text-[#035CB0]">Notices</h1> */}
                         <p className="text-gray-600">Latest announcements and circulars from the school administration.</p>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3">
-                        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search notices..." className="border px-3 py-2 rounded w-60 sm:w-64" />
-                        <select value={category} onChange={e => setCategory(e.target.value)} className="border px-3 py-2 rounded">
+                    <div className="flex items-center gap-2 sm:gap-3 max-sm:flex-wrap max-sm:mt-2 bg-white p-2">
+                        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search notices..." className="border px-3 py-2 rounded w-50 sm:w-64" />
+                        <select value={category} onChange={e => setCategory(e.target.value)} className="border px-3 py-2 max-sm:w-20 rounded">
                             {categories.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                         <button onClick={() => { setQuery(''); setCategory('All') }} className="px-3 py-2 border rounded">Clear</button>

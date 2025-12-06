@@ -1,3 +1,4 @@
+import React from 'react'
 // import ActivitiesGallery from '../../components/Activities_gallery';
 
 import { AcademicProgramsCard } from '../../components/AcademicProgramsCard';
@@ -9,9 +10,21 @@ import SchoolIntroduction_Notice from '../../components/SchoolIntroduction_Notic
 // import UpcomingEvents from '../../components/UpcomingEvents';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
+import { initialNotices } from '../notices/Notices';
+import { Link } from 'react-router-dom';
 
 const Home = () =>{
     // console.log(posts)
+    const [showNoticesIntro, setShowNoticesIntro] = React.useState(false)
+
+    React.useEffect(() => {
+        try {
+            const dismissed = sessionStorage.getItem('homeNoticesDismissed')
+            if (!dismissed) setShowNoticesIntro(true)
+        } catch (err) {
+            setShowNoticesIntro(true)
+        }
+    }, [])
 
 // const scroll = new LocomotiveScroll();
 // console.log(posts)
@@ -21,6 +34,39 @@ const Home = () =>{
             <Header/>
 
             <Hero/>
+            {/* Notices intro modal on first open */}
+            {showNoticesIntro && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded shadow-lg max-h-[80vh] overflow-auto">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h2 className="text-xl font-semibold">Recent Notices</h2>
+                                <p className="text-sm text-gray-600">Latest announcements from the school. You can open the Notices page to read all.</p>
+                            </div>
+                            <button className="px-3 py-1 border rounded" onClick={() => setShowNoticesIntro(false)}>Close</button>
+                        </div>
+
+                        <div className="mt-4 space-y-3">
+                            {initialNotices.slice(0,5).map(n => (
+                                <div key={n.id} className="p-3 border rounded flex items-start justify-between">
+                                    <div>
+                                        <div className="font-semibold">{n.title}</div>
+                                        <div className="text-sm text-gray-500">{n.category} • {new Date(n.date).toLocaleDateString()}</div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Link to="/notices" className="px-3 py-1 bg-[#035CB0] text-white rounded text-sm">Read</Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-4 flex justify-end gap-2">
+                            <button className="px-3 py-2 border rounded" onClick={() => setShowNoticesIntro(false)}>Read</button>
+                            <button className="px-3 py-2 bg-red-600 text-white rounded" onClick={() => { try { sessionStorage.setItem('homeNoticesDismissed','1') } catch(e){} setShowNoticesIntro(false) }}>Skip (Don't show again)</button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <Banner/>
             <SchoolIntroduction_Notice/>
             <div id="message_from_principal">

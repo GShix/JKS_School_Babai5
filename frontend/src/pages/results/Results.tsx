@@ -7,29 +7,41 @@ type Result = {
   year: string;
   className: string;
   examType: string;
-  regNo: string;
+  iemisNo: string;
   studentName: string;
   grade: string;
   pdfUrl?: string;
 }
 
 const sampleResults: Result[] = [
-  { id: '1', year: '2025', className: 'Class XI', examType: 'Final', regNo: '2025-001', studentName: 'Aarav Sharma', grade: 'A+', pdfUrl: '/files/results/2025-001.pdf' },
-  { id: '2', year: '2025', className: 'Class XI', examType: 'Final', regNo: '2025-002', studentName: 'Sita Rai', grade: 'A', pdfUrl: '/files/results/2025-002.pdf' },
-  { id: '3', year: '2024', className: 'Class XII', examType: 'Final', regNo: '2024-101', studentName: 'Kumar Thapa', grade: 'B+', pdfUrl: '/files/results/2024-101.pdf' },
-  { id: '4', year: '2023', className: 'Class XI', examType: 'Midterm', regNo: '2023-055', studentName: 'Maya KC', grade: 'A', pdfUrl: '/files/results/2023-055.pdf' },
+  { id: '1', year: '2025', className: 'Class XI - Agriculture', examType: 'Final', iemisNo: '2025-001', studentName: 'Aarav Sharma', grade: 'A+', pdfUrl: '/files/results/2025-001.pdf' },
+  { id: '2', year: '2025', className: 'Class XI - Education', examType: 'Final', iemisNo: '2025-002', studentName: 'Sita Rai', grade: 'A', pdfUrl: '/files/results/2025-002.pdf' },
+  { id: '3', year: '2024', className: 'Class XII - Management', examType: 'Final', iemisNo: '2024-101', studentName: 'Kumar Thapa', grade: 'B+', pdfUrl: '/files/results/2024-101.pdf' },
+  { id: '4', year: '2023', className: 'Grade 8', examType: 'Midterm', iemisNo: '2023-055', studentName: 'Maya KC', grade: 'A', pdfUrl: '/files/results/2023-055.pdf' },
+  { id: '5', year: '2025', className: 'Grade 5', examType: 'Final', iemisNo: '2025-210', studentName: 'Prakash Singh', grade: 'A-', pdfUrl: '/files/results/2025-210.pdf' },
+  { id: '6', year: '2025', className: 'Grade 9 - General', examType: 'Final', iemisNo: '2025-900', studentName: 'Rita Rai', grade: 'B+', pdfUrl: '/files/results/2025-900.pdf' },
+  { id: '7', year: '2025', className: 'Grade 9 - Agriculture', examType: 'Final', iemisNo: '2025-901', studentName: 'Ganesh BK', grade: 'A', pdfUrl: '/files/results/2025-901.pdf' },
+  { id: '8', year: '2025', className: 'Nursery', examType: 'Assessment', iemisNo: 'N-01', studentName: 'Little Sam', grade: 'Pass' },
+  { id: '9', year: '2025', className: 'LKG', examType: 'Assessment', iemisNo: 'L-02', studentName: 'Anu Lama', grade: 'Pass' },
+  { id: '10', year: '2025', className: 'UKG', examType: 'Assessment', iemisNo: 'U-03', studentName: 'Bimal Thapa', grade: 'Pass' },
 ];
 
 export default function Results() {
   const [year, setYear] = React.useState('2025');
-  const [className, setClassName] = React.useState('Class XI');
+  const [className, setClassName] = React.useState('Grade 1');
   const [examType, setExamType] = React.useState('Final');
-  const [regNo, setRegNo] = React.useState('');
+  const [iemisNo, setIemisNo] = React.useState('');
   const [results, setResults] = React.useState<Result[]>([]);
 
   const years = ['2025', '2024', '2023', '2022'];
-  const classes = ['Class XI', 'Class XII'];
-  const examTypes = ['Final', 'Midterm', 'Practicals'];
+  const classes = [
+    'Nursery','LKG','UKG',
+    'Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8',
+    'Grade 9 - General','Grade 9 - Agriculture','Grade 10 - General','Grade 10 - Agriculture',
+    'Class XI - Agriculture','Class XI - Education','Class XI - Management',
+    'Class XII - Agriculture','Class XII - Education','Class XII - Management'
+  ];
+  const examTypes = ['First-term', 'Half-annual', 'Final','Pratical', 'Assessment'];
 
   const search = React.useCallback(() => {
     // Simple client-side filter over sampleResults
@@ -37,13 +49,13 @@ export default function Results() {
       if (r.year !== year) return false;
       if (r.className !== className) return false;
       if (r.examType !== examType) return false;
-      if (regNo.trim()) {
-        return r.regNo.toLowerCase().includes(regNo.trim().toLowerCase());
+      if (iemisNo.trim()) {
+        return r.iemisNo.toLowerCase().includes(iemisNo.trim().toLowerCase());
       }
       return true;
     });
     setResults(res);
-  }, [year, className, examType, regNo]);
+  }, [year, className, examType, iemisNo]);
 
   React.useEffect(() => {
     // initial search
@@ -83,8 +95,8 @@ export default function Results() {
             </div>
 
             <div>
-              <label className="sr-only">Reg No.</label>
-              <input value={regNo} onChange={e => setRegNo(e.target.value)} placeholder="Reg. No." className="w-full border rounded px-4 py-3" />
+              <label className="sr-only">IEMIS No.</label>
+              <input value={iemisNo} onChange={e => setIemisNo(e.target.value)} placeholder="IEMIS No." className="w-full border rounded px-4 py-3" />
             </div>
 
             <div className="flex">
@@ -113,7 +125,7 @@ export default function Results() {
                 <tbody>
                   {results.map(r => (
                     <tr key={r.id} className="border-t">
-                      <td className="px-4 py-3">{r.regNo}</td>
+                      <td className="px-4 py-3">{r.iemisNo}</td>
                       <td className="px-4 py-3">{r.studentName}</td>
                       <td className="px-4 py-3">{r.className}</td>
                       <td className="px-4 py-3">{r.examType} ({r.year})</td>

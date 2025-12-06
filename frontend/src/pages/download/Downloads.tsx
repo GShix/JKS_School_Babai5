@@ -60,16 +60,16 @@ const Downloads = () => {
             {/* Filters */}
             <div className="bg-white p-4 rounded-md shadow-sm mb-6">
               <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center max-sm:justify-center">
                   <input
                     aria-label="Search resource"
                     value={query}
                     onChange={e => setQuery(e.target.value)}
-                    className="border rounded px-3 py-2 w-64"
+                    className="border rounded px-3 py-2 w-50 sm:w-64"
                     placeholder="Search by title..."
                   />
 
-                  <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className="border rounded px-3 py-2">
+                  <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className="border rounded px-3 py-2 max-sm:w-20">
                     {categories.map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
