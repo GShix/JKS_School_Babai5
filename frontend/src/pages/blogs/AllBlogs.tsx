@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import BlogCard from "../../components/BlogCard";
 import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
@@ -43,11 +42,11 @@ const AllBlogs = () => {
                 <div className="text-center">
                     <h2 className="text-3xl font-bold tracking-tight text-[#035CB0] sm:text-4xl">Our Blogs</h2>
                 </div>
-                <div className="create-blog flex items-center max-sm:justify-center justify-end">
+                {/* <div className="create-blog flex items-center max-sm:justify-center justify-end">
                     <Link to="/blogs/create" className="mt-6 rounded-md bg-[#035CB0] px-4 py-2 text-base font-semibold text-white hover:bg-[#023f7a]">
                         Create New Blog
                     </Link>
-                </div>
+                </div> */}
 
                 {loading && (
                     <div className="text-center mt-12">

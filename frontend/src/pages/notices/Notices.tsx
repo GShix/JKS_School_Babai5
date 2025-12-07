@@ -49,20 +49,7 @@ export default function Notices() {
     const [selected, setSelected] = React.useState<Notice | null>(null)
 
     // Admin UI: only enable when admin is logged in
-    const [isAdmin, setIsAdmin] = React.useState<boolean>(() => {
-        try { return localStorage.getItem('isAdmin') === '1' } catch(e) { return false }
-    })
     const [showAdd, setShowAdd] = React.useState(false)
-
-    React.useEffect(() => {
-        const onStorage = (ev: StorageEvent) => {
-            if (ev.key === 'isAdmin') {
-                setIsAdmin(ev.newValue === '1')
-            }
-        }
-        window.addEventListener('storage', onStorage)
-        return () => window.removeEventListener('storage', onStorage)
-    }, [])
 
     // Add form state
     const [title, setTitle] = React.useState('')
@@ -144,19 +131,9 @@ export default function Notices() {
                     <section className="lg:col-span-2 space-y-4">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-semibold">All Notices</h2>
-                            <div className="flex items-center gap-2">
-                                {isAdmin ? (
-                                    <>
-                                    <span className="text-sm text-green-600">Admin</span>
-                                    <button onClick={() => setShowAdd(s => !s)} className="px-3 py-1 bg-[#035CB0] text-white rounded text-sm">{showAdd ? 'Close' : 'Add Notice'}</button>
-                                    </>
-                                ) : (
-                                    <a href="/admin/login" className="px-3 py-1 text-sm text-[#035CB0] underline">Admin Login</a>
-                                )}
-                            </div>
                         </div>
 
-                        {showAdd && isAdmin && (
+                        {showAdd && (
                             <form onSubmit={handleAdd} className="bg-white p-4 rounded shadow space-y-3">
                                 <div>
                                     <label className="block text-sm font-medium">Title</label>

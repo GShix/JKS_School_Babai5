@@ -151,12 +151,12 @@ const SingleBlog = () => {
       <Header />
       
       {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-r from-[#035CB0] to-blue-600">
+      <div className="relative h-50 bg-gradient-to-r from-[#035CB0] to-blue-600">
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="relative z-10 flex items-center justify-center h-full px-4">
           <div className="text-center text-white max-w-4xl">
             <div className="mb-4">
-              <span className="inline-block bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="inline-block bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium text-[#035CB0]">
                 {blog.blogCategory}
               </span>
             </div>
@@ -190,7 +190,7 @@ const SingleBlog = () => {
               className="flex items-center text-gray-600 hover:text-[#035CB0] transition-colors"
             >
               <i className="ri-arrow-left-line mr-2"></i>
-              Back to Blogs
+              Back
             </Link>
             
             <div className="flex items-center space-x-4">
@@ -285,7 +285,7 @@ const SingleBlog = () => {
               <img 
                 src={blog.blogImage} 
                 alt={blog.blogTitle}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-fit-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
@@ -298,11 +298,10 @@ const SingleBlog = () => {
               <img 
                 src={blog.authorImage || "/img/jkss_logo.png"} 
                 alt={blog.blogAuthor}
-                className="w-12 h-12 rounded-full"
-              />
+                className="w-14 h-14ll object-contain"/>
               <div>
                 <h3 className="font-semibold text-lg text-gray-900">{blog.blogAuthor}</h3>
-                <p className="text-gray-600">Published on {formatDate(blog.blogCreatedAt)}</p>
+                <p className="text-gray-600 text-sm">Published on {formatDate(blog.blogCreatedAt)}</p>
               </div>
             </div>
 

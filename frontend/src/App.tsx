@@ -23,6 +23,7 @@ import Results from './pages/results/Results'
 import Admission from './pages/admission/Admission'
 import SecondaryLevelProgram from './pages/academicPrograms/SecondaryLevelProgram'
 import BasicLevelProgram from './pages/academicPrograms/BasicLevelProgram'
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
             <Route path='/blogs/:id' element={<SingleBlog/>}/>
             <Route path='/blogs/edit/:id' element={<EditBlog/>}/>
             <Route path='/admin/login' element={<Login/>}/>
+            <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
             <Route path='/user/register' element={<Register/>}/>
             <Route path='/game-zone' element={<GameZone/>}/>
             {/* 

@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+    const navigate = useNavigate();
     const [clickMenu, setClickMenu] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const navRef = useRef<HTMLDivElement | null>(null);
     const navLinks = [
         {
@@ -60,6 +62,10 @@ const Header = () => {
     const menuRef = useRef<HTMLDivElement | null>(null); // Reference to the nav menu
 
     useEffect(() => {
+        // Check if user is admin
+        const adminFlag = localStorage.getItem("isAdmin");
+        setIsAdmin(!!adminFlag);
+
         // Function to check and handle clicks outside of the menu
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -137,7 +143,27 @@ const Header = () => {
                         <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>बबई-५, पदमपुर, दाङ
                     </div>
                     <div className="nav-cta hidden sm:flex gap-5 items-center text-sm">
-                        <Link to="/admin/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#035CB0] hover:border hover:border-[#035CB0] hover:text-yellow-400 text-nowrap font-['Poppins']"><i className="fas fa-user mr-1 text-yellow-400"></i> LOG IN</Link>
+                        {isAdmin ? (
+                            <>
+                                <Link to="/admin/dashboard" className="py-2.5 px-5 bg-green-600 rounded-md hover:bg-green-700 text-yellow-400 text-nowrap font-['Poppins']"><i className="ri-dashboard-line mr-1"></i> DASHBOARD</Link>
+                                <button
+                                    onClick={() => {
+                                        localStorage.removeItem("token");
+                                        localStorage.removeItem("user");
+                                        localStorage.removeItem("isAdmin");
+                                        localStorage.removeItem("userRole");
+                                        sessionStorage.removeItem("token");
+                                        sessionStorage.removeItem("user");
+                                        sessionStorage.removeItem("isAdmin");
+                                        setIsAdmin(false);
+                                        navigate("/");
+                                    }}
+                                    className="py-2.5 px-5 bg-red-600 rounded-md hover:bg-red-700 text-yellow-400 text-nowrap font-['Poppins']"><i className="ri-logout-circle-r-line mr-1"></i> LOGOUT
+                                </button>
+                            </>
+                        ) : (
+                            <Link to="/admin/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#035CB0] hover:border hover:border-[#035CB0] hover:text-yellow-400 text-nowrap font-['Poppins']"><i className="fas fa-user mr-1 text-yellow-400"></i> LOG IN</Link>
+                        )}
                     </div>
                 </div>
 
