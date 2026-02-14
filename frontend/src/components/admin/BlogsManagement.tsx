@@ -5,9 +5,8 @@ import Modal from '../shared/Modal';
 import Button from '../shared/Button';
 import FormInput from '../shared/FormInput';
 import Badge from '../shared/Badge';
+import TiptapEditor from '../shared/TiptapEditor';
 import axios from 'axios';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { SERVER_URL, API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
 
@@ -49,66 +48,27 @@ const BlogsManagement: React.FC = () => {
     fetchBlogs();
   }, []);
 
-  // Custom upload adapter for CKEditor
-  class MyUploadAdapter {
-    private loader: any;
+  // Image upload handler for Tiptap editor
+  const handleImageUpload = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('contentImage', file);
 
-    constructor(loader: any) {
-      this.loader = loader;
-    }
-
-    upload() {
-      return this.loader.file.then((file: File) => {
-        return new Promise((resolve, reject) => {
-          // Check file size (5MB limit)
-          if (file.size > 5 * 1024 * 1024) {
-            reject('Image size should be less than 5MB');
-            return;
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/blogs/upload-image`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            'Content-Type': 'multipart/form-data'
           }
-
-          const formData = new FormData();
-          formData.append('contentImage', file);
-
-          axios.post(
-            `${API_BASE_URL}/blogs/upload-image`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${getToken()}`,
-                'Content-Type': 'multipart/form-data'
-              }
-            }
-          )
-          .then(response => {
-            const imageUrl = `${SERVER_URL}${response.data.url}`;
-            resolve({
-              default: imageUrl
-            });
-          })
-          .catch(error => {
-            console.error('Error uploading image:', error);
-            reject(error);
-          });
-        });
-      });
+        }
+      );
+      return `${SERVER_URL}${response.data.url}`;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
     }
-
-    abort() {
-      // Reject promise or handle abort
-    }
-  }
-
-  // Plugin to add custom upload adapter to CKEditor
-  function MyCustomUploadAdapterPlugin(editor: any) {
-    editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => {
-      return new MyUploadAdapter(loader);
-    };
-  }
-
-  // CKEditor configuration
-  const editorConfiguration = {
-    extraPlugins: [MyCustomUploadAdapterPlugin],
-    placeholder: 'Write your blog content here... Click the image icon to upload images.'
   };
 
   const fetchBlogs = async () => {
@@ -319,24 +279,15 @@ const BlogsManagement: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Content <span className="text-red-500">*</span>
             </label>
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
-              <CKEditor
-                editor={ClassicEditor}
-                config={editorConfiguration}
-                data={formData.content}
-                onChange={(_event: any, editor: any) => {
-                  const data = editor.getData();
-                  setFormData({ ...formData, content: data });
-                }}
-                onReady={(editor: any) => {
-                  // Editor is ready to use
-                  console.log('CKEditor is ready!', editor);
-                }}
-              />
-            </div>
+            <TiptapEditor
+              content={formData.content}
+              onChange={(html) => setFormData({ ...formData, content: html })}
+              placeholder="Write your blog content here... Click the image icon to upload images."
+              onImageUpload={handleImageUpload}
+            />
             <p className="text-xs text-gray-500 mt-2">
               <Upload className="w-3 h-3 inline mr-1" />
-              Tip: Click the image icon in the toolbar to upload images. You can also paste images directly from clipboard!
+              Tip: Click the image icon in the toolbar to upload images.
             </p>
           </div>
 

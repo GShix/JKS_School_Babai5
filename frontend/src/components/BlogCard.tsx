@@ -2,40 +2,49 @@ import {Link } from "react-router-dom";
 
 interface BlogCardProps {
   blog: {
-    id?: string;
-    blogTitle?: string;
-    blogDescription?: string;
-    blogAuthor?: string;
-    blogCreatedAt?: string;
-    blogImage?: string;
-    blogCategory?: string;
+    id?: number;
+    title?: string;
+    content?: string;
+    author?: string;
+    createdAt?: string;
+    featuredImage?: string;
+    category?: string;
   };
 }
 
 const BlogCard = ({ blog }: BlogCardProps) => {
+  // Extract plain text from HTML content for preview
+  const getPlainText = (html: string) => {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || div.innerText || '';
+  };
+
   return (
     <Link to={`/blogs/${blog.id}`} className="block hover:shadow-xl transition-shadow duration-300">
         <div className="flex flex-col overflow-hidden rounded-lg shadow-lg">
             <div className="flex-shrink-0">
                 <img 
                     className="h-48 w-full object-cover" 
-                    src={blog.blogImage || "/img/jkss_logo.png"} 
-                    alt={blog.blogTitle || "Blog post"} 
+                    src={blog.featuredImage || "/img/jkss_logo.png"} 
+                    alt={blog.title || "Blog post"} 
                 />
             </div>
             <div className="flex flex-1 flex-col justify-between bg-white p-6">
                 <div className="flex-1">
                     <p className="text-sm font-medium text-indigo-600">
-                        <span className="hover:underline">{blog.blogCategory || "Blog Category"}</span>
+                        <span className="hover:underline">{blog.category || "Blog Category"}</span>
                     </p>
                     <div className="mt-2 block">
-                        <p className="text-xl font-semibold text-gray-900">{blog.blogTitle || "Untitled Blog Post"}</p>
+                        <p className="text-xl font-semibold text-gray-900">{blog.title || "Untitled Blog Post"}</p>
                         <p className="mt-3 text-base text-gray-500">
-                            {blog.blogDescription ? 
-                                (blog.blogDescription.length > 30 ? 
-                                    blog.blogDescription.substring(0, 30) + "..." : 
-                                    blog.blogDescription
-                                ) : 
+                            {blog.content ? 
+                                (() => {
+                                  const plainText = getPlainText(blog.content);
+                                  return plainText.length > 150 ? 
+                                    plainText.substring(0, 150) + "..." : 
+                                    plainText;
+                                })() :
                                 "No content available..."
                             }
                         </p>
@@ -44,21 +53,21 @@ const BlogCard = ({ blog }: BlogCardProps) => {
                 <div className="mt-6 flex items-center">
                     <div className="flex-shrink-0">
                         <div>
-                            <span className="sr-only">{blog.blogAuthor || "Anonymous"}</span>
+                            <span className="sr-only">{blog.author || "Anonymous"}</span>
                             <img 
                                 className="h-10 w-10 rounded-full" 
-                                src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                                alt={blog.blogAuthor || "Author"} 
+                                src="/img/jkss_logo.png" 
+                                alt={blog.author || "Author"} 
                             />
                         </div>
                     </div>
                     <div className="ml-3">
                         <p className="text-sm font-medium text-gray-900">
-                            <span className="hover:underline">{blog.blogAuthor || "Anonymous"}</span>
+                            <span className="hover:underline">{blog.author || "Anonymous"}</span>
                         </p>
                         <div className="flex space-x-1 text-sm text-gray-500">
-                            <time dateTime={blog.blogCreatedAt}>
-                                {blog.blogCreatedAt ? new Date(blog.blogCreatedAt).toLocaleDateString() : "Unknown date"}
+                            <time dateTime={blog.createdAt}>
+                                {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : "Unknown date"}
                             </time>
                             <span aria-hidden="true">·</span>
                             <span>5 min read</span>
