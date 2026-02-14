@@ -1,16 +1,34 @@
 const {Sequelize, DataTypes} = require('sequelize');
 
- 
+// Ensure db_string exists
+if (!process.env.db_string) {
+  console.error('❌ ERROR: db_string environment variable is not set!');
+  throw new Error('Database connection string is required. Please set db_string in environment variables.');
+}
+
 const sequelize = new Sequelize(process.env.db_string, {
-  logging: false // Disable SQL query logging to reduce console noise
+  logging: false, // Disable SQL query logging to reduce console noise
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  }
 });
 
+// Only authenticate, don't wait for it
 sequelize.authenticate()
   .then(() => {
-    console.log('Connection to the database has been established successfully.');
+    console.log('✅ Database connection established successfully.');
   })
   .catch(err => {
-    console.error('Unable to connect to the database:', err);
+    console.error('❌ Unable to connect to the database:', err.message);
   });   
 
 const db = {};
@@ -41,9 +59,17 @@ db.contacts = require('./models/contactModel')(sequelize, DataTypes);
 db.careerPositions = require('./models/careerPositionModel')(sequelize, DataTypes);
 db.jobApplications = require('./models/jobApplicationModel')(sequelize, DataTypes);
 
-sequelize.sync({ alter: false }).then(()=>{
-  console.log('Database & tables created!');
-})
+// DO NOT run sync() in production/serverless - it's slow and can crash functions
+// Tables should already exist in production database
+// Only run sync in local development if needed
+if (process.env.NODE_ENV === 'development') {
+  sequelize.sync({ alter: false }).then(() => {
+    console.log('✅ Database & tables synced (development mode)');
+  }).catch(err => {
+    console.error('❌ Database sync error:', err.message);
+  });
+}
+
 module.exports = db; 
 // exports models
 exports.programs = db.programs;

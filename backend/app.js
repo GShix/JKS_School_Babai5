@@ -1,3 +1,6 @@
+// Load environment variables (Vercel provides them automatically in production)
+require('dotenv').config();
+
 const express = require('express');
 const programRoute = require('./routes/programRoute');
 const blogRoute = require('./routes/blogRoute');
@@ -65,6 +68,21 @@ app.use("/api/career", careerRoute);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the JKS School API');
+});
+
+// Health check endpoint for debugging
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    env: {
+      NODE_ENV: process.env.NODE_ENV,
+      hasDbString: !!process.env.db_string,
+      hasJwtSecret: !!process.env.JWT_SECRET,
+      hasSupabaseUrl: !!process.env.SUPABASE_URL,
+      hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+    }
+  });
 });
 
 // Export for Vercel serverless
