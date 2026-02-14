@@ -6,7 +6,6 @@ import Button from '../shared/Button';
 import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
-import LoadingSpinner from '../shared/LoadingSpinner';
 import axios from 'axios';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
 

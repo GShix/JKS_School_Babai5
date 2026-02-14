@@ -1,43 +1,10 @@
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 
-// Create uploads directories if they don't exist
-const noticeUploadDir = path.join(__dirname, '../uploads/career/notices');
-const resumeUploadDir = path.join(__dirname, '../uploads/career/resumes');
-
-if (!fs.existsSync(noticeUploadDir)) {
-  fs.mkdirSync(noticeUploadDir, { recursive: true });
-}
-if (!fs.existsSync(resumeUploadDir)) {
-  fs.mkdirSync(resumeUploadDir, { recursive: true });
-}
-
-// Configure storage for job position notices (PDF/images)
-const noticeStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, noticeUploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    const nameWithoutExt = path.basename(file.originalname, ext);
-    cb(null, `${nameWithoutExt}-${uniqueSuffix}${ext}`);
-  }
-});
-
-// Configure storage for resumes
-const resumeStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, resumeUploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    const nameWithoutExt = path.basename(file.originalname, ext);
-    cb(null, `${nameWithoutExt}-${uniqueSuffix}${ext}`);
-  }
-});
+// Use memory storage for Vercel serverless compatibility
+// Files will be available as Buffer in req.file.buffer
+const noticeStorage = multer.memoryStorage();
+const resumeStorage = multer.memoryStorage();
 
 // File filter for notices (images and PDFs)
 const noticeFileFilter = (req, file, cb) => {

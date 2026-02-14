@@ -6,13 +6,13 @@ import Modal from '../shared/Modal';
 import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
-import LoadingSpinner from '../shared/LoadingSpinner';
 import { showError, showDeleteConfirm, showSuccess } from '../../utils/sweetAlert';
 import { downloadService, type Download } from '../../api/services/downloadService';
 
 const DownloadsManagement = () => {
   const [files, setFiles] = useState<Download[]>([]);
-  const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingFile, setEditingFile] = useState<Download | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

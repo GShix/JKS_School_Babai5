@@ -34,10 +34,10 @@ export default function Banner() {
         <ul className="flex max-sm:flex-col w-full items-center gap-10 sm:gap-20 text-[#fff]">
         {navLinks.map((link,index)=>(
             <li key={index} className=''>
-                <a className="nav-div-item hover:text-yellow-400 flex max-sm:flex-col justify-center items-center" href={link.href}>
+                <div className="nav-div-item hover:text-yellow-400 flex max-sm:flex-col justify-center items-center">
                     <i className={`${link.icon} mr-3`}></i>
                     <span className="block font-sans leading-7 font-semibold text-xl">{link.title}</span>
-                </a>
+                </div>
             </li>
         ))}
         </ul>

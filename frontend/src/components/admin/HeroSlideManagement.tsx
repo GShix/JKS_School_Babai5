@@ -1,8 +1,3 @@
-/**
- * Hero Slide Management Component
- * Admin interface for managing hero carousel slides
- */
-
 import React, { useState, useEffect } from 'react';
 import { 
   Image, 

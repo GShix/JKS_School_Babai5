@@ -48,7 +48,7 @@ const SingleBlog = () => {
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const title = blog?.blogTitle || 'Check out this blog';
+    const title = blog?.title || 'Check out this blog';
     
     switch (platform) {
       case 'facebook':
@@ -79,7 +79,7 @@ const SingleBlog = () => {
 
   const getReadingTime = (text: string) => {
     const wordsPerMinute = 200;
-    const words = text.split(' ').length;
+    const words = (text || '').split(' ').length;
     const readingTime = Math.ceil(words / wordsPerMinute);
     return readingTime;
   };
@@ -154,25 +154,25 @@ const SingleBlog = () => {
           <div className="text-center text-white max-w-4xl">
             <div className="mb-4">
               <span className="inline-block bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium text-[#035CB0]">
-                {blog.blogCategory}
+                {blog.category || 'General'}
               </span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-              {blog.blogTitle}
+              {blog.title}
             </h1>
             <div className="flex items-center justify-center space-x-6 text-sm">
               <div className="flex items-center space-x-2">
                 <img 
-                  src={blog.authorImage || "/img/jkss_logo.png"} 
-                  alt={blog.blogAuthor}
+                  src="/img/jkss_logo.png" 
+                  alt={blog.author || 'Author'}
                   className="w-8 h-8 rounded-full border-2 border-white"
                 />
-                <span>{blog.blogAuthor}</span>
+                <span>{blog.author || 'Anonymous'}</span>
               </div>
               <span>•</span>
-              <span>{formatDate(blog.blogCreatedAt)}</span>
+              <span>{blog.createdAt ? formatDate(blog.createdAt) : 'N/A'}</span>
               <span>•</span>
-              <span>{getReadingTime(blog.blogDescription)} min read</span>
+              <span>{getReadingTime(blog.content || '')} min read</span>
             </div>
           </div>
         </div>
@@ -277,12 +277,12 @@ const SingleBlog = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <article className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Featured Image */}
-          {blog.blogImage && (
+          {blog.featuredImage && (
             <div className="w-full h-64 md:h-96 relative">
               <img 
-                src={blog.blogImage} 
-                alt={blog.blogTitle}
-                className="w-full h-full object-fit-cover"
+                src={blog.featuredImage} 
+                alt={blog.title}
+                className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
@@ -293,20 +293,18 @@ const SingleBlog = () => {
             {/* Author Info */}
             <div className="flex items-center space-x-4 mb-8 pb-6 border-b">
               <img 
-                src={blog.authorImage || "/img/jkss_logo.png"} 
-                alt={blog.blogAuthor}
-                className="w-14 h-14ll object-contain"/>
+                src="/img/jkss_logo.png" 
+                alt={blog.author || 'Author'}
+                className="w-14 h-14 rounded-full object-contain"/>
               <div>
-                <h3 className="font-semibold text-lg text-gray-900">{blog.blogAuthor}</h3>
-                <p className="text-gray-600 text-sm">Published on {formatDate(blog.blogCreatedAt)}</p>
+                <h3 className="font-semibold text-lg text-gray-900">{blog.author || 'Anonymous'}</h3>
+                <p className="text-gray-600 text-sm">Published on {blog.createdAt ? formatDate(blog.createdAt) : 'N/A'}</p>
               </div>
             </div>
 
             {/* Blog Content */}
             <div className="prose prose-lg max-w-none">
-              <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
-                {blog.blogDescription}
-              </div>
+              <div className="text-gray-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: blog.content || '' }} />
             </div>
 
             {/* Tags */}
@@ -314,7 +312,7 @@ const SingleBlog = () => {
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-500">Category:</span>
                 <span className="inline-block bg-[#035CB0] text-white px-3 py-1 rounded-full text-sm">
-                  {blog.blogCategory}
+                  {blog.category || 'General'}
                 </span>
               </div>
             </div>

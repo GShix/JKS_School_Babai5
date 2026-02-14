@@ -49,7 +49,7 @@ const MessageFromPrincipal = () => {
     <div className='max-sm:flex-col sm:flex px-4 sm:px-11 gap-4 w-full py-10 bg-gray0 mt-6 border-t border-gray-100'>
       <div className="photo sm:w-2/3">
         <img 
-          className='w-full h-full rounded-md object-cover' 
+          className='w-full h-[500px] rounded-md object-cover' 
           src={photoUrl} 
           alt={message.personName}
           onError={(e) => {

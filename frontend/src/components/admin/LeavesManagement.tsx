@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { CalendarX, CheckCircle, XCircle } from 'lucide-react';
 import DataTable from '../shared/DataTable';
 import Badge from '../shared/Badge';
-import LoadingSpinner from '../shared/LoadingSpinner';
 import axios from 'axios';
 import { showSuccess, showError, showWarning } from '../../utils/sweetAlert';
 
@@ -28,7 +27,8 @@ interface LeaveRequest {
 
 const LeavesManagement: React.FC = () => {
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
-  const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState('pending');
 
   const getToken = () => {

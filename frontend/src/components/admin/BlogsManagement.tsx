@@ -5,7 +5,6 @@ import Modal from '../shared/Modal';
 import Button from '../shared/Button';
 import FormInput from '../shared/FormInput';
 import Badge from '../shared/Badge';
-import LoadingSpinner from '../shared/LoadingSpinner';
 import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';

@@ -277,7 +277,7 @@ const Header = () => {
                             ) : (
                                 <Link 
                                     to={link.href} 
-                                    className="nav-link-item hover:text-yellow-400 flex items-center justify-between cursor-pointer block font-normal"
+                                    className="nav-link-item hover:text-yellow-400 flex items-center justify-between cursor-pointer font-normal"
                                     onClick={() => setClickMenu(false)}
                                 >
                                     {link.title}

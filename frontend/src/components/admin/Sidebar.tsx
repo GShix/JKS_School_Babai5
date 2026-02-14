@@ -3,20 +3,20 @@ import {
   LayoutDashboard,
   Users,
   GraduationCap,
-  ClipboardCheck,
-  FileText,
-  DollarSign,
-  Calendar,
-  BookOpen,
-  CalendarX,
+  // ClipboardCheck,
+  // FileText,
+  // DollarSign,
+  // Calendar,
+  // BookOpen,
+  // CalendarX,
   Bell,
   Shield,
   Newspaper,
   Activity,
   Menu,
   X,
-  Crown,
-  LogOut,
+  // Crown,
+  // LogOut,
   Settings,
   Building,
   Download,
@@ -65,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   mobileMenuOpen,
   onMobileToggle,
   adminUser,
-  onLogout
+  // onLogout
 }) => {
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 

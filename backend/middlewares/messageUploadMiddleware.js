@@ -1,23 +1,9 @@
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, '../uploads/messages');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'message-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Use memory storage for Vercel serverless compatibility
+// Files will be available as Buffer in req.file.buffer
+const storage = multer.memoryStorage();
 
 // File filter
 const fileFilter = (req, file, cb) => {
