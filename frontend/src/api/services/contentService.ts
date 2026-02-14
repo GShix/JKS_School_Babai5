@@ -5,28 +5,7 @@
 
 import { api } from '../client';
 import { API_ENDPOINTS } from '../config';
-import type { ApiResponse } from '../types';
-
-export interface SchoolProfile {
-  id?: number;
-  schoolName?: string;
-  schoolNameNepali?: string;
-  schoolTypeNepali?: string;
-  aboutUsStory?: string;
-  aboutUsDescription?: string;
-  heroImage?: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  mapUrl?: string;
-  establishedYear?: string;
-  principalName?: string;
-  principalMessage?: string;
-  vision?: string;
-  mission?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+import type { ApiResponse, SchoolProfile } from '../types';
 
 export const contentService = {
   /**

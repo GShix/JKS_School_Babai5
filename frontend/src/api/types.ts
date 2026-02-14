@@ -354,20 +354,28 @@ export interface UploadResponse {
 
 // School Profile
 export interface SchoolProfile {
-  id: number;
-  schoolName: string;
-  schoolNameNepali: string;
-  phone: string;
-  email: string;
-  address: string;
+  id?: number;
+  schoolName?: string;
+  schoolNameNepali?: string;
+  schoolTypeNepali?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
   addressNepali?: string;
   province?: string;
   district?: string;
   municipality?: string;
   ward?: string;
-  introduction: string;
+  introduction?: string;
+  aboutUsStory?: string;
+  aboutUsDescription?: string;
+  heroImage?: string;
+  mapUrl?: string;
   establishedYear?: string;
   principalName?: string;
+  principalMessage?: string;
+  vision?: string;
+  mission?: string;
   website?: string;
   facebookUrl?: string;
   createdAt?: string;

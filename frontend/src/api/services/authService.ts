@@ -12,7 +12,7 @@ export const authService = {
    * Admin login
    */
   adminLogin: async (credentials: LoginRequest): Promise<LoginResponse> => {
-    const response = await api.post<LoginResponse>(
+    const response = await api.postDirect<LoginResponse>(
       API_ENDPOINTS.AUTH.ADMIN_LOGIN,
       credentials
     );
@@ -30,7 +30,7 @@ export const authService = {
    * Student login
    */
   studentLogin: async (credentials: LoginRequest): Promise<LoginResponse> => {
-    const response = await api.post<LoginResponse>(
+    const response = await api.postDirect<LoginResponse>(
       API_ENDPOINTS.AUTH.STUDENT_LOGIN,
       credentials
     );

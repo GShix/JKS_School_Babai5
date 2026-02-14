@@ -10,7 +10,6 @@ import GameZone from './pages/game/GameZone'
 import AllBlogs from './pages/blogs/AllBlogs'
 import CreateBlog from './pages/blogs/CreateBlog'
 import SingleBlog from './pages/blogs/SingleBlog'
-import EditBlog from './pages/blogs/EditBlog'
 import Announcements from './pages/announcements/Announcements'
 import AnnouncementDetail from './pages/announcements/AnnouncementDetail'
 import Downloads from './pages/download/Downloads'
@@ -58,7 +57,6 @@ function App() {
             <Route path='/blogs' element={<AllBlogs/>}/>
             <Route path='/blogs/create' element={<CreateBlog/>}/>
             <Route path='/blogs/:id' element={<SingleBlog/>}/>
-            <Route path='/blogs/edit/:id' element={<EditBlog/>}/>
 
             <Route path='/admin/login' element={<Login/>}/>
             <Route path='/admin/dashboard' element={<AdminPanel/>}/>

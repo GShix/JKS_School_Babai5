@@ -11,7 +11,6 @@ export * from './blogService';
 export * from './announcementService';
 export * from './downloadService';
 export * from './heroSlideService';
-export * from './contentService';
 export * from './schoolProfileService';
 export * from './messageService';
 export * from './contactService';

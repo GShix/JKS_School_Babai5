@@ -194,6 +194,14 @@ export const api = {
       },
     }).then((res) => res.data);
   },
+
+  /**
+   * POST request for direct responses (not wrapped in ApiResponse)
+   * Used for auth endpoints that return custom response structures
+   */
+  postDirect: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
+    return apiClient.post<T>(url, data, config).then((res) => res.data);
+  },
 };
 
 export default apiClient;

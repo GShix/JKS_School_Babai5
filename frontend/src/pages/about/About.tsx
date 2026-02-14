@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import Footer from "../../layouts/Footer"
 import Header from "../../layouts/Header"
 import { contentService } from "../../api"
-import type { SchoolProfile } from "../../api/services/contentService"
+import type { SchoolProfile } from "../../api/types"
 import { getErrorMessage } from "../../utils/errorHandler"
 
 const About = () => {

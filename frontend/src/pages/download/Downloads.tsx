@@ -52,12 +52,6 @@ const Downloads = () => {
     }
   };
 
-  // Get unique values for filters
-  const categories = useMemo(() => {
-    const cats = new Set(files.map(f => f.category));
-    return Array.from(cats);
-  }, [files]);
-
   const classes = useMemo(() => {
     const cls = new Set(files.filter(f => f.class).map(f => f.class!));
     return Array.from(cls).sort((a, b) => parseInt(a) - parseInt(b));
