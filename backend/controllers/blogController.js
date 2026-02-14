@@ -111,3 +111,27 @@ exports.deleteBlog = async(req, res) => {
         });
     }
 }
+
+// Upload image for blog content (rich text editor)
+exports.uploadImage = async(req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                message: 'No image file provided'
+            });
+        }
+
+        // Return the URL of the uploaded image
+        const imageUrl = `/uploads/blogs/${req.file.filename}`;
+        
+        res.json({
+            message: 'Image uploaded successfully',
+            url: imageUrl
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error uploading image',
+            error: error.message
+        });
+    }
+}

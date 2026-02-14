@@ -7,11 +7,18 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --env-file=.env app.js"
+    "start": "nodemon --env-file=.env app.js",
+    "create-admin": "node --env-file=.env insertAdmin.js",
+    "setup-storage": "node --env-file=.env setupSupabaseStorage.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.95.3",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.4",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
     "nodemon": "^3.1.10",
     "pg": "^8.16.3",
     "sequelize": "^6.37.7"

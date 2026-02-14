@@ -1,7 +1,9 @@
 const {Sequelize, DataTypes} = require('sequelize');
 
  
-const sequelize = new Sequelize(process.env.db_string);
+const sequelize = new Sequelize(process.env.db_string, {
+  logging: false // Disable SQL query logging to reduce console noise
+});
 
 sequelize.authenticate()
   .then(() => {
@@ -18,11 +20,53 @@ db.sequelize = sequelize;
 db.blogs = require('./models/blogModel')(sequelize, DataTypes);
 db.programs = require('./models/programModel')(sequelize, DataTypes);
 db.activities = require('./models/activityModel')(sequelize, DataTypes);
+db.admins = require('./models/adminModel')(sequelize, DataTypes);
+db.students = require('./models/studentModel')(sequelize, DataTypes);
+db.staff = require('./models/staffModel')(sequelize, DataTypes);
+db.teacher = require('./models/teacherModel')(sequelize, DataTypes);
+db.attendance = require('./models/attendanceModel')(sequelize, DataTypes);
+db.grades = require('./models/gradeModel')(sequelize, DataTypes);
+db.fees = require('./models/feeModel')(sequelize, DataTypes);
+db.timetables = require('./models/timetableModel')(sequelize, DataTypes);
+db.assignments = require('./models/assignmentModel')(sequelize, DataTypes);
+db.submissions = require('./models/submissionModel')(sequelize, DataTypes);
+db.leaves = require('./models/leaveModel')(sequelize, DataTypes);
+db.announcements = require('./models/announcementModel')(sequelize, DataTypes);
+db.contents = require('./models/contentModel')(sequelize, DataTypes);
+db.gallery = require('./models/galleryModel')(sequelize, DataTypes);
+db.downloads = require('./models/downloadModel')(sequelize, DataTypes);db.heroSlides = require('./models/heroSlideModel')(sequelize, DataTypes);
+db.schoolProfile = require('./models/schoolProfileModel')(sequelize, DataTypes);
+db.schoolMessages = require('./models/schoolMessageModel')(sequelize, DataTypes);
+db.contacts = require('./models/contactModel')(sequelize, DataTypes);
+db.careerPositions = require('./models/careerPositionModel')(sequelize, DataTypes);
+db.jobApplications = require('./models/jobApplicationModel')(sequelize, DataTypes);
 
-sequelize.sync({ alter: false}).then(()=>{
+sequelize.sync({ alter: false }).then(()=>{
   console.log('Database & tables created!');
 })
 module.exports = db; 
-// exports programs and activities models
+// exports models
 exports.programs = db.programs;
 exports.activities = db.activities;
+exports.admins = db.admins;
+exports.students = db.students;
+exports.staff = db.staff;
+exports.teacher = db.teacher;
+exports.attendance = db.attendance;
+exports.grades = db.grades;
+exports.fees = db.fees;
+exports.timetables = db.timetables;
+exports.assignments = db.assignments;
+exports.submissions = db.submissions;
+exports.leaves = db.leaves;
+exports.announcements = db.announcements;
+exports.contents = db.contents;
+exports.blogs = db.blogs;
+exports.gallery = db.gallery;
+exports.downloads = db.downloads;
+exports.heroSlides = db.heroSlides;
+exports.schoolProfile = db.schoolProfile;
+exports.schoolMessages = db.schoolMessages;
+exports.contacts = db.contacts;
+exports.careerPositions = db.careerPositions;
+exports.jobApplications = db.jobApplications;
