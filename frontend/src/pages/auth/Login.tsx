@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { authService } from "../../api";
+import { getErrorMessage } from "../../utils/errorHandler";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,30 +16,20 @@ const Login = () => {
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const response = await authService.adminLogin({
+        email,
+        password,
+        rememberMe: remember,
       });
-
-      const text = await res.text();
-      let data: any = {};
-      try { data = text ? JSON.parse(text) : {}; } catch (e) { /* non-JSON */ }
-
-      // Handle both 200 (OK) and 201 (Created) as success
-      if (res.status < 200 || res.status >= 300) {
-        throw new Error(data?.message || "Invalid credentials or server error");
-      }
 
       // Determine storage based on "Remember me" checkbox
       const storage = remember ? localStorage : sessionStorage;
 
-      // Store token, user profile, and role-based flags
-      storage.setItem("token", data.token);
-      storage.setItem("user", JSON.stringify(data.data));
+      // Store user profile and role-based flags (response.data contains admin info)
+      storage.setItem("user", JSON.stringify(response.data));
 
-      // Set isAdmin flag if user role is admin (backend returns role: 'admin' or 'user')
-      if (data.data?.role === "admin") {
+      // Set isAdmin flag if user role is admin or superAdmin
+      if (response.data?.role === "admin" || response.data?.role === "superAdmin") {
         storage.setItem("isAdmin", "1");
       } else {
         storage.removeItem("isAdmin");
@@ -45,14 +37,14 @@ const Login = () => {
 
       // Always store role in localStorage for quick UI checks
       try {
-        localStorage.setItem("userRole", data.data?.role || "user");
+        localStorage.setItem("userRole", response.data?.role || "user");
       } catch (e) {
         // Gracefully handle quota exceeded
       }
 
       navigate("/admin/dashboard");
     } catch (err: any) {
-      setError(err?.message || "Login failed");
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -64,8 +56,8 @@ const Login = () => {
         <div className="text-center pb-4">
           <img src="/img/jkss_logo.png" width={150} className="mx-auto" />
           <div className="mt-4">
-            <h3 className="text-[#035CB0] text-2xl font-bold sm:text-3xl">Admin Login</h3>
-            <p className="text-sm text-gray-500">Use your admin credentials to continue.</p>
+            <h3 className="text-[#035CB0] text-2xl font-bold sm:text-3xl">Admin Portal</h3>
+            <p className="text-sm text-gray-500">Sign in to your admin account</p>
           </div>
         </div>
 
@@ -104,7 +96,7 @@ const Login = () => {
             </label>
             <span className="text-center text-red-600 hover:text-red-500 cursor-not-allowed" title="Coming soon">Forgot password?</span>
           </div>
-          <div className="buttons flex justify-between items-center">
+          <div className="buttons flex justify-between items-center gap-1">
             <Link
               to="/"
               className="w-[100px] text-center px-4 py-2 text-white font-medium bg-[#035CB0] hover:text-yellow-400 active:bg-[#26445fe9] rounded-lg duration-150"
@@ -121,6 +113,15 @@ const Login = () => {
             </button>
           </div>
         </form>
+        
+        <div className="text-center pt-4 border-t">
+          <p className="text-sm text-gray-600">
+            Are you a student?{' '}
+            <Link to="/student/login" className="font-medium text-blue-600 hover:text-blue-500">
+              Student Login
+            </Link>
+          </p>
+        </div>
       </div>
     </main>
   );

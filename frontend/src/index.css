@@ -72,4 +72,168 @@ html, body {
     padding: 0;
     /* outline: 1px solid red; */
     font-family: Poppins;
+    overflow-x: hidden;
 }
+
+/* Better text wrapping for all languages including Devanagari/Nepali */
+* {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Gallery Modal Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.4s ease-out;
+}
+
+/* Custom scrollbar for thumbnail strip */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Modern SweetAlert2 Custom Styles */
+.modern-toast {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  padding: 14px 18px !important;
+  min-width: 300px !important;
+  max-width: 400px !important;
+}
+
+.modern-toast-title {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.modern-alert {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  padding: 24px !important;
+}
+
+.modern-alert .swal2-title {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  margin-bottom: 12px !important;
+}
+
+.modern-alert .swal2-html-container {
+  font-size: 14px !important;
+  margin: 0 !important;
+  color: #6b7280 !important;
+}
+
+.modern-alert .swal2-icon {
+  margin: 0 auto 16px !important;
+}
+
+.modern-button {
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.modern-button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.modern-button-danger {
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  background-color: #ef4444 !important;
+  color: white !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.modern-button-danger:hover {
+  background-color: #dc2626 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.modern-button-outline {
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  background-color: white !important;
+  color: #6b7280 !important;
+  border: 1px solid #d1d5db !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.modern-button-outline:hover {
+  background-color: #f9fafb !important;
+  border-color: #9ca3af !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Adjust SweetAlert2 actions container for modern buttons */
+.modern-alert .swal2-actions {
+  gap: 12px !important;
+  margin-top: 24px !important;
+}
+
+/* Timer progress bar styling */
+.swal2-timer-progress-bar {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+

@@ -57,7 +57,7 @@ const Footer = () => {
                 allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
                 {/* <ul className="">
                     <li className="flex flex-col gap-4">
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Notices</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Announcements</a>
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Contact Us</a>
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">FAQ's</a>
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Admission</a>

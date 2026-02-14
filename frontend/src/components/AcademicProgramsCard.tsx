@@ -17,8 +17,8 @@ export const AcademicProgramsCard = () => {
         }
     }
     return (
-        <div className="academic-programs px-4 sm:px-12 w-full h-full bg-[#F7F7F7] py-2 sm-mb-10">
-            <h1 className="text-3xl mb-2 font-bold text-[#035CB0]">Academic Programs</h1>
+        <div className="academic-programs px-4 sm:px-12 w-full h-full bg-[#F7F7F7] py-4">
+            <h1 className="text-2xl sm:text-4xl mb-4 font-bold text-[#035CB0]">Academic Programs</h1>
             <div className="tab-and-contents flex max-sm:flex-col w-full">
                 <div className="max-sm:w-full w-[40%] max-sm:hidden">
                     {tab=="education" && <img className="w-full h-full rounded-l-md" src="/img/aca-education.jpg" alt="Education" />}

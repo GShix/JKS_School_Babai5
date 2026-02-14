@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
 import { Link, useNavigate } from 'react-router-dom';
+import { blogService, type BlogFormData as ApiBlogFormData } from '../../api';
+import { getErrorMessage } from '../../utils/errorHandler';
 
 interface BlogFormData {
   blogTitle: string;
@@ -59,7 +61,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ onSubmit }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // why 
+    e.preventDefault();
     setIsLoading(true);
     setMessage(null);
 
@@ -69,41 +71,43 @@ const BlogForm: React.FC<BlogFormProps> = ({ onSubmit }) => {
         throw new Error('Please fill in all required fields');
       }
 
-      // Call API to create blog
-      const response = await fetch('http://localhost:4000/api/blogs/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+      // Map form data to API format
+      const blogData: Partial<ApiBlogFormData> = {
+        title: formData.blogTitle,
+        content: formData.blogDescription,
+        author: formData.blogAuthor,
+        status: formData.blogStatus,
+        featuredImage: formData.blogImage,
+        category: formData.blogCategory,
+      };
+
+      // Call API to create blog using blogService
+      await blogService.create(blogData as ApiBlogFormData);
+
+      setMessage({ type: 'success', text: 'Blog created successfully!' });
+      // Reset form
+      setFormData({
+        blogTitle: '',
+        blogDescription: '',
+        blogAuthor: '',
+        blogStatus: 'published',
+        blogImage: '',
+        blogCategory: ''
       });
 
-      const result = await response.json();
+      // Navigate to blogs page after a short delay
+      setTimeout(() => {
+        navigate('/blogs');
+      }, 1000);
 
-      if (response.ok) {
-        setMessage({ type: 'success', text: 'Blog created successfully!' });
-        // Reset form
-        setFormData({
-          blogTitle: '',
-          blogDescription: '',
-          blogAuthor: '',
-          blogStatus: 'published',
-          blogImage: '',
-          blogCategory: ''
-        });
-
-        navigate('/blogs'); 
-        // Call parent callback if provided
-        if (onSubmit) {
-          onSubmit(formData);
-        }
-      } else {
-        throw new Error(result.message || 'Failed to create blog');
+      // Call parent callback if provided
+      if (onSubmit) {
+        onSubmit(formData);
       }
     } catch (error) {
       setMessage({
         type: 'error',
-        text: error instanceof Error ? error.message : 'An error occurred'
+        text: getErrorMessage(error)
       });
     } finally {
       setIsLoading(false);

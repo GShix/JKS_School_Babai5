@@ -1,20 +1,11 @@
 
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "../../layouts/Header";
 import Footer from "../../layouts/Footer";
-
-interface Blog {
-  blogTitle: string;
-  blogAuthor: string;
-  authorImage?: string;
-  blogDescription: string;
-  blogCreatedAt: string;
-  blogImage: string;
-  blogCategory: string;
-  id?: string;
-}
+import { showToast } from "../../utils/sweetAlert";
+import { blogService, type Blog } from "../../api";
+import { getErrorMessage } from "../../utils/errorHandler";
 
 const EditBlog = () => {
   const { id } = useParams();
@@ -29,11 +20,17 @@ const EditBlog = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await axios.get(`/api/blogs/${id}`);
-        setBlog(res.data.data || res.data);
+        setLoading(true);
+        setError('');
+        if (!id) {
+          setError('Blog ID is required');
+          return;
+        }
+        const response = await blogService.getById(Number(id));
+        setBlog(response.data || null);
       } catch (err) {
-        setError('Failed to fetch blog');
         console.error(err);
+        setError(getErrorMessage(err));
       } finally {
         setLoading(false);
       }
@@ -66,7 +63,7 @@ const EditBlog = () => {
         break;
       case 'copy':
         navigator.clipboard.writeText(url);
-        alert('Link copied to clipboard!');
+        showToast('Link copied to clipboard!', 'success');
         break;
     }
     setShowShareMenu(false);

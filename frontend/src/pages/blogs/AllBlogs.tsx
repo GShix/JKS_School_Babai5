@@ -1,27 +1,25 @@
 import BlogCard from "../../components/BlogCard";
 import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { blogService, type Blog } from "../../api";
+import { getErrorMessage } from '../../utils/errorHandler';
 
 const AllBlogs = () => {
-    const [blogs, setBlogs] = useState<any[]>([]);
+    const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchBlogs = async () => {
         try {
             setLoading(true);
-            const response = await axios.get("/api/blogs");
-            console.log("API Response:", response.data);
-            // Handle different possible response structures
-            const blogData = response.data.data || [];
-            setBlogs(Array.isArray(blogData) ? blogData : []);
             setError(null);
+            const response = await blogService.getAll();
+            setBlogs(response.data || []);
         } catch (err) {
             console.error("Error fetching blogs:", err);
-            setError("Failed to fetch blogs");
-            setBlogs([]); // Set to empty array on error
+            setError(getErrorMessage(err));
+            setBlogs([]);
         } finally {
             setLoading(false);
         }

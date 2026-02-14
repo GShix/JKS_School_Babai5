@@ -55,7 +55,7 @@ const AcademicPrograms = () => {
 						</p>
 					</div>
 				</div> */}
-        <div className="about-top w-full h-[300px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
+        <div className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
           <h1 className="text-4xl sm:text-5xl font-medium text-center my-8 text-white">Academic Programs</h1>
           
         </div>
@@ -128,8 +128,8 @@ const AcademicPrograms = () => {
 										</Link>
 									</li>
 									<li>
-										<Link to="/notices" className="hover:underline">
-											Notices
+										<Link to="/announcements" className="hover:underline">
+											Announcements
 										</Link>
 									</li>
 								</ul>

@@ -22,7 +22,7 @@ const Management = () => {
 						<p className="text-sm text-gray-600 mt-3"><i className="ri-calendar-line mr-2"></i> Last Update .. 23, 2025</p>
 					</div>
 				</div> */}
-                <div className="about-top w-full h-[300px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
+                <div className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
                 <h1 className="text-4xl sm:text-5xl font-medium text-center my-8 text-white">Management</h1>
                 </div>
 

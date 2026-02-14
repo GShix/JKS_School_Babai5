@@ -80,7 +80,7 @@ export default function Results() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-    <div className="about-top w-full h-[300px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
+    <div className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
         <h1 className="text-4xl sm:text-5xl font-medium text-center my-8 text-white">Published Results</h1>
     </div>
       <main className="container mx-auto px-6 py-8">

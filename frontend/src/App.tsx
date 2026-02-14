@@ -1,6 +1,7 @@
 
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import ScrollToTop from './components/shared/ScrollToTop'
 import Home from './pages/home/Home'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
@@ -10,11 +11,13 @@ import AllBlogs from './pages/blogs/AllBlogs'
 import CreateBlog from './pages/blogs/CreateBlog'
 import SingleBlog from './pages/blogs/SingleBlog'
 import EditBlog from './pages/blogs/EditBlog'
-import Notices from './pages/notices/Notices'
+import Announcements from './pages/announcements/Announcements'
+import AnnouncementDetail from './pages/announcements/AnnouncementDetail'
 import Downloads from './pages/download/Downloads'
 import Career from './pages/career/Career'
 import Gallery from './pages/Gallery/Gallery'
-import OurTeam from './pages/ourTeam/OurTeam'
+import JKSSTeachers from './pages/about/JKSSTeachers'
+import JKSSStaffs from './pages/about/JKSSStaffs'
 import AcademicPrograms from './pages/academicPrograms/AcademicPrograms'
 import Education from './pages/academicPrograms/Education'
 import Agriculture from './pages/academicPrograms/Agriculture'
@@ -23,18 +26,21 @@ import Results from './pages/results/Results'
 import Admission from './pages/admission/Admission'
 import SecondaryLevelProgram from './pages/academicPrograms/SecondaryLevelProgram'
 import BasicLevelProgram from './pages/academicPrograms/BasicLevelProgram'
-import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminPanel from './pages/admin/AdminPanel'
+import StudentLogin from './pages/auth/StudentLogin'
 
 function App() {
   return (
     <>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='/results' element={<Results/>}/>
             <Route path='/admission' element={<Admission/>}/>
             <Route path='/about/jkss' element={<About/>}/>
-            <Route path='/about/jkss-team' element={<OurTeam/>}/>
+            <Route path='/about/teachers' element={<JKSSTeachers/>}/>
+            <Route path='/about/staffs' element={<JKSSStaffs/>}/>
 
             {/* Group the academic program routes together */}
             
@@ -45,15 +51,21 @@ function App() {
             <Route path='/academic-programs/secondary-level' element={<SecondaryLevelProgram/>}/>
             <Route path='/academic-programs/basic-level' element={<BasicLevelProgram/>}/>
             <Route path='/gallery' element={<Gallery/>}/>
-            <Route path='/notices' element={<Notices/>}/>
+            <Route path='/announcements' element={<Announcements/>}/>
+            <Route path='/announcements/:id' element={<AnnouncementDetail/>}/>
             <Route path='/downloads' element={<Downloads/>}/>
             <Route path='/career' element={<Career/>}/>
             <Route path='/blogs' element={<AllBlogs/>}/>
             <Route path='/blogs/create' element={<CreateBlog/>}/>
             <Route path='/blogs/:id' element={<SingleBlog/>}/>
             <Route path='/blogs/edit/:id' element={<EditBlog/>}/>
+
             <Route path='/admin/login' element={<Login/>}/>
-            <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
+            <Route path='/admin/dashboard' element={<AdminPanel/>}/>
+
+            <Route path='/student/login' element={<StudentLogin/>}/>
+            {/* <Route path='/student/dashboard' element={<St/>}/> */}
+
             <Route path='/user/register' element={<Register/>}/>
             <Route path='/game-zone' element={<GameZone/>}/>
             {/* 

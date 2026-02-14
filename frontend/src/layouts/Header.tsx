@@ -1,11 +1,15 @@
+import { Bell } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { schoolProfileService } from "../api";
+import type { SchoolProfile } from "../api";
 
 const Header = () => {
     const navigate = useNavigate();
     const [clickMenu, setClickMenu] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [schoolProfile, setSchoolProfile] = useState<SchoolProfile | null>(null);
     const navRef = useRef<HTMLDivElement | null>(null);
     const navLinks = [
         {
@@ -18,7 +22,8 @@ const Header = () => {
             href:"#",
             subNav: [
                 { title: "About JKSS", href: "/about/jkss" },
-                { title: "JKSS Team", href: "/about/jkss-team" },
+                { title: "JKSS Teachers", href: "/about/teachers" },
+                { title: "JKSS Staffs", href: "/about/staffs" },
             ]
         },
         {
@@ -35,12 +40,12 @@ const Header = () => {
             ]
         },
         {
-            title:"Notice",
+            title:"Announcements",
             // icon:"ri-arrow-drop-down-line ml-1",
-            href:"/notices"
+            href:"/announcements"
         },
         {
-            title:"Download",
+            title:"Downloads",
             // icon:"ri-arrow-drop-down-line ml-1",
             href:"/downloads"
         },
@@ -63,8 +68,34 @@ const Header = () => {
 
     useEffect(() => {
         // Check if user is admin
-        const adminFlag = localStorage.getItem("isAdmin");
+        const adminFlag = localStorage.getItem("isAdmin") || sessionStorage.getItem("isAdmin");
         setIsAdmin(!!adminFlag);
+
+        // Fetch school profile
+        const fetchSchoolProfile = async () => {
+            try {
+                const response = await schoolProfileService.get();
+                if (response.data) {
+                    setSchoolProfile(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching school profile:', error);
+                // Use fallback data
+                setSchoolProfile({
+                    id: 1,
+                    schoolName: 'JKSS School',
+                    schoolNameNepali: 'श्री जनकल्याण माध्यमिक विद्यालय',
+                    phone: '+977 9844929502',
+                    email: 'jksschoolp5@gmail.com',
+                    address: 'बबई-५, पदमपुर, दाङ',
+                    addressNepali: 'बबई-५, पदमपुर, दाङ',
+                    introduction: '',
+                    facebookUrl: 'https://www.facebook.com/janakalyana.ma.bi.padamapura.dana'
+                });
+            }
+        };
+
+        fetchSchoolProfile();
 
         // Function to check and handle clicks outside of the menu
         const handleClickOutside = (event: MouseEvent) => {
@@ -96,22 +127,22 @@ const Header = () => {
         <div className="header-top bg-[#035CB0] text-white flex justify-between items-center w-full gap-5 max-sm:text-2xl py-2.5 px-3 sm:px-11 text-[15px]">
             <ul className="header-top-list flex items-center gap-3 sm:gap-5 justify-center font-['poppins'] max-sm:text-sm">
                 <li className="border-r-2 max-sm:pr-3 sm:pr-6 hover:text-yellow-400">
-                    <a href="tel:+9779844929502" className=" transition-all duration-500 ease-in-out">
+                    <a href={`tel:${schoolProfile?.phone || '+9779844929502'}`} className=" transition-all duration-500 ease-in-out">
                         <i className="ri-phone-fill mr-2"></i>
-                        <span className="max-sm:text-xs text-nowrap">+977 9844929502</span>
+                        <span className="max-sm:text-xs text-nowrap">{schoolProfile?.phone || '+977 9844929502'}</span>
                     </a>
                 </li>
                 <li className=" hover:text-yellow-400">
-                    <a href="mailto:jksschoolp5@gmail.com">
+                    <a href={`mailto:${schoolProfile?.email || 'jksschoolp5@gmail.com'}`}>
                         <i className="ri-mail-send-line mr-2"></i>
-                        <span className="max-sm:text-xs info-text ">jksschoolp5@gmail.com</span>
+                        <span className="max-sm:text-xs info-text ">{schoolProfile?.email || 'jksschoolp5@gmail.com'}</span>
                     </a>
                 </li>
             </ul>
 
             <div className="header-top flex justify-between gap-10 max-sm:hidden">
                 <ul className="header-top-list flex items-center gap-5 justify-content-center">
-                    <li className="border-r-2 pr-6 hover:text-yellow-400hover:text-yellow-400">
+                    <li className="border-r-2 pr-6 hover:text-yellow-400">
                         <Link to="/results" className="">Result</Link>
                     </li>
                     <li className="border-r-2 pr-6 hover:text-yellow-400">
@@ -122,7 +153,7 @@ const Header = () => {
                     </li>
                 </ul>
                 <ul className="header-top-social">
-                    <li><Link to="https://www.facebook.com/janakalyana.ma.bi.padamapura.dana" target="_blank"><i className="ri-facebook-fill hover:text-yellow-400"></i></Link></li>
+                    <li><Link to={schoolProfile?.facebookUrl || "https://www.facebook.com/janakalyana.ma.bi.padamapura.dana"} target="_blank"><i className="ri-facebook-fill hover:text-yellow-400"></i></Link></li>
                 </ul>
             </div>
         </div>
@@ -131,16 +162,23 @@ const Header = () => {
 
             {/* Large Nav Link */}
             <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 sm:px-11">
-                <Link to="/" className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
-                    <img className="h-24" src="/img/jkss_logo.png" alt="" srcSet="" />
-                    <div className="schoolname max-sm:text-center">
-                        <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">श्री जनकल्याण</h1>
-                        <h2 className="text-red-500 font-bold text-xl">माध्यमिक विद्यालय</h2>
-                    </div>
-                </Link>
+                <div className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
+                    <Link to="/" className="flex items-center gap-4 sm:gap-2.5 max-sm:w-full max-sm:px-2">
+                        <img className="h-24" src="/img/jkss_logo.png" alt="" srcSet="" />
+                        <div className="schoolname">
+                            <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">
+                                {schoolProfile?.schoolNameNepali?.split(' ')[0-1] || 'श्री जनकल्याण'}
+                            </h1>
+                            <h2 className="text-red-500 font-bold text-xl text-nowrap">
+                                {schoolProfile?.schoolNameNepali?.split(' ').slice(2).join(' ') || 'माध्यमिक विद्यालय'}
+                            </h2>
+                        </div>
+                    </Link>
+                </div>
                 <div className="two flex  items-center gap-2.5 w-2/2 justify-between">
                     <div className="nav-location hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
-                        <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>बबई-५, पदमपुर, दाङ
+                        <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>
+                        {schoolProfile?.address || 'बबई-५, पदमपुर, दाङ'}
                     </div>
                     <div className="nav-cta hidden sm:flex gap-5 items-center text-sm">
                         {isAdmin ? (
@@ -212,41 +250,50 @@ const Header = () => {
             </div>
             
             {/* Small Nav */}
-            <div className="nav-menu text-4xl bg-[#035CB0] p-2 h-auto w-full sm:hidden relative text-white mt-4 flex justify-between" >
+            <div className="nav-menu text-4xl bg-[#035CB0] p-2 h-auto w-full sm:hidden relative text-white mt-2 flex justify-between" >
                 <i className={`${ clickMenu?"ri-close-line":"ri-menu-fill"} transition-transform ease-in-out cursor-pointer`}onClick={() => setClickMenu(!clickMenu)}></i>
-                <Link to="/results" className="flex items-center gap-2.5 text-lg">Result</Link>
+                <Link to="/downloads" className="flex items-center gap-2.5 ">
+                    <Bell className="w-6 h-6" />
+                </Link>
             </div>
             {clickMenu ? (
             <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-69 z-50 text-base sm:hidden px-4 py-3 mx-2">
                 <ul>
                     {navLinks.map((link,index)=>(
                     <li key={index} className="mb-3 font-sans">
-                            <div
-                                className="nav-link-item hover:text-yellow-400 flex items-center justify-between cursor-pointer"
-                                onClick={() => {
-                                    // if this nav item has a submenu, toggle only this submenu
-                                    if (link.subNav && link.subNav.length > 0) {
+                            {/* If has submenu, make it a button. Otherwise, make it a link */}
+                            {link.subNav && link.subNav.length > 0 ? (
+                                <div
+                                    className="nav-link-item hover:text-yellow-400 flex items-center justify-between cursor-pointer"
+                                    onClick={() => {
                                         setOpenSmallIndex(openSmallIndex === index ? null : index);
-                                    } else {
-                                        // no submenu: close mobile menu after navigating
-                                        setClickMenu(false);
-                                    }
-                                }}
-                            >
-                                <Link to={link.href} className="block font-normal w-full">
+                                    }}
+                                >
+                                    <span className="block font-normal w-full">
+                                        {link.title}
+                                    </span>
+                                    <i className={`${link.icon} ml-2 transition-transform ${openSmallIndex === index ? 'rotate-180' : ''}`}></i>
+                                </div>
+                            ) : (
+                                <Link 
+                                    to={link.href} 
+                                    className="nav-link-item hover:text-yellow-400 flex items-center justify-between cursor-pointer block font-normal"
+                                    onClick={() => setClickMenu(false)}
+                                >
                                     {link.title}
+                                    {link.icon && <i className={`${link.icon} ml-2`}></i>}
                                 </Link>
-                                <i className={`${link.icon} ml-2`}></i>
-                            </div>
+                            )}
+                            
                             {/* dropdown for this item */}
                             {openSmallIndex === index && link.subNav && link.subNav.length > 0 && (
-                                <ul className="transition-opacity duration-200 mt-2">
+                                <ul className="transition-opacity duration-200 mt-2 bg-white rounded-md">
                                 {link.subNav.map((subLink, subIndex) => (
                                         <li key={subIndex}>
                                         <Link
                                                 to={subLink.href}
                                                 onClick={() => setClickMenu(false)}
-                                                className="block px-4 py-2 hover:bg-gray-100 hover:text-[#035CB0]"
+                                                className="block px-4 py-2 hover:bg-gray-100 hover:text-[#035CB0] text-gray-800"
                                         >
                                                 {subLink.title}
                                         </Link>
@@ -256,7 +303,7 @@ const Header = () => {
                             )}
                     </li>
                     ))}
-                    <li><Link to="/blogs" className="block font-normal text-sm hover:text-yellow-400">Blogs</Link></li>
+                    <li><Link to="/blogs" onClick={() => setClickMenu(false)} className="block font-normal text-sm hover:text-yellow-400">Blogs</Link></li>
                 </ul>
                 <div className="nav-cta w-full sm:hidden flex items-center justify-center gap-8 h-12">
                     <Link to="/admin/login" className="py-2.5 rounded-md px-5 bg-gray-100 text-red-600 font-semibold hover:border hover:border-white hover:bg-[#035CB0]">

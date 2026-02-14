@@ -40,10 +40,14 @@ function FAQ() {
   };
 
   return (
-    <div className="py-8 px-5 sm:px-11 bg-white rounded shadow">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 max-sm:items-start">
-        <h1 className="text-2xl font-bold mb-4 sm:mb-0 max-sm:hidden">Frequently Asked Questions</h1>
-        <h1 className="text-2xl font-bold mb-4 sm:hidden sm:mb-0">FAQs</h1>
+    <div className="py-4 sm:py-8 px-5 sm:px-11 bg-white rounded shadow">
+        <div className="flex justify-center w-full mb-4">
+          <h1 className="text-lg text-[#035CB0] bg-gray-100 px-4 py-2 rounded-full">Frequently Asked Questions</h1>
+        </div>
+        <div className="view-all mb-6 sm:mt-0 flex justify-center w-full">
+          <h1 className="text-2xl sm:text-4xl text-[#035CB0] font-bold">Explore More About Janakalyan</h1>
+        </div>
+      <div className="flex flex-col sm:flex-row justify-end items-center mb-6 max-sm:items-start">
         <input
           type="text"
           value={filter}
