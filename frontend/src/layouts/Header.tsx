@@ -163,7 +163,7 @@ const Header = () => {
             {/* Large Nav Link */}
             <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 sm:px-11">
                 <div className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
-                    <Link to="/" className="flex items-center gap-4 sm:gap-2.5 max-sm:w-full max-sm:px-2">
+                    <Link to="/" className="flex max-sm:flex-col items-center gap-4 text-center">
                         <img className="h-24" src="/img/jkss_logo.png" alt="" srcSet="" />
                         <div className="schoolname">
                             <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">

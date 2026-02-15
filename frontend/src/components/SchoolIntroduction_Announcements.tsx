@@ -73,7 +73,7 @@ const SchoolIntroduction_Announcements = () => {
                     </button>
                 </Link>
             </div>
-            <div className="announcements sm:w-1/2 shadow-gray-600 shadow-lg sm:h-80 rounded-md max-sm:mt-4">
+            <div className="announcements sm:w-1/2 shadow-gray-600 shadow-lg sm:h-80 rounded-md max-sm:my-4">
                 <h1 className='text-xl font-bold p-4 bg-[#035CB0] text-white rounded-t-md'>Recent Announcements</h1>
                 {announcements.length > 0 ? (
                     <ul className='list-none p-5 flex flex-col gap-3'>
