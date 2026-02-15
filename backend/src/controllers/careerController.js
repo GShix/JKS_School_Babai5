@@ -261,7 +261,25 @@ exports.updatePosition = async (req, res) => {
     });
   }
 };
-      message: 'Error updating career position',
+
+// Get all active career positions (Public)
+exports.getAllActivePositions = async (req, res) => {
+  try {
+    const positions = await CareerPosition.findAll({
+      where: { status: 'active' },
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).json({
+      success: true,
+      count: positions.length,
+      data: positions
+    });
+  } catch (error) {
+    console.error('Error fetching active positions:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Error fetching active career positions',
       error: error.message 
     });
   }

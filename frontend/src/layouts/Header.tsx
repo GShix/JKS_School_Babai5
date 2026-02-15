@@ -63,7 +63,8 @@ const Header = () => {
     ]
     // which small-nav (mobile) submenu is open; null = none
     const [openSmallIndex, setOpenSmallIndex] = useState<number | null>(null);
-    // console.log(navLinks)
+    // For logout confirmation on small devices
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null); // Reference to the nav menu
 
     useEffect(() => {
@@ -306,10 +307,67 @@ const Header = () => {
                     <li><Link to="/blogs" onClick={() => setClickMenu(false)} className="block font-normal text-sm hover:text-yellow-400">Blogs</Link></li>
                 </ul>
                 <div className="nav-cta w-full sm:hidden flex items-center justify-center gap-8 h-12">
-                    <Link to="/admin/login" className="py-2.5 rounded-md px-5 bg-gray-100 text-red-600 font-semibold hover:border hover:border-white hover:bg-[#035CB0]">
-                        <i className="ri-login-full mr-1"></i>
-                        LOG IN
-                    </Link>
+                    {isAdmin ? (
+                        <>
+                            <Link
+                                to="/admin/dashboard"
+                                className="py-2.5 rounded-md px-5 bg-green-600 text-yellow-400 font-semibold hover:bg-green-700 hover:border hover:border-white hover:text-yellow-400"
+                                onClick={() => setClickMenu(false)}
+                            >
+                                <i className="ri-dashboard-line mr-1"></i>
+                                DASHBOARD
+                            </Link>
+                            <button
+                                className="py-2.5 rounded-md px-5 bg-red-600 text-yellow-400 font-semibold hover:bg-red-700 hover:border hover:border-white hover:text-yellow-400"
+                                onClick={() => setShowLogoutConfirm(true)}
+                            >
+                                <i className="ri-logout-circle-r-line mr-1"></i>
+                                LOGOUT
+                            </button>
+                            {showLogoutConfirm && (
+                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                                    <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
+                                        <div className="mb-4 text-lg font-semibold text-gray-800">Are you sure you want to logout?</div>
+                                        <div className="flex justify-center gap-4 mt-4">
+                                            <button
+                                                className="px-4 py-2 rounded bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                                onClick={() => setShowLogoutConfirm(false)}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                                                onClick={() => {
+                                                    localStorage.removeItem("token");
+                                                    localStorage.removeItem("user");
+                                                    localStorage.removeItem("isAdmin");
+                                                    localStorage.removeItem("userRole");
+                                                    sessionStorage.removeItem("token");
+                                                    sessionStorage.removeItem("user");
+                                                    sessionStorage.removeItem("isAdmin");
+                                                    setIsAdmin(false);
+                                                    setShowLogoutConfirm(false);
+                                                    setClickMenu(false);
+                                                    navigate("/");
+                                                }}
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <Link
+                            to="/admin/login"
+                            className="py-2.5 rounded-md px-5 bg-gray-100 text-red-600 font-semibold hover:border hover:border-white hover:bg-[#035CB0]"
+                            onClick={() => setClickMenu(false)}
+                        >
+                            <i className="ri-login-full mr-1"></i>
+                            LOG IN
+                        </Link>
+                    )}
                 </div>
             </div>
             ) : ""}
