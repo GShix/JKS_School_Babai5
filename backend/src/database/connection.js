@@ -7,6 +7,8 @@ if (!process.env.db_string) {
 }
 
 const sequelize = new Sequelize(process.env.db_string, {
+  dialect: 'postgres',
+  dialectModule: require('pg'),
   logging: false, // Disable SQL query logging to reduce console noise
   pool: {
     max: 5,

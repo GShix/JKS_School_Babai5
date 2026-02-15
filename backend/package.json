@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "JKS School Backend",
   "license": "ISC",
   "author": "",
   "type": "commonjs",
@@ -10,23 +10,24 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "start": "nodemon --env-file=.env src/app.js",
-    "create-admin": "node --env-file=.env scripts/insertAdmin.js",
-    "setup-storage": "node --env-file=.env scripts/setupSupabaseStorage.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "create-admin": "node scripts/insertAdmin.js",
+    "setup-storage": "node scripts/setupSupabaseStorage.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.95.3",
+    "@supabase/supabase-js": "^2.48.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.4",
-    "express": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
-    "pg": "^8.18.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.12.0",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.0"
   }
 }
