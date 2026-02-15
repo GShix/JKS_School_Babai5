@@ -12,6 +12,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "vercel-build": "node src/app.js",
     "create-admin": "node scripts/insertAdmin.js",
     "setup-storage": "node scripts/setupSupabaseStorage.js"
   },
