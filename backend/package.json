@@ -5,7 +5,10 @@
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "api/index.js",
+  "engines": {
+    "node": ">=18.x"
+  },
   "scripts": {
     "start": "nodemon --env-file=.env app.js",
     "create-admin": "node --env-file=.env insertAdmin.js",
@@ -19,9 +22,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "nodemon": "^3.1.10",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
