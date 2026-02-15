@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { sequelize, schoolProfile, schoolMessages } = require('./database/connection');
+const { sequelize, schoolProfile, schoolMessages } = require('../src/database/connection');
 
 async function setupSchoolProfile() {
   try {

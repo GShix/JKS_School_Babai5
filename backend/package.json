@@ -10,9 +10,9 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "start": "nodemon --env-file=.env app.js",
-    "create-admin": "node --env-file=.env insertAdmin.js",
-    "setup-storage": "node --env-file=.env setupSupabaseStorage.js"
+    "start": "nodemon --env-file=.env src/app.js",
+    "create-admin": "node --env-file=.env scripts/insertAdmin.js",
+    "setup-storage": "node --env-file=.env scripts/setupSupabaseStorage.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",

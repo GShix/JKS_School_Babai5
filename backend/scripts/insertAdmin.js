@@ -1,7 +1,7 @@
 
 
 const bcrypt = require('bcryptjs');
-const { admins, sequelize } = require('./database/connection');
+const { admins, sequelize } = require('../src/database/connection');
 
 const createAdmin = async () => {
   try {

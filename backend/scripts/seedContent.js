@@ -6,7 +6,7 @@
  */
 
 require('dotenv').config();
-const { contents } = require('./database/connection');
+const { contents } = require('../src/database/connection');
 
 const seedContent = async () => {
   try {

@@ -1,4 +1,4 @@
-const { sequelize } = require('./database/connection');
+const { sequelize } = require('../src/database/connection');
 
 async function checkAnnouncements() {
   try {
