@@ -1,7 +1,6 @@
 const { gallery } = require('../database/connection');
 const { Op } = require('sequelize');
-const path = require('path');
-const fs = require('fs');
+const { uploadToSupabase, deleteFromSupabase } = require('../config/supabase');
 
 // Helper function to normalize gallery data
 const normalizeGallery = (item) => {
@@ -18,29 +17,47 @@ const normalizeGallery = (item) => {
   };
 };
 
-// Helper function to process uploaded files
-const processUploadedFiles = (files, type = 'images') => {
+// Helper function to process uploaded files (with Supabase)
+const processUploadedFiles = async (files, bucketFolder = 'gallery') => {
   if (!files || files.length === 0) return [];
   
-  return files.map(file => ({
-    filename: file.filename,
-    originalName: file.originalname,
-    fileType: file.mimetype,
-    url: `/uploads/gallery/${file.filename}`,
-    size: file.size
-  }));
+  const uploadedFiles = [];
+  for (const file of files) {
+    try {
+      const uploadResult = await uploadToSupabase(
+        file.buffer,
+        file.originalname,
+        bucketFolder,
+        file.mimetype
+      );
+      
+      uploadedFiles.push({
+        filename: uploadResult.path,
+        originalName: file.originalname,
+        fileType: file.mimetype,
+        url: uploadResult.url,
+        size: file.size
+      });
+    } catch (error) {
+      console.error(`Error uploading file ${file.originalname}:`, error);
+      throw error;
+    }
+  }
+  
+  return uploadedFiles;
 };
 
-// Helper function to delete files
-const deleteFiles = (files) => {
+// Helper function to delete files from Supabase
+const deleteFiles = async (files, bucketFolder = 'gallery') => {
   if (!files || files.length === 0) return;
   
-  files.forEach(file => {
-    const filePath = path.join(__dirname, '..', file.url);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+  for (const file of files) {
+    try {
+      await deleteFromSupabase(file.url, bucketFolder);
+    } catch (error) {
+      console.error(`Error deleting file ${file.filename}:`, error);
     }
-  });
+  }
 };
 
 // Create Gallery Item
@@ -57,17 +74,30 @@ exports.createGalleryItem = async (req, res) => {
     } = req.body;
 
     if (!title) {
-      // Clean up uploaded files if validation fails
-      if (req.files) {
-        if (req.files.images) req.files.images.forEach(file => fs.unlinkSync(file.path));
-        if (req.files.videos) req.files.videos.forEach(file => fs.unlinkSync(file.path));
-      }
       return res.status(400).json({ message: 'Title is required' });
     }
 
-    // Process uploaded files
-    const images = processUploadedFiles(req.files?.images, 'images');
-    const videos = processUploadedFiles(req.files?.videos, 'videos');
+    // Upload files to Supabase
+    let images = [];
+    let videos = [];
+
+    try {
+      if (req.files?.images) {
+        images = await processUploadedFiles(req.files.images, 'gallery/images');
+      }
+      if (req.files?.videos) {
+        videos = await processUploadedFiles(req.files.videos, 'gallery/videos');
+      }
+    } catch (uploadError) {
+      console.error('Error uploading files:', uploadError);
+      // Clean up any successfully uploaded files
+      await deleteFiles(images, 'gallery/images');
+      await deleteFiles(videos, 'gallery/videos');
+      return res.status(500).json({
+        message: 'Error uploading files',
+        error: uploadError.message,
+      });
+    }
 
     if (images.length === 0 && videos.length === 0) {
       return res.status(400).json({ message: 'At least one image or video is required' });
@@ -92,15 +122,6 @@ exports.createGalleryItem = async (req, res) => {
       data: normalizeGallery(newItem)
     });
   } catch (error) {
-    // Clean up uploaded files if error occurs
-    if (req.files) {
-      if (req.files.images) req.files.images.forEach(file => {
-        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-      });
-      if (req.files.videos) req.files.videos.forEach(file => {
-        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-      });
-    }
     return res.status(500).json({ 
       message: 'Could not create gallery item', 
       error: error.message 
@@ -190,11 +211,6 @@ exports.updateGalleryItem = async (req, res) => {
 
     const item = await gallery.findByPk(id);
     if (!item) {
-      // Clean up uploaded files
-      if (req.files) {
-        if (req.files.images) req.files.images.forEach(file => fs.unlinkSync(file.path));
-        if (req.files.videos) req.files.videos.forEach(file => fs.unlinkSync(file.path));
-      }
       return res.status(404).json({ message: 'Gallery item not found' });
     }
 
@@ -202,7 +218,7 @@ exports.updateGalleryItem = async (req, res) => {
     let existingImages = item.images || [];
     let existingVideos = item.videos || [];
     
-    // Remove specified images
+    // Remove specified images from Supabase
     if (removeImages) {
       const filesToRemove = typeof removeImages === 'string' 
         ? JSON.parse(removeImages) 
@@ -212,7 +228,7 @@ exports.updateGalleryItem = async (req, res) => {
         const imagesToDelete = existingImages.filter(img => 
           filesToRemove.includes(img.filename)
         );
-        deleteFiles(imagesToDelete);
+        await deleteFiles(imagesToDelete, 'gallery/images');
         
         existingImages = existingImages.filter(img => 
           !filesToRemove.includes(img.filename)
@@ -220,7 +236,7 @@ exports.updateGalleryItem = async (req, res) => {
       }
     }
 
-    // Remove specified videos
+    // Remove specified videos from Supabase
     if (removeVideos) {
       const filesToRemove = typeof removeVideos === 'string' 
         ? JSON.parse(removeVideos) 
@@ -230,7 +246,7 @@ exports.updateGalleryItem = async (req, res) => {
         const videosToDelete = existingVideos.filter(vid => 
           filesToRemove.includes(vid.filename)
         );
-        deleteFiles(videosToDelete);
+        await deleteFiles(videosToDelete, 'gallery/videos');
         
         existingVideos = existingVideos.filter(vid => 
           !filesToRemove.includes(vid.filename)
@@ -238,9 +254,28 @@ exports.updateGalleryItem = async (req, res) => {
       }
     }
 
-    // Add new files
-    const newImages = processUploadedFiles(req.files?.images, 'images');
-    const newVideos = processUploadedFiles(req.files?.videos, 'videos');
+    // Upload new files to Supabase
+    let newImages = [];
+    let newVideos = [];
+    
+    try {
+      if (req.files?.images) {
+        newImages = await processUploadedFiles(req.files.images, 'gallery/images');
+      }
+      if (req.files?.videos) {
+        newVideos = await processUploadedFiles(req.files.videos, 'gallery/videos');
+      }
+    } catch (uploadError) {
+      console.error('Error uploading files:', uploadError);
+      // Clean up any successfully uploaded files
+      await deleteFiles(newImages, 'gallery/images');
+      await deleteFiles(newVideos, 'gallery/videos');
+      return res.status(500).json({
+        message: 'Error uploading new files',
+        error: uploadError.message,
+      });
+    }
+
     const allImages = [...existingImages, ...newImages];
     const allVideos = [...existingVideos, ...newVideos];
 
@@ -261,15 +296,6 @@ exports.updateGalleryItem = async (req, res) => {
       data: normalizeGallery(item)
     });
   } catch (error) {
-    // Clean up uploaded files if error occurs
-    if (req.files) {
-      if (req.files.images) req.files.images.forEach(file => {
-        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-      });
-      if (req.files.videos) req.files.videos.forEach(file => {
-        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-      });
-    }
     return res.status(500).json({ 
       message: 'Could not update gallery item', 
       error: error.message 
@@ -287,9 +313,9 @@ exports.deleteGalleryItem = async (req, res) => {
       return res.status(404).json({ message: 'Gallery item not found' });
     }
 
-    // Delete associated files
-    deleteFiles(item.images);
-    deleteFiles(item.videos);
+    // Delete associated files from Supabase
+    await deleteFiles(item.images, 'gallery/images');
+    await deleteFiles(item.videos, 'gallery/videos');
 
     await item.destroy();
     return res.json({ message: 'Gallery item deleted successfully' });

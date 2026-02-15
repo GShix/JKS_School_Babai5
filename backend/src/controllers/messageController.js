@@ -1,6 +1,5 @@
 const { schoolMessages } = require('../database/connection');
-const path = require('path');
-const fs = require('fs').promises;
+const { uploadToSupabase, deleteFromSupabase } = require('../config/supabase');
 
 // Get all messages (with optional filter for active only)
 const getAllMessages = async (req, res) => {
@@ -76,7 +75,22 @@ const createMessage = async (req, res) => {
     // Handle photo upload if exists
     let photoPath = null;
     if (req.file) {
-      photoPath = `/uploads/messages/${req.file.filename}`;
+      try {
+        const uploadResult = await uploadToSupabase(
+          req.file.buffer,
+          req.file.originalname,
+          'messages',
+          req.file.mimetype
+        );
+        photoPath = uploadResult.url;
+      } catch (uploadError) {
+        console.error('Error uploading photo:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading photo',
+          error: uploadError.message
+        });
+      }
     }
     
     const newMessage = await schoolMessages.create({
@@ -128,16 +142,32 @@ const updateMessage = async (req, res) => {
     // Handle photo upload if new file exists
     let photoPath = existingMessage.photo;
     if (req.file) {
-      // Delete old photo if exists
+      // Delete old photo from Supabase if exists
       if (existingMessage.photo) {
-        const oldPhotoPath = path.join(__dirname, '..', existingMessage.photo);
         try {
-          await fs.unlink(oldPhotoPath);
+          await deleteFromSupabase(existingMessage.photo, 'messages');
         } catch (err) {
           console.log('Old photo not found or already deleted');
         }
       }
-      photoPath = `/uploads/messages/${req.file.filename}`;
+      
+      // Upload new photo to Supabase
+      try {
+        const uploadResult = await uploadToSupabase(
+          req.file.buffer,
+          req.file.originalname,
+          'messages',
+          req.file.mimetype
+        );
+        photoPath = uploadResult.url;
+      } catch (uploadError) {
+        console.error('Error uploading photo:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading photo',
+          error: uploadError.message
+        });
+      }
     }
     
     await existingMessage.update({
@@ -179,11 +209,10 @@ const deleteMessage = async (req, res) => {
       });
     }
     
-    // Delete photo if exists
+    // Delete photo from Supabase if exists
     if (message.photo) {
-      const photoPath = path.join(__dirname, '..', message.photo);
       try {
-        await fs.unlink(photoPath);
+        await deleteFromSupabase(message.photo, 'messages');
       } catch (err) {
         console.log('Photo file not found or already deleted');
       }

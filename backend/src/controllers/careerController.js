@@ -1,7 +1,6 @@
 const db = require('../database/connection');
 const { Op } = require('sequelize');
-const path = require('path');
-const fs = require('fs');
+const { uploadToSupabase, deleteFromSupabase } = require('../config/supabase');
 
 const CareerPosition = db.careerPositions;
 const JobApplication = db.jobApplications;
@@ -114,10 +113,6 @@ exports.createPosition = async (req, res) => {
     } = req.body;
 
     if (!title || !department || !description) {
-      // Clean up uploaded file if validation fails
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       return res.status(400).json({ 
         success: false,
         message: 'Title, department, and description are required' 
@@ -140,10 +135,25 @@ exports.createPosition = async (req, res) => {
       createdBy: req.adminId || null
     };
 
-    // Handle uploaded notice file
+    // Handle uploaded notice file to Supabase
     if (req.file) {
-      positionData.noticeFileName = req.file.originalname;
-      positionData.noticeFileUrl = `/uploads/career/notices/${req.file.filename}`;
+      try {
+        const uploadResult = await uploadToSupabase(
+          req.file.buffer,
+          req.file.originalname,
+          'career/notices',
+          req.file.mimetype
+        );
+        positionData.noticeFileName = req.file.originalname;
+        positionData.noticeFileUrl = uploadResult.url;
+      } catch (uploadError) {
+        console.error('Error uploading notice file:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading notice file',
+          error: uploadError.message
+        });
+      }
     }
 
     const position = await CareerPosition.create(positionData);
@@ -155,14 +165,6 @@ exports.createPosition = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating position:', error);
-    // Clean up uploaded file on error
-    if (req.file) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (err) {
-        console.error('Error deleting file:', err);
-      }
-    }
     res.status(500).json({ 
       success: false,
       message: 'Error creating career position',
@@ -178,10 +180,6 @@ exports.updatePosition = async (req, res) => {
     const position = await CareerPosition.findByPk(id);
 
     if (!position) {
-      // Clean up uploaded file if position not found
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       return res.status(404).json({ 
         success: false,
         message: 'Position not found' 
@@ -218,15 +216,33 @@ exports.updatePosition = async (req, res) => {
 
     // Handle new uploaded notice file
     if (req.file) {
-      // Delete old file if exists
+      // Delete old file from Supabase if exists
       if (position.noticeFileUrl) {
-        const oldFilePath = path.join(__dirname, '..', position.noticeFileUrl);
-        if (fs.existsSync(oldFilePath)) {
-          fs.unlinkSync(oldFilePath);
+        try {
+          await deleteFromSupabase(position.noticeFileUrl, 'career/notices');
+        } catch (err) {
+          console.error('Error deleting old file:', err);
         }
       }
-      updateData.noticeFileName = req.file.originalname;
-      updateData.noticeFileUrl = `/uploads/career/notices/${req.file.filename}`;
+      
+      // Upload new file to Supabase
+      try {
+        const uploadResult = await uploadToSupabase(
+          req.file.buffer,
+          req.file.originalname,
+          'career/notices',
+          req.file.mimetype
+        );
+        updateData.noticeFileName = req.file.originalname;
+        updateData.noticeFileUrl = uploadResult.url;
+      } catch (uploadError) {
+        console.error('Error uploading notice file:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading notice file',
+          error: uploadError.message
+        });
+      }
     }
 
     await position.update(updateData);
@@ -238,16 +254,13 @@ exports.updatePosition = async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating position:', error);
-    // Clean up uploaded file on error
-    if (req.file) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (err) {
-        console.error('Error deleting file:', err);
-      }
-    }
     res.status(500).json({ 
       success: false,
+      message: 'Error updating career position',
+      error: error.message 
+    });
+  }
+};
       message: 'Error updating career position',
       error: error.message 
     });
@@ -299,10 +312,6 @@ exports.submitApplication = async (req, res) => {
     const { positionId, applicantName, email, phone, coverLetter } = req.body;
 
     if (!positionId || !applicantName || !email || !phone) {
-      // Clean up uploaded file if validation fails
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       return res.status(400).json({ 
         success: false,
         message: 'Position ID, name, email, and phone are required' 
@@ -319,7 +328,6 @@ exports.submitApplication = async (req, res) => {
     // Check if position exists and is active
     const position = await CareerPosition.findByPk(positionId);
     if (!position) {
-      fs.unlinkSync(req.file.path);
       return res.status(404).json({ 
         success: false,
         message: 'Career position not found' 
@@ -327,7 +335,6 @@ exports.submitApplication = async (req, res) => {
     }
 
     if (position.status !== 'active') {
-      fs.unlinkSync(req.file.path);
       return res.status(400).json({ 
         success: false,
         message: 'This position is no longer accepting applications' 
@@ -336,10 +343,28 @@ exports.submitApplication = async (req, res) => {
 
     // Check if deadline has passed
     if (position.applicationDeadline && new Date(position.applicationDeadline) < new Date()) {
-      fs.unlinkSync(req.file.path);
       return res.status(400).json({ 
         success: false,
         message: 'Application deadline has passed' 
+      });
+    }
+
+    // Upload resume to Supabase
+    let resumeUrl;
+    try {
+      const uploadResult = await uploadToSupabase(
+        req.file.buffer,
+        req.file.originalname,
+        'career/resumes',
+        req.file.mimetype
+      );
+      resumeUrl = uploadResult.url;
+    } catch (uploadError) {
+      console.error('Error uploading resume:', uploadError);
+      return res.status(500).json({
+        success: false,
+        message: 'Error uploading resume file',
+        error: uploadError.message
       });
     }
 
@@ -351,7 +376,7 @@ exports.submitApplication = async (req, res) => {
       phone: phone.trim(),
       coverLetter: coverLetter?.trim() || null,
       resumeFileName: req.file.originalname,
-      resumeFileUrl: `/uploads/career/resumes/${req.file.filename}`,
+      resumeFileUrl: resumeUrl,
       status: 'pending'
     };
 
@@ -364,14 +389,6 @@ exports.submitApplication = async (req, res) => {
     });
   } catch (error) {
     console.error('Error submitting application:', error);
-    // Clean up uploaded file on error
-    if (req.file) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (err) {
-        console.error('Error deleting file:', err);
-      }
-    }
     res.status(500).json({ 
       success: false,
       message: 'Error submitting application',

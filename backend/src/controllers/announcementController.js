@@ -1,7 +1,6 @@
 const { announcements } = require('../database/connection');
 const { Op } = require('sequelize');
-const path = require('path');
-const fs = require('fs');
+const { uploadToSupabase, deleteFromSupabase } = require('../config/supabase');
 
 // Helper function to normalize announcement data
 const normalizeAnnouncement = (announcement) => {
@@ -16,29 +15,47 @@ const normalizeAnnouncement = (announcement) => {
   };
 };
 
-// Helper function to process uploaded files
-const processUploadedFiles = (files) => {
+// Helper function to process uploaded files (with Supabase)
+const processUploadedFiles = async (files, bucketFolder = 'announcements') => {
   if (!files || files.length === 0) return [];
   
-  return files.map(file => ({
-    filename: file.filename,
-    originalName: file.originalname,
-    fileType: file.mimetype,
-    url: `/uploads/announcements/${file.filename}`,
-    size: file.size
-  }));
+  const uploadedFiles = [];
+  for (const file of files) {
+    try {
+      const uploadResult = await uploadToSupabase(
+        file.buffer,
+        file.originalname,
+        bucketFolder,
+        file.mimetype
+      );
+      
+      uploadedFiles.push({
+        filename: uploadResult.path,
+        originalName: file.originalname,
+        fileType: file.mimetype,
+        url: uploadResult.url,
+        size: file.size
+      });
+    } catch (error) {
+      console.error(`Error uploading file ${file.originalname}:`, error);
+      throw error;
+    }
+  }
+  
+  return uploadedFiles;
 };
 
-// Helper function to delete files
-const deleteFiles = (attachments) => {
+// Helper function to delete files from Supabase
+const deleteFiles = async (attachments, bucketFolder = 'announcements') => {
   if (!attachments || attachments.length === 0) return;
   
-  attachments.forEach(attachment => {
-    const filePath = path.join(__dirname, '..', attachment.url);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+  for (const attachment of attachments) {
+    try {
+      await deleteFromSupabase(attachment.url, bucketFolder);
+    } catch (error) {
+      console.error(`Error deleting file ${attachment.filename}:`, error);
     }
-  });
+  }
 };
 
 // Create Announcement
@@ -56,34 +73,28 @@ exports.createAnnouncement = async (req, res) => {
     } = req.body;
 
     if (!title || !content) {
-      // Clean up uploaded files if validation fails
-      if (req.files && req.files.length > 0) {
-        req.files.forEach(file => {
-          const filePath = file.path;
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-        });
-      }
       return res.status(400).json({ message: 'Title and content are required' });
     }
 
     // Validate title and content are not just whitespace
     if (title.trim() === '' || content.trim() === '') {
-      // Clean up uploaded files if validation fails
-      if (req.files && req.files.length > 0) {
-        req.files.forEach(file => {
-          const filePath = file.path;
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-        });
-      }
       return res.status(400).json({ message: 'Title and content cannot be empty' });
     }
 
-    // Process uploaded files
-    const attachments = processUploadedFiles(req.files);
+    // Upload files to Supabase
+    let attachments = [];
+    try {
+      if (req.files && req.files.length > 0) {
+        attachments = await processUploadedFiles(req.files, 'announcements');
+      }
+    } catch (uploadError) {
+      console.error('Error uploading files:', uploadError);
+      await deleteFiles(attachments, 'announcements');
+      return res.status(500).json({
+        message: 'Error uploading files',
+        error: uploadError.message,
+      });
+    }
 
     const newAnnouncement = await announcements.create({
       title: title.trim(),
@@ -103,15 +114,6 @@ exports.createAnnouncement = async (req, res) => {
       data: normalizeAnnouncement(newAnnouncement)
     });
   } catch (error) {
-    // Clean up uploaded files if error occurs
-    if (req.files && req.files.length > 0) {
-      req.files.forEach(file => {
-        const filePath = file.path;
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      });
-    }
     return res.status(500).json({ 
       message: 'Could not create announcement', 
       error: error.message 
@@ -200,49 +202,22 @@ exports.updateAnnouncement = async (req, res) => {
 
     const announcement = await announcements.findByPk(id);
     if (!announcement) {
-      // Clean up uploaded files
-      if (req.files && req.files.length > 0) {
-        req.files.forEach(file => {
-          const filePath = file.path;
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-        });
-      }
       return res.status(404).json({ message: 'Announcement not found' });
     }
 
     // Validate title and content if provided
     if (title !== undefined && title.trim() === '') {
-      // Clean up uploaded files
-      if (req.files && req.files.length > 0) {
-        req.files.forEach(file => {
-          const filePath = file.path;
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-        });
-      }
       return res.status(400).json({ message: 'Title cannot be empty' });
     }
     
     if (content !== undefined && content.trim() === '') {
-      // Clean up uploaded files
-      if (req.files && req.files.length > 0) {
-        req.files.forEach(file => {
-          const filePath = file.path;
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-        });
-      }
       return res.status(400).json({ message: 'Content cannot be empty' });
     }
 
     // Get existing attachments
     let existingAttachments = announcement.attachments || [];
     
-    // Remove specified attachments
+    // Remove specified attachments from Supabase
     if (removeAttachments) {
       const filesToRemove = typeof removeAttachments === 'string' 
         ? JSON.parse(removeAttachments) 
@@ -252,7 +227,7 @@ exports.updateAnnouncement = async (req, res) => {
         const attachmentsToDelete = existingAttachments.filter(att => 
           filesToRemove.includes(att.filename)
         );
-        deleteFiles(attachmentsToDelete);
+        await deleteFiles(attachmentsToDelete, 'announcements');
         
         existingAttachments = existingAttachments.filter(att => 
           !filesToRemove.includes(att.filename)
@@ -260,8 +235,21 @@ exports.updateAnnouncement = async (req, res) => {
       }
     }
 
-    // Add new attachments
-    const newAttachments = processUploadedFiles(req.files);
+    // Upload new attachments to Supabase
+    let newAttachments = [];
+    try {
+      if (req.files && req.files.length > 0) {
+        newAttachments = await processUploadedFiles(req.files, 'announcements');
+      }
+    } catch (uploadError) {
+      console.error('Error uploading files:', uploadError);
+      await deleteFiles(newAttachments, 'announcements');
+      return res.status(500).json({
+        message: 'Error uploading new files',
+        error: uploadError.message,
+      });
+    }
+
     const allAttachments = [...existingAttachments, ...newAttachments];
 
     await announcement.update({
@@ -281,15 +269,6 @@ exports.updateAnnouncement = async (req, res) => {
       data: normalizeAnnouncement(announcement)
     });
   } catch (error) {
-    // Clean up uploaded files if error occurs
-    if (req.files && req.files.length > 0) {
-      req.files.forEach(file => {
-        const filePath = file.path;
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      });
-    }
     return res.status(500).json({ 
       message: 'Could not update announcement', 
       error: error.message 
@@ -307,8 +286,8 @@ exports.deleteAnnouncement = async (req, res) => {
       return res.status(404).json({ message: 'Announcement not found' });
     }
 
-    // Delete associated files
-    deleteFiles(announcement.attachments || []);
+    // Delete associated files from Supabase
+    await deleteFiles(announcement.attachments || [], 'announcements');
 
     await announcements.destroy({ where: { id } });
     return res.json({ message: 'Announcement deleted successfully' });

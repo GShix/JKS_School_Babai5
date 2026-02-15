@@ -1,5 +1,6 @@
 
 const { blogs } = require("../database/connection");
+const { uploadToSupabase } = require('../config/supabase');
 
 exports.createBlog = async(req, res) => {
   try {
@@ -121,14 +122,20 @@ exports.uploadImage = async(req, res) => {
             });
         }
 
-        // Return the URL of the uploaded image
-        const imageUrl = `/uploads/blogs/${req.file.filename}`;
+        // Upload to Supabase Storage
+        const uploadResult = await uploadToSupabase(
+            req.file.buffer,
+            req.file.originalname,
+            'blogs',
+            req.file.mimetype
+        );
         
         res.json({
             message: 'Image uploaded successfully',
-            url: imageUrl
+            url: uploadResult.url
         });
     } catch (error) {
+        console.error('Error uploading blog image:', error);
         res.status(500).json({
             message: 'Error uploading image',
             error: error.message
