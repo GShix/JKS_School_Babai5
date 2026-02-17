@@ -3,7 +3,7 @@ import Footer from '../../layouts/Footer'
 import Header from '../../layouts/Header'
 import { announcementService } from '../../api/services/announcementService'
 import type { Announcement } from '../../api/types'
-import { SERVER_URL } from '../../api/config'
+import { getImageUrl } from '../../utils/imageUtils'
 
 export default function Announcements() {
     const [announcements, setAnnouncements] = React.useState<Announcement[]>([])
@@ -55,7 +55,7 @@ export default function Announcements() {
 
     const handleDownload = (fileUrl: string, fileName: string) => {
         const link = document.createElement('a')
-        link.href = `${SERVER_URL}${fileUrl}`
+        link.href = getImageUrl(fileUrl)
         link.download = fileName
         link.target = '_blank'
         document.body.appendChild(link)

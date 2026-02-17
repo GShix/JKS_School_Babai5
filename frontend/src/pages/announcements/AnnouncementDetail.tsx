@@ -5,7 +5,7 @@ import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
 import { announcementService } from '../../api/services/announcementService';
 import type { Announcement } from '../../api/types';
-import { SERVER_URL } from '../../api/config';
+import { getImageUrl } from '../../utils/imageUtils';
 
 export default function AnnouncementDetail() {
   const { id } = useParams<{ id: string }>();
@@ -40,7 +40,7 @@ export default function AnnouncementDetail() {
 
   const handleDownload = (fileUrl: string, fileName: string) => {
     const link = document.createElement('a');
-    link.href = `${SERVER_URL}${fileUrl}`;
+    link.href = getImageUrl(fileUrl);
     link.download = fileName;
     link.target = '_blank';
     document.body.appendChild(link);
@@ -151,13 +151,13 @@ export default function AnnouncementDetail() {
                 {imageAttachments.map((file, index) => (
                   <div key={index} className="border rounded overflow-hidden shadow-sm">
                     <img
-                      src={`${SERVER_URL}${file.url}`}
+                      src={getImageUrl(file.url)}
                       alt={file.originalName}
                       className="w-full h-auto object-cover max-h-96"
                       loading="lazy"
                       decoding="async"
                       onError={(e) => {
-                        console.error('Image failed to load:', `${SERVER_URL}${file.url}`);
+                        console.error('Image failed to load:', getImageUrl(file.url));
                         const img = e.target as HTMLImageElement;
                         if (!img.src.endsWith('/img/placeholder.jpg')) {
                           img.src = '/img/placeholder.jpg';

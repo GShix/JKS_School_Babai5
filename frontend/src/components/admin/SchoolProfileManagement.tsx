@@ -3,6 +3,7 @@ import { Save, MapPin, Target, Eye } from 'lucide-react';
 import Button from '../shared/Button';
 import FormInput from '../shared/FormInput';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError } from '../../utils/sweetAlert';
 
 interface SchoolProfile {
@@ -62,7 +63,7 @@ const SchoolProfileManagement = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const response = await axios.get('http://localhost:4000/api/school-profile', {
+      const response = await axios.get(`${API_BASE_URL}/school-profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -121,7 +122,7 @@ const SchoolProfileManagement = () => {
       };
       
       const response = await axios.put(
-        'http://localhost:4000/api/school-profile',
+        `${API_BASE_URL}/school-profile`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );

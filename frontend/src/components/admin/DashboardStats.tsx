@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Users, GraduationCap, ClipboardCheck, DollarSign, BookOpen, FileText, Calendar, Bell } from 'lucide-react';
 import StatCard from '../shared/StatCard';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 
 interface DashboardStatsProps {
   onStatClick?: (stat: string) => void;
@@ -29,12 +30,12 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       
       // Fetch students count
-      const studentsRes = await axios.get('http://localhost:4000/api/students', {
+      const studentsRes = await axios.get(`${API_BASE_URL}/students`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       // Fetch teachers count  
-      const teachersRes = await axios.get('http://localhost:4000/api/teachers', {
+      const teachersRes = await axios.get(`${API_BASE_URL}/teachers`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

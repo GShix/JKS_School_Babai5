@@ -7,8 +7,9 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
-import { SERVER_URL } from '../../api/config';
+import { SERVER_URL, API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
+import { getImageUrl } from '../../utils/imageUtils';
 
 interface Attachment {
   filename: string;
@@ -137,7 +138,7 @@ const AnnouncementsManagement: React.FC = () => {
   const fetchAnnouncements = async () => {
     try {
       setError(null);
-      const response = await axios.get('http://localhost:4000/api/announcements', {
+      const response = await axios.get(`${API_BASE_URL}/announcements`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       
@@ -156,7 +157,7 @@ const AnnouncementsManagement: React.FC = () => {
       
       // Handle different error types
       if (error.code === 'ERR_NETWORK') {
-        setError('Cannot connect to server. Please ensure the backend is running on http://localhost:4000');
+        setError(`Cannot connect to server. Please ensure the backend is running on ${SERVER_URL}`);
       } else if (error.response) {
         // Server responded with error status
         const errorMsg = error.response.data?.message || `Server error: ${error.response.status}`;
@@ -215,7 +216,7 @@ const AnnouncementsManagement: React.FC = () => {
       
       if (editingAnnouncement) {
         const response = await axios.put(
-          `http://localhost:4000/api/announcements/${editingAnnouncement.id}`,
+          `${API_BASE_URL}/announcements/${editingAnnouncement.id}`,
           formDataToSend,
           { 
             headers: { 
@@ -227,7 +228,7 @@ const AnnouncementsManagement: React.FC = () => {
         responseMessage = response.data?.message || 'Announcement updated successfully!';
       } else {
         const response = await axios.post(
-          'http://localhost:4000/api/announcements/create',
+          `${API_BASE_URL}/announcements/create`,
           formDataToSend,
           { 
             headers: { 
@@ -250,7 +251,7 @@ const AnnouncementsManagement: React.FC = () => {
       let errorMessage = 'Failed to save announcement';
       
       if (error.code === 'ERR_NETWORK') {
-        errorMessage = 'Cannot connect to server. Please ensure the backend is running on http://localhost:4000';
+        errorMessage = `Cannot connect to server. Please ensure the backend is running on ${SERVER_URL}`;
       } else if (error.response) {
         errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
       } else if (error.message) {
@@ -289,7 +290,7 @@ const AnnouncementsManagement: React.FC = () => {
     if (!result.isConfirmed) return;
 
     try {
-      const response = await axios.delete(`http://localhost:4000/api/announcements/${id}`, {
+      const response = await axios.delete(`${API_BASE_URL}/announcements/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       
@@ -319,7 +320,7 @@ const AnnouncementsManagement: React.FC = () => {
       ));
       
       const response = await axios.patch(
-        `http://localhost:4000/api/announcements/${id}/pin`,
+        `${API_BASE_URL}/announcements/${id}/pin`,
         { isPinned: !currentPinned },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -575,7 +576,7 @@ const AnnouncementsManagement: React.FC = () => {
                           </button>
                         )}
                         <a
-                          href={`${SERVER_URL}${file.url}`}
+                          href={getImageUrl(file.url)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
@@ -589,7 +590,7 @@ const AnnouncementsManagement: React.FC = () => {
                     {isImage && currentImageIndex === index && (
                       <div className="mt-4 border-t pt-4">
                         <img
-                          src={`${SERVER_URL}${file.url}`}
+                          src={getImageUrl(file.url)}
                           alt={file.originalName}
                           className="max-w-full h-auto rounded-lg mx-auto"
                           style={{ maxHeight: '400px' }}

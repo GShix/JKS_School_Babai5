@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { announcementService } from '../api/services/announcementService';
 import type { Announcement } from '../api/types';
-import { SERVER_URL } from '../api/config';
+import { getImageUrl } from '../utils/imageUtils';
 
 interface AnnouncementsModalProps {
   isOpen: boolean;
@@ -91,11 +91,11 @@ const AnnouncementsModal: React.FC<AnnouncementsModalProps> = ({ isOpen, onClose
               {imageUrl && (
                 <div className="w-full bg-gray-100 border-t">
                   <img
-                    src={`${SERVER_URL}${imageUrl}`}
+                    src={getImageUrl(imageUrl)}
                     alt={announcement.title}
                     className="w-full h-auto object-cover max-h-75"
                     onError={(e) => {
-                      console.error('Image failed to load:', `${SERVER_URL}${imageUrl}`);
+                      console.error('Image failed to load:', getImageUrl(imageUrl));
                       e.currentTarget.style.display = 'none';
                     }}
                   />

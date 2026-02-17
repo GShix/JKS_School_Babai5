@@ -31,7 +31,7 @@ export default function Hero({ slides, loading }: HeroProps) {
   // Show loading spinner while fetching
   if (loading) {
     return (
-      <div className="w-full h-[500px] flex items-center justify-center bg-gray-100">
+      <div className="w-full h-125 flex items-center justify-center bg-gray-100">
         <LoadingSpinner />
       </div>
     );
@@ -40,7 +40,7 @@ export default function Hero({ slides, loading }: HeroProps) {
   // Show placeholder if no slides available
   if (slides.length === 0) {
     return (
-      <div className="w-full h-[400px] flex items-center justify-center bg-gradient-to-r from-blue-500 to-[#035CB0]">
+      <div className="w-full h-100 flex items-center justify-center bg-linear-to-r from-blue-500 to-[#035CB0]">
         <div className="text-center text-white">
           <h2 className="text-4xl font-bold mb-4">Welcome to Janakalyan Ma Vi</h2>
           <p className="text-xl">Shaping Future Leaders</p>
@@ -51,28 +51,28 @@ export default function Hero({ slides, loading }: HeroProps) {
 
   return (
     <div className="overflow-hidden bg-white">
-      {/* Preload first hero image for faster LCP */}
-      {slides.length > 0 && (
+      {/* Preload ONLY the currently visible slide's image for optimal LCP */}
+      {slides.length > 0 && current === 0 && (
         <Helmet>
           <link rel="preload" as="image" href={slides[0].imageUrl} fetchPriority="high" />
         </Helmet>
       )}
       
       {/* Image carousel with left/right arrow navigation */}
-      <div className="image-carousel w-full max-sm:w-[100%] h-[500px] px-0">
+      <div className="image-carousel w-full max-sm:w-full h-125 px-0">
         <div className="carousel-wrapper relative overflow-hidden h-full">
           <img
-            className="carousel-image w-full max-sm:w-[100%] h-full object-fit object-cover transition-all duration-500"
+            className="carousel-image w-full max-sm:w-full h-full object-fit object-cover transition-all duration-500"
             src={slides[current].imageUrl}
             alt={slides[current].title || "Hero slide"}
-            loading={current === 0 ? "eager" : "lazy"}
-            fetchPriority={current === 0 ? "high" : "low"}
+            loading="eager"
+            fetchPriority={current === 0 ? "high" : "auto"}
             decoding="async"
           />
           
           {/* Optional title overlay */}
           {slides[current].title && (
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-8 flex justify-center">
+            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black to-transparent p-8 flex justify-center">
               <h2 className="text-white text-xl">{slides[current].title}</h2>
             </div>
           )}

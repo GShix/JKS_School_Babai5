@@ -7,6 +7,7 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showError, showSuccess, showDeleteConfirm } from '../../utils/sweetAlert';
 
 interface Student {
@@ -76,7 +77,7 @@ const StudentsManagement: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const response = await axios.get('http://localhost:4000/api/students', {
+      const response = await axios.get(`${API_BASE_URL}/students`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStudents(response.data.data || []);
@@ -109,7 +110,7 @@ const StudentsManagement: React.FC = () => {
       
       if (editingStudent) {
         await axios.put(
-          `http://localhost:4000/api/students/${editingStudent.id}/update`,
+          `${API_BASE_URL}/students/${editingStudent.id}/update`,
           submitData,
           { 
             headers: { 
@@ -120,7 +121,7 @@ const StudentsManagement: React.FC = () => {
         );
       } else {
         await axios.post(
-          'http://localhost:4000/api/students/create',
+          `${API_BASE_URL}/students/create`,
           submitData,
           { 
             headers: { 
@@ -148,7 +149,7 @@ const StudentsManagement: React.FC = () => {
     
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      await axios.delete(`http://localhost:4000/api/students/${id}/delete`, {
+      await axios.delete(`${API_BASE_URL}/students/${id}/delete`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchStudents();
