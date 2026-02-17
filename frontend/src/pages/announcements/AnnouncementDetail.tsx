@@ -161,7 +161,10 @@ export default function AnnouncementDetail() {
                       alt={file.originalName}
                       className="w-full h-auto"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/img/placeholder.jpg';
+                        const img = e.target as HTMLImageElement;
+                        if (!img.src.endsWith('/img/placeholder.jpg')) {
+                          img.src = '/img/placeholder.jpg';
+                        }
                       }}
                     />
                     <div className="p-2 bg-gray-50 flex items-center justify-between">
