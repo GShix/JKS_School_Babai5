@@ -7,6 +7,7 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
 
 interface Grade {
@@ -64,7 +65,7 @@ const GradesManagement: React.FC = () => {
       if (filterClass) params.class = filterClass;
       if (filterTerm) params.term = filterTerm;
 
-      const response = await axios.get('http://localhost:3000/api/grades', {
+      const response = await axios.get(`${API_BASE_URL}/grades`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         params
       });
@@ -115,14 +116,14 @@ const GradesManagement: React.FC = () => {
       setLoading(true);
       if (editingGrade) {
         await axios.put(
-          `http://localhost:3000/api/grades/${editingGrade.id}/update`,
+          `${API_BASE_URL}/grades/${editingGrade.id}/update`,
           gradeData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         showSuccess('Grade has been updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3000/api/grades/create',
+          `${API_BASE_URL}/grades/create`,
           gradeData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -161,7 +162,7 @@ const GradesManagement: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/api/grades/${id}/delete`, {
+      await axios.delete(`${API_BASE_URL}/grades/${id}/delete`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Grade has been deleted successfully!');

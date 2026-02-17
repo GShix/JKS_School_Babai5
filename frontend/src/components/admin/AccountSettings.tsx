@@ -4,6 +4,7 @@ import Button from '../shared/Button';
 import FormInput from '../shared/FormInput';
 import LoadingSpinner from '../shared/LoadingSpinner';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning } from '../../utils/sweetAlert';
 
 const AccountSettings: React.FC = () => {
@@ -78,7 +79,7 @@ const AccountSettings: React.FC = () => {
     try {
       setLoading(true);
       await axios.put(
-        `http://localhost:3000/api/admins/${adminData.id}/profile`,
+        `${API_BASE_URL}/admin/profile`,
         profileForm,
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -114,7 +115,7 @@ const AccountSettings: React.FC = () => {
     try {
       setLoading(true);
       await axios.put(
-        `http://localhost:3000/api/admins/${adminData.id}/password`,
+        `${API_BASE_URL}/admin/change-password`,
         {
           currentPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword
@@ -140,7 +141,7 @@ const AccountSettings: React.FC = () => {
     try {
       setLoading(true);
       await axios.put(
-        `http://localhost:3000/api/admins/${adminData.id}/notifications`,
+        `${API_BASE_URL}/admin/notifications`,
         notificationSettings,
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );

@@ -7,6 +7,7 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
 
 interface Assignment {
@@ -56,7 +57,7 @@ const AssignmentsManagement: React.FC = () => {
   const fetchAssignments = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/assignments', {
+      const response = await axios.get(`${API_BASE_URL}/assignments`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setAssignments(response.data.data || []);
@@ -88,14 +89,14 @@ const AssignmentsManagement: React.FC = () => {
       setLoading(true);
       if (editingAssignment) {
         await axios.put(
-          `http://localhost:3000/api/assignments/${editingAssignment.id}/update`,
+          `${API_BASE_URL}/assignments/${editingAssignment.id}/update`,
           assignmentData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         showSuccess('Assignment has been updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3000/api/assignments/create',
+          `${API_BASE_URL}/assignments/create`,
           assignmentData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -135,7 +136,7 @@ const AssignmentsManagement: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/api/assignments/${id}/delete`, {
+      await axios.delete(`${API_BASE_URL}/assignments/${id}/delete`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Assignment has been deleted successfully!');

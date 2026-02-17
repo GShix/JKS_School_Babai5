@@ -5,6 +5,7 @@ import Button from '../shared/Button';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError } from '../../utils/sweetAlert';
 
 interface Student {
@@ -52,7 +53,7 @@ const AttendanceManagement: React.FC = () => {
   const fetchStudents = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/students', {
+      const response = await axios.get(`${API_BASE_URL}/students`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setStudents(response.data.data || []);
@@ -70,7 +71,7 @@ const AttendanceManagement: React.FC = () => {
       if (selectedClass) params.class = selectedClass;
       if (selectedSection) params.section = selectedSection;
 
-      const response = await axios.get('http://localhost:3000/api/attendance', {
+      const response = await axios.get(`${API_BASE_URL}/attendance`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         params
       });
@@ -113,7 +114,7 @@ const AttendanceManagement: React.FC = () => {
         remarks: ''
       }));
 
-      await axios.post('http://localhost:3000/api/attendance/bulk', 
+      await axios.post(`${API_BASE_URL}/attendance/bulk`, 
         { attendance: attendanceData },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );

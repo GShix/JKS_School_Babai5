@@ -7,6 +7,7 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
 
 interface FeeRecord {
@@ -59,7 +60,7 @@ const FeesManagement: React.FC = () => {
   const fetchFees = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/fees', {
+      const response = await axios.get(`${API_BASE_URL}/fees`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setFees(response.data.data || []);
@@ -90,14 +91,14 @@ const FeesManagement: React.FC = () => {
       setLoading(true);
       if (editingFee) {
         await axios.put(
-          `http://localhost:3000/api/fees/${editingFee.id}/update`,
+          `${API_BASE_URL}/fees/${editingFee.id}/update`,
           feeData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         showSuccess('Fee record has been updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3000/api/fees/create',
+          `${API_BASE_URL}/fees/create`,
           feeData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -123,7 +124,7 @@ const FeesManagement: React.FC = () => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:3000/api/fees/${selectedFee.id}/payment`,
+        `${API_BASE_URL}/fees/${selectedFee.id}/payment`,
         {
           paidAmount: amount,
           paidDate: new Date().toISOString().split('T')[0]
@@ -164,7 +165,7 @@ const FeesManagement: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/api/fees/${id}/delete`, {
+      await axios.delete(`${API_BASE_URL}/fees/${id}/delete`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Fee record has been deleted successfully!');

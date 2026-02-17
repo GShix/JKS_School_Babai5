@@ -7,6 +7,7 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
 
 interface Admin {
@@ -63,7 +64,7 @@ const AdminsManagement: React.FC = () => {
   const fetchAdmins = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/admin/all', {
+      const response = await axios.get(`${API_BASE_URL}/admin/all`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setAdmins(response.data.data || []);
@@ -101,14 +102,14 @@ const AdminsManagement: React.FC = () => {
       setLoading(true);
       if (editingAdmin) {
         await axios.put(
-          `http://localhost:3000/api/admin/${editingAdmin.id}`,
+          `${API_BASE_URL}/admin/${editingAdmin.id}`,
           adminData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         showSuccess('Admin has been updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3000/api/admin/register',
+          `${API_BASE_URL}/admin/register`,
           adminData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -147,7 +148,7 @@ const AdminsManagement: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/api/admin/${id}`, {
+      await axios.delete(`${API_BASE_URL}/admin/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Admin has been deleted successfully!');

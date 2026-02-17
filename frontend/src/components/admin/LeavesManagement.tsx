@@ -3,6 +3,7 @@ import { CalendarX, CheckCircle, XCircle } from 'lucide-react';
 import DataTable from '../shared/DataTable';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning } from '../../utils/sweetAlert';
 
 interface LeaveRequest {
@@ -43,7 +44,7 @@ const LeavesManagement: React.FC = () => {
     try {
       setLoading(true);
       const params = filterStatus ? { status: filterStatus } : {};
-      const response = await axios.get('http://localhost:3000/api/leaves', {
+      const response = await axios.get(`${API_BASE_URL}/leaves`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         params
       });
@@ -62,7 +63,7 @@ const LeavesManagement: React.FC = () => {
     try {
       setLoading(true);
       await axios.put(
-        `http://localhost:3000/api/leaves/${id}/approve`,
+        `${API_BASE_URL}/leaves/${id}/approve`,
         { remarks },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -86,7 +87,7 @@ const LeavesManagement: React.FC = () => {
     try {
       setLoading(true);
       await axios.put(
-        `http://localhost:3000/api/leaves/${id}/reject`,
+        `${API_BASE_URL}/leaves/${id}/reject`,
         { remarks },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );

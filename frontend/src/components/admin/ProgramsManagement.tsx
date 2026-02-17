@@ -7,6 +7,7 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
 
 interface Program {
@@ -61,7 +62,7 @@ const ProgramsManagement: React.FC = () => {
   const fetchPrograms = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/programs', {
+      const response = await axios.get(`${API_BASE_URL}/programs`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setPrograms(response.data.data || []);
@@ -97,14 +98,14 @@ const ProgramsManagement: React.FC = () => {
       setLoading(true);
       if (editingProgram) {
         await axios.put(
-          `http://localhost:3000/api/programs/${editingProgram.id}/update`,
+          `${API_BASE_URL}/programs/${editingProgram.id}/update`,
           programData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         showSuccess('Program has been updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3000/api/programs/create',
+          `${API_BASE_URL}/programs/create`,
           programData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -148,7 +149,7 @@ const ProgramsManagement: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/api/programs/${id}/delete`, {
+      await axios.delete(`${API_BASE_URL}/programs/${id}/delete`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Program has been deleted successfully!');

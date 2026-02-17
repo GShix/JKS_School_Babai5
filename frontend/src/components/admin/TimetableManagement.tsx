@@ -6,6 +6,7 @@ import Button from '../shared/Button';
 import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
 
 interface TimetableEntry {
@@ -60,7 +61,7 @@ const TimetableManagement: React.FC = () => {
       if (filterClass) params.class = filterClass;
       if (filterDay) params.day = filterDay;
 
-      const response = await axios.get('http://localhost:3000/api/timetable', {
+      const response = await axios.get(`${API_BASE_URL}/timetable`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         params
       });
@@ -94,14 +95,14 @@ const TimetableManagement: React.FC = () => {
       setLoading(true);
       if (editingEntry) {
         await axios.put(
-          `http://localhost:3000/api/timetable/${editingEntry.id}/update`,
+          `${API_BASE_URL}/timetable/${editingEntry.id}/update`,
           entryData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         showSuccess('Timetable entry has been updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3000/api/timetable/create',
+          `${API_BASE_URL}/timetable/create`,
           entryData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -143,7 +144,7 @@ const TimetableManagement: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/api/timetable/${id}/delete`, {
+      await axios.delete(`${API_BASE_URL}/timetable/${id}/delete`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Timetable entry has been deleted successfully!');
