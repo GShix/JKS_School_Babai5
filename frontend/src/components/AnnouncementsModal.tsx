@@ -67,7 +67,8 @@ const AnnouncementsModal: React.FC<AnnouncementsModalProps> = ({ isOpen, onClose
                 zIndex,
                 transform: `translate(${offset}px, ${offset}px)`,
                 width: '500px',
-                maxWidth: '95vw'
+                maxWidth: '95vw',
+                maxHeight: '90vh'
               }}
               onClick={() => handleAnnouncementClick(announcement.id)}
             >
@@ -87,36 +88,42 @@ const AnnouncementsModal: React.FC<AnnouncementsModalProps> = ({ isOpen, onClose
                 <h2 className="text-xl font-bold text-gray-900 text-center">{announcement.title}</h2>
               </div>
 
-              {/* Image - Display prominently */}
-              {imageUrl && (
-                <div className="w-full bg-gray-100 border-t">
-                  <img
-                    src={getImageUrl(imageUrl)}
-                    alt={announcement.title}
-                    className="w-full h-auto object-cover max-h-75"
-                    onError={(e) => {
-                      console.error('Image failed to load:', getImageUrl(imageUrl));
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Content Preview */}
-              <div className="px-4 py-3 bg-white border-t">
-                <p className="text-gray-700 text-sm line-clamp-3">
-                  {announcement.content}
-                </p>
-                
-                {/* Show attachment count if there are files */}
-                {announcement.attachments && announcement.attachments.length > 0 && (
-                  <div className="mt-2 flex items-center gap-2 text-xs text-gray-600">
-                    <i className="ri-attachment-2"></i>
-                    <span>{announcement.attachments.length} attachment{announcement.attachments.length > 1 ? 's' : ''}</span>
+              {/* Scrollable Content Area */}
+              <div className="max-h-[calc(90vh-200px)] overflow-y-auto">
+                {/* Image - Display prominently */}
+                {imageUrl && (
+                  <div className="w-full bg-gray-100 border-t">
+                    <div className="max-h-[60vh] overflow-auto p-2">
+                      <img
+                        src={getImageUrl(imageUrl)}
+                        alt={announcement.title}
+                        className="w-full h-auto object-contain mx-auto"
+                        style={{ maxHeight: '800px' }}
+                        onError={(e) => {
+                          console.error('Image failed to load:', getImageUrl(imageUrl));
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
-                
-                <p className="text-xs text-blue-600 mt-2 text-center font-medium">Click to view full details</p>
+
+                {/* Content Preview */}
+                <div className="px-4 py-3 bg-white border-t">
+                  <p className="text-gray-700 text-sm line-clamp-3">
+                    {announcement.content}
+                  </p>
+                  
+                  {/* Show attachment count if there are files */}
+                  {announcement.attachments && announcement.attachments.length > 0 && (
+                    <div className="mt-2 flex items-center gap-2 text-xs text-gray-600">
+                      <i className="ri-attachment-2"></i>
+                      <span>{announcement.attachments.length} attachment{announcement.attachments.length > 1 ? 's' : ''}</span>
+                    </div>
+                  )}
+                  
+                  <p className="text-xs text-blue-600 mt-2 text-center font-medium">Click to view full details</p>
+                </div>
               </div>
             </div>
           );

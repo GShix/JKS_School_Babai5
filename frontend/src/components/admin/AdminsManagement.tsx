@@ -67,7 +67,10 @@ const AdminsManagement: React.FC = () => {
       const response = await axios.get(`${API_BASE_URL}/admin/all`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
-      setAdmins(response.data.data || []);
+      // Filter out any undefined or null values
+      const adminData = response.data.data || [];
+      const validAdmins = adminData.filter((admin: any) => admin && admin.id);
+      setAdmins(validAdmins);
     } catch (error) {
       console.error('Error fetching admins:', error);
       setAdmins([]);
@@ -176,41 +179,50 @@ const AdminsManagement: React.FC = () => {
   };
 
   const columns = [
-    { key: 'name', label: 'Admin Details', render: (admin: Admin) => (
-      <div className="flex items-center gap-2">
-        {admin.role === 'superAdmin' && <Crown className="w-5 h-5 text-yellow-500" />}
-        <div>
-          <p className="font-medium flex items-center gap-2">
-            {admin.fullName}
-          </p>
-          <p className="text-sm text-gray-600">{admin.email}</p>
+    { key: 'name', label: 'Admin Details', render: (admin: Admin) => {
+      if (!admin) return '-';
+      return (
+        <div className="flex items-center gap-2">
+          {admin.role === 'superAdmin' && <Crown className="w-5 h-5 text-yellow-500" />}
+          <div>
+            <p className="font-medium flex items-center gap-2">
+              {admin.fullName}
+            </p>
+            <p className="text-sm text-gray-600">{admin.email}</p>
+          </div>
         </div>
-      </div>
-    )},
+      );
+    }},
     { key: 'phone', label: 'Phone' },
     { key: 'employeeId', label: 'Employee ID', render: (admin: Admin) => admin.employeeId || '-' },
     { key: 'department', label: 'Department', render: (admin: Admin) => admin.department || '-' },
     { 
       key: 'role', 
       label: 'Role', 
-      render: (admin: Admin) => (
-        <Badge 
-          variant={admin.role === 'superAdmin' ? 'success' : 'info'}
-        >
-          {admin.role === 'superAdmin' ? 'SUPER ADMIN' : 'ADMIN'}
-        </Badge>
-      )
+      render: (admin: Admin) => {
+        if (!admin || !admin.role) return '-';
+        return (
+          <Badge 
+            variant={admin.role === 'superAdmin' ? 'success' : 'info'}
+          >
+            {admin.role === 'superAdmin' ? 'SUPER ADMIN' : 'ADMIN'}
+          </Badge>
+        );
+      }
     },
     { 
       key: 'status', 
       label: 'Status', 
-      render: (admin: Admin) => (
-        <Badge 
-          variant={admin.status === 'active' ? 'success' : 'danger'}
-        >
-          {admin.status.toUpperCase()}
-        </Badge>
-      )
+      render: (admin: Admin) => {
+        if (!admin || !admin.status) return '-';
+        return (
+          <Badge 
+            variant={admin.status === 'active' ? 'success' : 'danger'}
+          >
+            {admin.status.toUpperCase()}
+          </Badge>
+        );
+      }
     },
     { key: 'lastLogin', label: 'Last Login', render: (admin: Admin) => 
       admin.lastLogin ? new Date(admin.lastLogin).toLocaleDateString() : 'Never'
@@ -265,24 +277,27 @@ const AdminsManagement: React.FC = () => {
           searchable={true}
           searchPlaceholder="Search admins..."
           loading={loading && admins.length === 0}
-          actions={(admin) => (
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleEdit(admin)}
-                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-              >
-                <Edit className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => handleDelete(admin.id)}
-                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                disabled={admin.role === 'superAdmin' && admins.filter(a => a.role === 'superAdmin').length === 1}
-                title={admin.role === 'superAdmin' && admins.filter(a => a.role === 'superAdmin').length === 1 ? 'Cannot delete the last super admin' : 'Delete admin'}
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+          actions={(admin) => {
+            if (!admin) return null;
+            return (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleEdit(admin)}
+                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDelete(admin.id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                  disabled={admin.role === 'superAdmin' && admins.filter(a => a && a.role === 'superAdmin').length === 1}
+                  title={admin.role === 'superAdmin' && admins.filter(a => a && a.role === 'superAdmin').length === 1 ? 'Cannot delete the last super admin' : 'Delete admin'}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            );
+          }}
         />
       </div>
 

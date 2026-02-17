@@ -225,26 +225,61 @@ export default function Announcements() {
                             {/* Attachments */}
                             {selected.attachments && selected.attachments.length > 0 && (
                                 <div className="mt-6 border-t pt-4">
-                                    <h4 className="font-semibold mb-3 text-gray-900">Attachments ({selected.attachments.length})</h4>
-                                    <div className="space-y-2">
-                                        {selected.attachments.map((file, idx) => (
-                                            <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded border hover:border-blue-400 transition max-sm:flex-col max-sm:gap-3">
-                                                <div className="flex items-center gap-2">
-                                                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                    </svg>
-                                                    <span className="text-sm font-medium text-gray-700">{file.originalName}</span>
-                                                    <span className="text-xs text-gray-500">({(file.size / 1024).toFixed(1)} KB)</span>
+                                    <h4 className="font-semibold mb-3 text-gray-900">
+                                        {selected.attachments.filter(f => f.fileType.startsWith('image/')).length > 0 ? 'Images' : 'Attachments'} ({selected.attachments.length})
+                                    </h4>
+                                    
+                                    {/* Image Previews */}
+                                    {selected.attachments.filter(f => f.fileType.startsWith('image/')).length > 0 && (
+                                        <div className="mb-4 space-y-3">
+                                            {selected.attachments.filter(f => f.fileType.startsWith('image/')).map((file, idx) => (
+                                                <div key={idx} className="border rounded-lg overflow-hidden">
+                                                    <div className="max-h-[60vh] overflow-auto bg-gray-50 p-3">
+                                                        <img
+                                                            src={getImageUrl(file.url)}
+                                                            alt={file.originalName}
+                                                            className="max-w-full h-auto mx-auto object-contain rounded"
+                                                            style={{ maxHeight: '800px' }}
+                                                            loading="lazy"
+                                                        />
+                                                    </div>
+                                                    <div className="p-2 bg-gray-100 flex items-center justify-between text-sm">
+                                                        <span className="text-gray-700 truncate">{file.originalName}</span>
+                                                        <button 
+                                                            onClick={() => handleDownload(file.url, file.originalName)}
+                                                            className="ml-2 px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 flex-shrink-0"
+                                                        >
+                                                            Download
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <button 
-                                                    onClick={() => handleDownload(file.url, file.originalName)}
-                                                    className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
-                                                >
-                                                    Download
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    
+                                    {/* Non-image Files */}
+                                    {selected.attachments.filter(f => !f.fileType.startsWith('image/')).length > 0 && (
+                                        <div className="space-y-2">
+                                            <h5 className="text-sm font-medium text-gray-700 mb-2">Files</h5>
+                                            {selected.attachments.filter(f => !f.fileType.startsWith('image/')).map((file, idx) => (
+                                                <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded border hover:border-blue-400 transition max-sm:flex-col max-sm:gap-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                        </svg>
+                                                        <span className="text-sm font-medium text-gray-700">{file.originalName}</span>
+                                                        <span className="text-xs text-gray-500">({(file.size / 1024).toFixed(1)} KB)</span>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => handleDownload(file.url, file.originalName)}
+                                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                                                    >
+                                                        Download
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

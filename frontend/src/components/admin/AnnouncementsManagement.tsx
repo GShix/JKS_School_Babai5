@@ -589,12 +589,14 @@ const AnnouncementsManagement: React.FC = () => {
                     {/* Image Preview */}
                     {isImage && currentImageIndex === index && (
                       <div className="mt-4 border-t pt-4">
-                        <img
-                          src={getImageUrl(file.url)}
-                          alt={file.originalName}
-                          className="max-w-full h-auto rounded-lg mx-auto"
-                          style={{ maxHeight: '400px' }}
-                        />
+                        <div className="max-h-[60vh] overflow-auto rounded-lg bg-gray-50 p-2">
+                          <img
+                            src={getImageUrl(file.url)}
+                            alt={file.originalName}
+                            className="max-w-full h-auto rounded-lg mx-auto object-contain"
+                            style={{ maxHeight: '800px' }}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
