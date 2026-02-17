@@ -63,7 +63,7 @@ const AdminsManagement: React.FC = () => {
   const fetchAdmins = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/admins', {
+      const response = await axios.get('http://localhost:3000/api/admin/all', {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setAdmins(response.data.data || []);
@@ -101,14 +101,14 @@ const AdminsManagement: React.FC = () => {
       setLoading(true);
       if (editingAdmin) {
         await axios.put(
-          `http://localhost:3000/api/admins/${editingAdmin.id}/update`,
+          `http://localhost:3000/api/admin/${editingAdmin.id}`,
           adminData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         showSuccess('Admin has been updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3000/api/admins/create',
+          'http://localhost:3000/api/admin/register',
           adminData,
           { headers: { Authorization: `Bearer ${getToken()}` } }
         );
@@ -147,7 +147,7 @@ const AdminsManagement: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/api/admins/${id}/delete`, {
+      await axios.delete(`http://localhost:3000/api/admin/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Admin has been deleted successfully!');

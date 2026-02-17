@@ -6,6 +6,7 @@ const {
   updateAdminProfile,
   changeAdminPassword,
   getAllAdmins,
+  updateAdmin,
   updateAdminStatus,
   deleteAdmin,
 } = require('../controllers/adminAuthController');
@@ -22,6 +23,7 @@ router.put('/admin/change-password', protectAdmin, changeAdminPassword);
 // SuperAdmin only routes
 router.post('/admin/register', protectAdmin, requireSuperAdmin, registerAdmin);
 router.get('/admin/all', protectAdmin, requireSuperAdmin, getAllAdmins);
+router.put('/admin/:id', protectAdmin, requireSuperAdmin, updateAdmin);
 router.put('/admin/:id/status', protectAdmin, requireSuperAdmin, updateAdminStatus);
 router.delete('/admin/:id', protectAdmin, requireSuperAdmin, deleteAdmin);
 

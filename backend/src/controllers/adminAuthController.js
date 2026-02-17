@@ -194,6 +194,64 @@ exports.getAllAdmins = async (req, res) => {
   }
 };
 
+// Update Admin (superAdmin only)
+exports.updateAdmin = async (req, res) => {
+  try {
+    if (req.user.role !== 'superAdmin') {
+      return res.status(403).json({ message: 'Only superAdmin can update admins' });
+    }
+
+    const { id } = req.params;
+    const { fullName, email, phone, role, department, employeeId, status, password } = req.body;
+
+    if (role && !['admin', 'superAdmin'].includes(role)) {
+      return res.status(400).json({ message: 'Role must be either admin or superAdmin' });
+    }
+
+    if (status && !['active', 'inactive', 'suspended'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    const admin = await admins.findByPk(id);
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    // Check if email is being changed and if it's already taken
+    if (email && email !== admin.email) {
+      const existing = await admins.findOne({ where: { email } });
+      if (existing) {
+        return res.status(409).json({ message: 'Email already registered' });
+      }
+    }
+
+    // Prepare update data
+    const updateData = {
+      fullName: fullName || admin.fullName,
+      email: email || admin.email,
+      phone: phone !== undefined ? phone : admin.phone,
+      role: role || admin.role,
+      department: department !== undefined ? department : admin.department,
+      employeeId: employeeId !== undefined ? employeeId : admin.employeeId,
+      status: status || admin.status,
+    };
+
+    // Only hash and update password if provided
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+
+    await admin.update(updateData);
+
+    return res.json({
+      message: 'Admin updated successfully',
+      data: toSafeAdmin(admin),
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Could not update admin', error: error.message });
+  }
+};
+
 // Update Admin Status (superAdmin only)
 exports.updateAdminStatus = async (req, res) => {
   try {
