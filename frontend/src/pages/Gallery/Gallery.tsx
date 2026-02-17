@@ -3,9 +3,9 @@ import { useState, useEffect, useMemo } from 'react';
 import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
 import { galleryService } from '../../api/services/galleryService';
-import { SERVER_URL } from '../../api/config';
 import { X, ChevronLeft, ChevronRight, Calendar, Eye, Tag, Play, Download, Share2, ZoomIn, ZoomOut, Search, Filter, ImageIcon } from 'lucide-react';
 import { showToast } from '../../utils/sweetAlert';
+import { getImageUrl } from '../../utils/imageUtils';
 
 interface FileObject {
   filename: string;
@@ -126,7 +126,7 @@ const Gallery = () => {
   const handleDownload = () => {
     if (selectedItem && selectedItem.images[selectedImageIndex]) {
       const link = document.createElement('a');
-      link.href = `${SERVER_URL}${selectedItem.images[selectedImageIndex].url}`;
+      link.href = getImageUrl(selectedItem.images[selectedImageIndex].url);
       link.download = selectedItem.images[selectedImageIndex].originalName || 'image.jpg';
       document.body.appendChild(link);
       link.click();
@@ -303,7 +303,7 @@ const Gallery = () => {
                     {firstImage ? (
                       <>
                         <img 
-                          src={`${SERVER_URL}${firstImage.url}`} 
+                          src={getImageUrl(firstImage.url)} 
                           alt={item.title}
                           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                           loading="lazy"
@@ -469,7 +469,7 @@ const Gallery = () => {
                 style={{ transform: `scale(${imageZoom})` }}
               >
                 <img
-                  src={`${SERVER_URL}${selectedItem.images[selectedImageIndex].url}`}
+                  src={getImageUrl(selectedItem.images[selectedImageIndex].url)}
                   alt={selectedItem.title}
                   className="max-h-[50vh] md:max-h-[70vh] max-w-full object-contain rounded-lg shadow-2xl"
                 />
@@ -563,7 +563,7 @@ const Gallery = () => {
                           }`}
                         >
                           <img
-                            src={`${SERVER_URL}${img.url}`}
+                            src={getImageUrl(img.url)}
                             alt={`Thumbnail ${index + 1}`}
                             className="w-full h-full object-cover"
                           />

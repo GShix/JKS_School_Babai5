@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { galleryService } from '../api/services/galleryService';
-import { SERVER_URL } from '../api/config';
 import { Link } from 'react-router-dom';
 import { X, ChevronLeft, ChevronRight, Calendar, Eye, Tag, Play, Download, Share2, ZoomIn, ZoomOut } from 'lucide-react';
 import { showToast } from '../utils/sweetAlert';
+import { getImageUrl } from '../utils/imageUtils';
 
 interface FileObject {
   filename: string;
@@ -107,7 +107,7 @@ function FeaturedGallery() {
   const handleDownload = () => {
     if (selectedItem && selectedItem.images[selectedImageIndex]) {
       const link = document.createElement('a');
-      link.href = `${SERVER_URL}${selectedItem.images[selectedImageIndex].url}`;
+      link.href = getImageUrl(selectedItem.images[selectedImageIndex].url);
       link.download = selectedItem.images[selectedImageIndex].originalName || 'image.jpg';
       document.body.appendChild(link);
       link.click();
@@ -206,7 +206,7 @@ function FeaturedGallery() {
                 {firstImage ? (
                   <img 
                     className="w-full h-full object-cover" 
-                    src={`${SERVER_URL}${firstImage.url}`} 
+                    src={getImageUrl(firstImage.url)} 
                     alt={item.title}
                     loading="lazy"
                     decoding="async"
@@ -343,7 +343,7 @@ function FeaturedGallery() {
                 style={{ transform: `scale(${imageZoom})` }}
               >
                 <img
-                  src={`${SERVER_URL}${selectedItem.images[selectedImageIndex].url}`}
+                  src={getImageUrl(selectedItem.images[selectedImageIndex].url)}
                   alt={selectedItem.title}
                   className="max-h-[50vh] md:max-h-[70vh] max-w-full object-contain rounded-lg shadow-2xl"
                 />
@@ -437,7 +437,7 @@ function FeaturedGallery() {
                           }`}
                         >
                           <img
-                            src={`${SERVER_URL}${img.url}`}
+                            src={getImageUrl(img.url)}
                             alt={`Thumbnail ${index + 1}`}
                             className="w-full h-full object-cover"
                           />

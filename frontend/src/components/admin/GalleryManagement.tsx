@@ -7,8 +7,9 @@ import FormInput from '../shared/FormInput';
 import Select from '../shared/Select';
 import Badge from '../shared/Badge';
 import axios from 'axios';
-import { SERVER_URL, API_BASE_URL } from '../../api/config';
+import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
+import { getImageUrl } from '../../utils/imageUtils';
 
 interface FileObject {
   filename: string;
@@ -283,7 +284,7 @@ const GalleryManagement = () => {
         return firstImage ? (
           <div className="relative">
             <img 
-              src={`${SERVER_URL}${firstImage.url}`}
+              src={getImageUrl(firstImage.url)}
               alt={row.title}
               className="w-16 h-16 object-cover rounded-lg"
             />
@@ -542,7 +543,7 @@ const GalleryManagement = () => {
                     {editingImage.images.map((img, index) => (
                       <div key={index}>
                         <img
-                          src={`${SERVER_URL}${img.url}`}
+                          src={getImageUrl(img.url)}
                           alt={img.originalName}
                           className="w-full h-24 object-cover rounded-lg"
                         />
