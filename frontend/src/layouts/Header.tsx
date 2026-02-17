@@ -170,7 +170,7 @@ const Header = () => {
                             <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">
                                 {schoolProfile?.schoolNameNepali?.split(' ')[0-1] || 'श्री जनकल्याण'}
                             </h1>
-                            <h2 className="text-red-500 font-bold text-xl text-nowrap">
+                            <h2 className="text-red-500 font-bold text-xl text-nowrap sm:text-start">
                                 {schoolProfile?.schoolNameNepali?.split(' ').slice(2).join(' ') || 'माध्यमिक विद्यालय'}
                             </h2>
                         </div>
