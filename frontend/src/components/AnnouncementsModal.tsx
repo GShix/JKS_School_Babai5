@@ -87,6 +87,14 @@ const AnnouncementsModal: React.FC<AnnouncementsModalProps> = ({ isOpen, onClose
                 <h2 className="text-xl font-bold text-gray-900 text-center">{announcement.title}</h2>
               </div>
 
+              {/* Content Preview */}
+              <div className="px-4 py-3 bg-white border-t">
+                <p className="text-gray-700 text-sm line-clamp-3">
+                  {announcement.content}
+                </p>
+                <p className="text-xs text-blue-600 mt-2 text-center">Click to view full details</p>
+              </div>
+
               {/* Image */}
               {imageUrl && (
                 <div className="w-full bg-gray-100">
