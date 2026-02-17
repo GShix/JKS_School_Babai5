@@ -102,7 +102,7 @@ export default function AnnouncementDetail() {
       <Header />
       
       {/* Hero Banner */}
-      <div className="w-full h-[200px] bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity:0.9}}>
+      <div className="w-full h-50 bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity:0.9}}>
         <h1 className="text-4xl sm:text-5xl font-medium text-white">{announcement.title}</h1>
       </div>
 
@@ -160,6 +160,8 @@ export default function AnnouncementDetail() {
                       src={`${SERVER_URL}${file.url}`}
                       alt={file.originalName}
                       className="w-full h-auto"
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
                         if (!img.src.endsWith('/img/placeholder.jpg')) {

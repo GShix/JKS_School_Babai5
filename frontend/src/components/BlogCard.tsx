@@ -27,7 +27,9 @@ const BlogCard = ({ blog }: BlogCardProps) => {
                 <img 
                     className="h-48 w-full object-cover" 
                     src={blog.featuredImage || "/img/jkss_logo.png"} 
-                    alt={blog.title || "Blog post"} 
+                    alt={blog.title || "Blog post"}
+                    loading="lazy"
+                    decoding="async"
                 />
             </div>
             <div className="flex flex-1 flex-col justify-between bg-white p-6">
@@ -57,7 +59,9 @@ const BlogCard = ({ blog }: BlogCardProps) => {
                             <img 
                                 className="h-10 w-10 rounded-full" 
                                 src="/img/jkss_logo.png" 
-                                alt={blog.author || "Author"} 
+                                alt={blog.author || "Author"}
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>

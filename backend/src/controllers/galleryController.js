@@ -48,7 +48,7 @@ const processUploadedFiles = async (files, bucketFolder = 'gallery') => {
 };
 
 // Helper function to delete files from Supabase
-const deleteFiles = async (files, bucketFolder = 'gallery') => {
+const deleteFiles = async (files, bucketFolder = 'gallery-images') => {
   if (!files || files.length === 0) return;
   
   for (const file of files) {
@@ -83,16 +83,16 @@ exports.createGalleryItem = async (req, res) => {
 
     try {
       if (req.files?.images) {
-        images = await processUploadedFiles(req.files.images, 'gallery/images');
+        images = await processUploadedFiles(req.files.images, 'gallery-images');
       }
       if (req.files?.videos) {
-        videos = await processUploadedFiles(req.files.videos, 'gallery/videos');
+        videos = await processUploadedFiles(req.files.videos, 'gallery-videos');
       }
     } catch (uploadError) {
       console.error('Error uploading files:', uploadError);
       // Clean up any successfully uploaded files
-      await deleteFiles(images, 'gallery/images');
-      await deleteFiles(videos, 'gallery/videos');
+      await deleteFiles(images, 'gallery-images');
+      await deleteFiles(videos, 'gallery-videos');
       return res.status(500).json({
         message: 'Error uploading files',
         error: uploadError.message,
@@ -228,7 +228,7 @@ exports.updateGalleryItem = async (req, res) => {
         const imagesToDelete = existingImages.filter(img => 
           filesToRemove.includes(img.filename)
         );
-        await deleteFiles(imagesToDelete, 'gallery/images');
+        await deleteFiles(imagesToDelete, 'gallery-images');
         
         existingImages = existingImages.filter(img => 
           !filesToRemove.includes(img.filename)
@@ -246,7 +246,7 @@ exports.updateGalleryItem = async (req, res) => {
         const videosToDelete = existingVideos.filter(vid => 
           filesToRemove.includes(vid.filename)
         );
-        await deleteFiles(videosToDelete, 'gallery/videos');
+        await deleteFiles(videosToDelete, 'gallery-videos');
         
         existingVideos = existingVideos.filter(vid => 
           !filesToRemove.includes(vid.filename)
@@ -260,16 +260,16 @@ exports.updateGalleryItem = async (req, res) => {
     
     try {
       if (req.files?.images) {
-        newImages = await processUploadedFiles(req.files.images, 'gallery/images');
+        newImages = await processUploadedFiles(req.files.images, 'gallery-images');
       }
       if (req.files?.videos) {
-        newVideos = await processUploadedFiles(req.files.videos, 'gallery/videos');
+        newVideos = await processUploadedFiles(req.files.videos, 'gallery-videos');
       }
     } catch (uploadError) {
       console.error('Error uploading files:', uploadError);
       // Clean up any successfully uploaded files
-      await deleteFiles(newImages, 'gallery/images');
-      await deleteFiles(newVideos, 'gallery/videos');
+      await deleteFiles(newImages, 'gallery-images');
+      await deleteFiles(newVideos, 'gallery-videos');
       return res.status(500).json({
         message: 'Error uploading new files',
         error: uploadError.message,
@@ -314,8 +314,8 @@ exports.deleteGalleryItem = async (req, res) => {
     }
 
     // Delete associated files from Supabase
-    await deleteFiles(item.images, 'gallery/images');
-    await deleteFiles(item.videos, 'gallery/videos');
+    await deleteFiles(item.images, 'gallery-images');
+    await deleteFiles(item.videos, 'gallery-videos');
 
     await item.destroy();
     return res.json({ message: 'Gallery item deleted successfully' });

@@ -19,6 +19,8 @@ const TeamCard: React.FC<TeamCardProps> = ({ fullName, position, department, pro
               className={`w-full object-cover transition-transform duration-300 hover:scale-105 ${
                 highlighted ? 'h-64' : 'h-48'
               }`}
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = '/img/default-avatar.svg';

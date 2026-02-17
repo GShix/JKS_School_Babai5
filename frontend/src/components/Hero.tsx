@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { type HeroSlide } from "../api/services";
 import LoadingSpinner from "./shared/LoadingSpinner";
+import { Helmet } from "react-helmet-async";
 
 interface HeroProps {
   slides: HeroSlide[];
@@ -50,6 +51,13 @@ export default function Hero({ slides, loading }: HeroProps) {
 
   return (
     <div className="overflow-hidden bg-white">
+      {/* Preload first hero image for faster LCP */}
+      {slides.length > 0 && (
+        <Helmet>
+          <link rel="preload" as="image" href={slides[0].imageUrl} fetchPriority="high" />
+        </Helmet>
+      )}
+      
       {/* Image carousel with left/right arrow navigation */}
       <div className="image-carousel w-full max-sm:w-[100%] h-[500px] px-0">
         <div className="carousel-wrapper relative overflow-hidden h-full">
@@ -57,6 +65,9 @@ export default function Hero({ slides, loading }: HeroProps) {
             className="carousel-image w-full max-sm:w-[100%] h-full object-fit object-cover transition-all duration-500"
             src={slides[current].imageUrl}
             alt={slides[current].title || "Hero slide"}
+            loading={current === 0 ? "eager" : "lazy"}
+            fetchPriority={current === 0 ? "high" : "low"}
+            decoding="async"
           />
           
           {/* Optional title overlay */}

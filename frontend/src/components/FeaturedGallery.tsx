@@ -208,6 +208,8 @@ function FeaturedGallery() {
                     className="w-full h-full object-cover" 
                     src={`${SERVER_URL}${firstImage.url}`} 
                     alt={item.title}
+                    loading="lazy"
+                    decoding="async"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400">

@@ -52,6 +52,8 @@ const MessageFromPrincipal = () => {
           className='w-full h-[500px] rounded-md object-cover' 
           src={photoUrl} 
           alt={message.personName}
+          loading="lazy"
+          decoding="async"
           onError={(e) => {
             // Fallback to default image if photo fails to load
             (e.target as HTMLImageElement).src = '/img/headmaster-2.jpg';
