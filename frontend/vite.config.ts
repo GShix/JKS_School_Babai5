@@ -16,8 +16,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
+        target: 'https://jssp5server.vercel.app/',
         // target: 'http://localhost:4000',
-        target: 'http://localhost:4000',
         changeOrigin: true,
         secure: false,
       }

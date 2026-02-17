@@ -112,7 +112,6 @@ exports.deleteBlog = async(req, res) => {
         });
     }
 }
-
 // Upload image for blog content (rich text editor)
 exports.uploadImage = async(req, res) => {
     try {

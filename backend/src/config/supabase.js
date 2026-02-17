@@ -24,14 +24,6 @@ if (!supabaseUrl || !supabaseKey) {
   }
 }
 
-/**
- * Upload file to Supabase Storage
- * @param {Buffer} fileBuffer - File buffer
- * @param {string} fileName - Desired file name
- * @param {string} bucket - Storage bucket name (default: 'staff-images')
- * @param {string} mimeType - File MIME type (optional, will be detected from filename)
- * @returns {Promise<{url: string, path: string}>}
- */
 const uploadToSupabase = async (fileBuffer, fileName, bucket = 'staff-images', mimeType = null) => {
   try {
     // Check if Supabase is configured

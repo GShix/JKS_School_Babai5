@@ -31,7 +31,10 @@ const cors = require('cors');
 app.use(express.json());
 
 app.use(cors({
-  origin: '*', // Allows all origins
+  origin: [
+    'https://jssp5padampur.vercel.app',
+    'http://localhost:5173', // Allow local dev as well
+  ],
   // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   // allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: false // Set to true if you need to send cookies
