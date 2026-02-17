@@ -32,7 +32,7 @@ app.use(express.json());
 
 app.use(cors({
   origin: [
-    'https://jssp5padampur.vercel.app',
+    'https://jkssp5padampur.vercel.app',
     'http://localhost:5173', // Allow local dev as well
   ],
   // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
