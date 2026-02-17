@@ -10,6 +10,7 @@ const Header = () => {
     const [isSticky, setIsSticky] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const [schoolProfile, setSchoolProfile] = useState<SchoolProfile | null>(null);
+    const [logoLoaded, setLogoLoaded] = useState(false);
     const navRef = useRef<HTMLDivElement | null>(null);
     const navLinks = [
         {

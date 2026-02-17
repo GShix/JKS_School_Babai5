@@ -144,25 +144,20 @@ export default function AnnouncementDetail() {
 
           <hr className="my-4" />
 
-          {/* Content */}
-          <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-6">
-            {announcement.content}
-          </div>
-
-          {/* Images */}
+          {/* Images - Display prominently at the top */}
           {imageAttachments.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-3">Images</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {imageAttachments.map((file, index) => (
-                  <div key={index} className="border rounded overflow-hidden">
+                  <div key={index} className="border rounded overflow-hidden shadow-sm">
                     <img
                       src={`${SERVER_URL}${file.url}`}
                       alt={file.originalName}
-                      className="w-full h-auto"
+                      className="w-full h-auto object-cover max-h-96"
                       loading="lazy"
                       decoding="async"
                       onError={(e) => {
+                        console.error('Image failed to load:', `${SERVER_URL}${file.url}`);
                         const img = e.target as HTMLImageElement;
                         if (!img.src.endsWith('/img/placeholder.jpg')) {
                           img.src = '/img/placeholder.jpg';
@@ -184,6 +179,11 @@ export default function AnnouncementDetail() {
               </div>
             </div>
           )}
+
+          {/* Content */}
+          <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-6">
+            {announcement.content}
+          </div>
 
           {/* Files */}
           {fileAttachments.length > 0 && (

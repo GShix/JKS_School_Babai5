@@ -87,24 +87,37 @@ const AnnouncementsModal: React.FC<AnnouncementsModalProps> = ({ isOpen, onClose
                 <h2 className="text-xl font-bold text-gray-900 text-center">{announcement.title}</h2>
               </div>
 
+              {/* Image - Display prominently */}
+              {imageUrl && (
+                <div className="w-full bg-gray-100 border-t">
+                  <img
+                    src={`${SERVER_URL}${imageUrl}`}
+                    alt={announcement.title}
+                    className="w-full h-auto object-cover max-h-75"
+                    onError={(e) => {
+                      console.error('Image failed to load:', `${SERVER_URL}${imageUrl}`);
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+
               {/* Content Preview */}
               <div className="px-4 py-3 bg-white border-t">
                 <p className="text-gray-700 text-sm line-clamp-3">
                   {announcement.content}
                 </p>
-                <p className="text-xs text-blue-600 mt-2 text-center">Click to view full details</p>
+                
+                {/* Show attachment count if there are files */}
+                {announcement.attachments && announcement.attachments.length > 0 && (
+                  <div className="mt-2 flex items-center gap-2 text-xs text-gray-600">
+                    <i className="ri-attachment-2"></i>
+                    <span>{announcement.attachments.length} attachment{announcement.attachments.length > 1 ? 's' : ''}</span>
+                  </div>
+                )}
+                
+                <p className="text-xs text-blue-600 mt-2 text-center font-medium">Click to view full details</p>
               </div>
-
-              {/* Image */}
-              {imageUrl && (
-                <div className="w-full bg-gray-100">
-                  <img
-                    src={`${SERVER_URL}${imageUrl}`}
-                    alt={announcement.title}
-                    className="w-full h-auto object-contain max-h-[70vh]"
-                  />
-                </div>
-              )}
             </div>
           );
         })}

@@ -10,6 +10,7 @@ import AnnouncementsModal from '../../components/AnnouncementsModal';
 import ContactUs from '../../components/ContactUs';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import { heroSlideService, type HeroSlide } from '../../api/services';
 
 const Home = () => {
@@ -58,6 +59,9 @@ const Home = () => {
     // console.log(posts)
     return (
         <div className='h-full bg-white w-full relative'>
+            {/* Loading Spinner */}
+            {heroLoading && <LoadingSpinner />}
+            
             {/* <h1 className="text-red-500">This is Home Page</h1> */}
             <Header/>
 
