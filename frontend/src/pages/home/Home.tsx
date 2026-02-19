@@ -11,14 +11,16 @@ import ContactUs from '../../components/ContactUs';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { heroSlideService, type HeroSlide } from '../../api/services';
+import { heroSlideService, announcementService, type HeroSlide } from '../../api/services';
+import type { Announcement } from '../../api/types';
 
 const Home = () => {
     const [showAnnouncementsModal, setShowAnnouncementsModal] = React.useState(false)
     const [heroSlides, setHeroSlides] = React.useState<HeroSlide[]>([]);
     const [heroLoading, setHeroLoading] = React.useState(true);
+    const [announcements, setAnnouncements] = React.useState<Announcement[]>([]);
 
-    // Fetch hero slides immediately when component mounts for faster loading
+    // Fetch hero slides and announcements immediately when component mounts for faster loading
     React.useEffect(() => {
         const fetchHeroSlides = async () => {
             try {
@@ -34,7 +36,18 @@ const Home = () => {
             }
         };
 
+        const fetchAnnouncements = async () => {
+            try {
+                const highPriorityAnnouncements = await announcementService.getHighPriority();
+                setAnnouncements(highPriorityAnnouncements);
+            } catch (error) {
+                console.error('Error fetching announcements:', error);
+            }
+        };
+
+        // Fetch both in parallel for better performance
         fetchHeroSlides();
+        fetchAnnouncements();
     }, []);
 
     React.useEffect(() => {
@@ -72,6 +85,7 @@ const Home = () => {
                 isOpen={showAnnouncementsModal}
                 onClose={() => setShowAnnouncementsModal(false)}
                 onDismiss={handleDismissAnnouncements}
+                prefetchedAnnouncements={announcements}
             />
             
             <Banner/>

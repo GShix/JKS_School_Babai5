@@ -158,7 +158,7 @@ const AdminLayout: React.FC = () => {
 
         {/* Page Content */}
         <main className="flex-1 overflow-auto">
-          <div className="p-4 w-full">
+          <div className="p-2 sm:p-4 w-full">
             <Outlet />
           </div>
         </main>

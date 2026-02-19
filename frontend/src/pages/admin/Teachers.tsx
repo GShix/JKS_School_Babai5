@@ -627,7 +627,7 @@ const Teachers: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Filter Section */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 text-sm">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 sm:p-4 text-sm">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Select School*</label>

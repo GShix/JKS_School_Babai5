@@ -375,7 +375,7 @@ const Gallery = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-4">
       {/* Header with Stats */}
       <div className="flex justify-between items-center">
         <div>

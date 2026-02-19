@@ -161,7 +161,7 @@ const AccountSettings: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-4">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Settings className="w-7 h-7 text-blue-600" />
@@ -187,7 +187,7 @@ const AccountSettings: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 border-b mb-6">
+        <div className="flex max-sm:text-sm gap-4 border-b mb-6">
           <button
             onClick={() => setActiveSection('profile')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition ${

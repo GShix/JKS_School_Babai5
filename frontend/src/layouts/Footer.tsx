@@ -32,10 +32,9 @@ const Footer = () => {
                 <ul>
                     <li className="flex flex-col gap-4">
                         <a className="text-gray-900 transition hover:text-[#035CB0]" href="/about/jkss">About School</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/about/jkss-team">School's Team</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Faculty Members</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#message_from_principal">Message From Principal</a>
-                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">Message From Chairperson</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="/about/teachers">About Teachers</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#message_from_principal">Study Materials</a>
+                        <a className="text-gray-900 transition hover:text-[#035CB0]" href="#">School's Gallery</a>
                     </li>
                 </ul>
             </div>

@@ -9,17 +9,21 @@ interface AnnouncementsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onDismiss: () => void;
+  prefetchedAnnouncements?: Announcement[];
 }
 
-const AnnouncementsModal: React.FC<AnnouncementsModalProps> = ({ isOpen, onClose, onDismiss }) => {
+const AnnouncementsModal: React.FC<AnnouncementsModalProps> = ({ isOpen, onClose, onDismiss, prefetchedAnnouncements }) => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isOpen) {
+    // Use prefetched announcements if available, otherwise fetch
+    if (prefetchedAnnouncements && prefetchedAnnouncements.length > 0) {
+      setAnnouncements(prefetchedAnnouncements);
+    } else if (isOpen) {
       fetchAnnouncements();
     }
-  }, [isOpen]);
+  }, [isOpen, prefetchedAnnouncements]);
 
   const fetchAnnouncements = async () => {
     try {
