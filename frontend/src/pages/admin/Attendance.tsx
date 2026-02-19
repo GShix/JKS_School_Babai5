@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, CheckCircle, XCircle, Clock, Download } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Button from '../shared/Button';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError } from '../../utils/sweetAlert';
@@ -25,7 +25,7 @@ interface AttendanceRecord {
   remarks?: string;
 }
 
-const AttendanceManagement: React.FC = () => {
+const Attendance: React.FC = () => {
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
@@ -165,14 +165,14 @@ const AttendanceManagement: React.FC = () => {
   };
 
   const columns = [
-    { key: 'rollNumber', label: 'Roll No', render: (record: AttendanceRecord) => record.student?.rollNumber || '-' },
-    { key: 'name', label: 'Student Name', render: (record: AttendanceRecord) => record.student?.fullName || '-' },
-    { key: 'class', label: 'Class', render: (record: AttendanceRecord) => record.student?.class || '-' },
-    { key: 'section', label: 'Section', render: (record: AttendanceRecord) => record.student?.section || 'A' },
+    { key: 'rollNumber', label: 'Roll No', render: (_value: any, record: AttendanceRecord) => record.student?.rollNumber || '-' },
+    { key: 'name', label: 'Student Name', render: (_value: any, record: AttendanceRecord) => record.student?.fullName || '-' },
+    { key: 'class', label: 'Class', render: (_value: any, record: AttendanceRecord) => record.student?.class || '-' },
+    { key: 'section', label: 'Section', render: (_value: any, record: AttendanceRecord) => record.student?.section || 'A' },
     { 
       key: 'status', 
       label: 'Status', 
-      render: (record: AttendanceRecord) => {
+      render: (_value: any, record: AttendanceRecord) => {
         const variants: { [key: string]: any } = {
           present: 'success',
           absent: 'danger',
@@ -345,4 +345,4 @@ const AttendanceManagement: React.FC = () => {
   );
 };
 
-export default AttendanceManagement;
+export default Attendance;

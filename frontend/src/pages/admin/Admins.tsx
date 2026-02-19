@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Shield, Plus, Edit, Trash2, Crown } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import Button from '../../components/shared/Button';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
+import Badge from '../../components/shared/Badge';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
@@ -23,7 +23,7 @@ interface Admin {
   createdAt: string;
 }
 
-const AdminsManagement: React.FC = () => {
+const Admins: React.FC = () => {
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,7 +46,6 @@ const AdminsManagement: React.FC = () => {
   };
 
   useEffect(() => {
-    // Check if current user is superAdmin
     const userData = localStorage.getItem('user') || sessionStorage.getItem('user');
     if (userData) {
       const user = JSON.parse(userData);
@@ -67,7 +66,6 @@ const AdminsManagement: React.FC = () => {
       const response = await axios.get(`${API_BASE_URL}/admin/all`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
-      // Filter out any undefined or null values
       const adminData = response.data.data || [];
       const validAdmins = adminData.filter((admin: any) => admin && admin.id);
       setAdmins(validAdmins);
@@ -179,7 +177,7 @@ const AdminsManagement: React.FC = () => {
   };
 
   const columns = [
-    { key: 'name', label: 'Admin Details', render: (admin: Admin) => {
+    { key: 'name', label: 'Admin Details', render: (_value: any, admin: Admin) => {
       if (!admin) return '-';
       return (
         <div className="flex items-center gap-2">
@@ -193,13 +191,11 @@ const AdminsManagement: React.FC = () => {
         </div>
       );
     }},
-    { key: 'phone', label: 'Phone' },
-    { key: 'employeeId', label: 'Employee ID', render: (admin: Admin) => admin.employeeId || '-' },
-    { key: 'department', label: 'Department', render: (admin: Admin) => admin.department || '-' },
+    { key: 'phone', label: 'Phone', render: (_value: any, admin: Admin) => admin?.phone || '-' },
     { 
       key: 'role', 
       label: 'Role', 
-      render: (admin: Admin) => {
+      render: (_value: any, admin: Admin) => {
         if (!admin || !admin.role) return '-';
         return (
           <Badge 
@@ -213,7 +209,7 @@ const AdminsManagement: React.FC = () => {
     { 
       key: 'status', 
       label: 'Status', 
-      render: (admin: Admin) => {
+      render: (_value: any, admin: Admin) => {
         if (!admin || !admin.status) return '-';
         return (
           <Badge 
@@ -224,8 +220,8 @@ const AdminsManagement: React.FC = () => {
         );
       }
     },
-    { key: 'lastLogin', label: 'Last Login', render: (admin: Admin) => 
-      admin.lastLogin ? new Date(admin.lastLogin).toLocaleDateString() : 'Never'
+    { key: 'lastLogin', label: 'Last Login', render: (_value: any, admin: Admin) => 
+      admin?.lastLogin ? new Date(admin.lastLogin).toLocaleDateString() : 'Never'
     }
   ];
 
@@ -393,4 +389,4 @@ const AdminsManagement: React.FC = () => {
   );
 };
 
-export default AdminsManagement;
+export default Admins;

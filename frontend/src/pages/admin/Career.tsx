@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Briefcase, Users, Calendar, Eye, FileText } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Button from '../shared/Button';
-import Modal from '../shared/Modal';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import { showError, showDeleteConfirm, showSuccess } from '../../utils/sweetAlert';
 import { careerService } from '../../api/services';
 import type { CareerPosition, JobApplication } from '../../api/types';
 import { SERVER_URL } from '../../api/config';
 
-const CareerManagement = () => {
+const Career = () => {
   const [jobs, setJobs] = useState<CareerPosition[]>([]);
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
@@ -276,7 +276,7 @@ const CareerManagement = () => {
     { 
       key: 'type', 
       label: 'Type',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <Badge variant={getJobTypeBadgeVariant(value)}>
           {value.toUpperCase()}
         </Badge>
@@ -286,7 +286,7 @@ const CareerManagement = () => {
     { 
       key: 'applicationDeadline', 
       label: 'Deadline',
-      render: (value: string) => value ? new Date(value).toLocaleDateString() : 'N/A'
+      render: (value: string, _row: any) => value ? new Date(value).toLocaleDateString() : 'N/A'
     },
     { 
       key: 'id', 
@@ -303,7 +303,7 @@ const CareerManagement = () => {
     {
       key: 'status',
       label: 'Status',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <Badge variant={getStatusBadgeVariant(value)}>
           {value.toUpperCase()}
         </Badge>
@@ -708,4 +708,4 @@ const CareerManagement = () => {
   );
 };
 
-export default CareerManagement;
+export default Career;

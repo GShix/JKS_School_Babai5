@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, Upload, Download } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import { teacherService } from '../../api';
 import type { Teacher } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
 import * as XLSX from 'xlsx';
 
-const TeacherManagement: React.FC = () => {
+const Teachers: React.FC = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [filteredTeachers, setFilteredTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
@@ -605,7 +605,7 @@ const TeacherManagement: React.FC = () => {
     {
       key: 'status',
       label: 'Status',
-      render: (value: string) => {
+      render: (value: string, _row: any) => {
         const getStatusVariant = (status: string) => {
           switch (status) {
             case 'active': return 'success';
@@ -1395,4 +1395,4 @@ const TeacherManagement: React.FC = () => {
   );
 };
 
-export default TeacherManagement;
+export default Teachers;

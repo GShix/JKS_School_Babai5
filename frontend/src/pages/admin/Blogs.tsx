@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Newspaper, Plus, Edit, Trash2, Upload } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Badge from '../shared/Badge';
-import TiptapEditor from '../shared/TiptapEditor';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
 import axios from 'axios';
 import { SERVER_URL, API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
+import TiptapEditor from '../../components/shared/TiptapEditor';
 
 interface Blog {
   id: number;
@@ -24,7 +24,7 @@ interface Blog {
   createdAt: string;
 }
 
-const BlogsManagement: React.FC = () => {
+const Blogs: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -189,12 +189,12 @@ const BlogsManagement: React.FC = () => {
     { 
       key: 'author', 
       label: 'Author',
-      render: (value: string) => value || 'Unknown'
+      render: (value: string, _row: any) => value || 'Unknown'
     },
     { 
       key: 'status', 
       label: 'Status', 
-      render: (value: string) => {
+      render: (value: string, _row: any) => {
         if (!value) return <Badge variant="default">DRAFT</Badge>;
         const variants: { [key: string]: any } = {
           draft: 'warning',
@@ -207,12 +207,12 @@ const BlogsManagement: React.FC = () => {
     { 
       key: 'views', 
       label: 'Views',
-      render: (value: number) => value || 0
+      render: (value: number, _row: any) => value || 0
     },
     { 
       key: 'publishedDate', 
       label: 'Published',
-      render: (value: string) => 
+      render: (value: string, _row: any) => 
         value ? new Date(value).toLocaleDateString() : '-'
     }
   ];
@@ -349,4 +349,4 @@ const BlogsManagement: React.FC = () => {
   );
 };
 
-export default BlogsManagement;
+export default Blogs;

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { DollarSign, Plus, Edit, Trash2, CheckCircle, Download } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
@@ -30,7 +30,7 @@ interface FeeRecord {
   remarks?: string;
 }
 
-const FeesManagement: React.FC = () => {
+const Fees: React.FC = () => {
   const [fees, setFees] = useState<FeeRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -220,21 +220,21 @@ const FeesManagement: React.FC = () => {
   };
 
   const columns = [
-    { key: 'student', label: 'Student', render: (fee: FeeRecord) => (
+    { key: 'student', label: 'Student', render: (_value: any, fee: FeeRecord) => (
       <div>
         <p className="font-medium">{fee.student?.fullName || 'N/A'}</p>
         <p className="text-sm text-gray-600">Roll: {fee.student?.rollNumber}</p>
       </div>
     )},
-    { key: 'class', label: 'Class', render: (fee: FeeRecord) => `${fee.student?.class} ${fee.student?.section || ''}` },
+    { key: 'class', label: 'Class', render: (_value: any, fee: FeeRecord) => `${fee.student?.class} ${fee.student?.section || ''}` },
     { key: 'feeType', label: 'Fee Type' },
-    { key: 'amount', label: 'Amount', render: (fee: FeeRecord) => `NPR ${fee.amount.toLocaleString()}` },
-    { key: 'paid', label: 'Paid', render: (fee: FeeRecord) => `NPR ${fee.paidAmount.toLocaleString()}` },
-    { key: 'balance', label: 'Balance', render: (fee: FeeRecord) => `NPR ${(fee.amount - fee.paidAmount).toLocaleString()}` },
+    { key: 'amount', label: 'Amount', render: (_value: any, fee: FeeRecord) => `NPR ${fee.amount.toLocaleString()}` },
+    { key: 'paid', label: 'Paid', render: (_value: any, fee: FeeRecord) => `NPR ${fee.paidAmount.toLocaleString()}` },
+    { key: 'balance', label: 'Balance', render: (_value: any, fee: FeeRecord) => `NPR ${(fee.amount - fee.paidAmount).toLocaleString()}` },
     { 
       key: 'status', 
       label: 'Status', 
-      render: (fee: FeeRecord) => {
+      render: (_value: any, fee: FeeRecord) => {
         const variants: { [key: string]: any } = {
           paid: 'success',
           partial: 'warning',
@@ -437,4 +437,4 @@ const FeesManagement: React.FC = () => {
   );
 };
 
-export default FeesManagement;
+export default Fees;

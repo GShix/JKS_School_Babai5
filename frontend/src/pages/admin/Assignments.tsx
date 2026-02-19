@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { BookOpen, Plus, Edit, Trash2 } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
@@ -28,7 +28,7 @@ interface Assignment {
   createdAt: string;
 }
 
-const AssignmentsManagement: React.FC = () => {
+const Assignments: React.FC = () => {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -166,15 +166,15 @@ const AssignmentsManagement: React.FC = () => {
 
   const columns = [
     { key: 'title', label: 'Assignment Title' },
-    { key: 'class', label: 'Class', render: (assignment: Assignment) => `${assignment.class} ${assignment.section}` },
+    { key: 'class', label: 'Class', render: (_value: any, assignment: Assignment) => `${assignment.class} ${assignment.section}` },
     { key: 'subject', label: 'Subject' },
-    { key: 'teacher', label: 'Teacher', render: (assignment: Assignment) => assignment.teacher?.fullName || 'N/A' },
+    { key: 'teacher', label: 'Teacher', render: (_value: any, assignment: Assignment) => assignment.teacher?.fullName || 'N/A' },
     { key: 'dueDate', label: 'Due Date' },
     { key: 'totalMarks', label: 'Total Marks' },
     { 
       key: 'status', 
       label: 'Status', 
-      render: (assignment: Assignment) => {
+      render: (_value: any, assignment: Assignment) => {
         const variants: { [key: string]: any } = {
           active: 'info',
           completed: 'success',
@@ -340,4 +340,4 @@ const AssignmentsManagement: React.FC = () => {
   );
 };
 
-export default AssignmentsManagement;
+export default Assignments;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CalendarX, CheckCircle, XCircle } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Badge from '../shared/Badge';
+import DataTable from '../../components/shared/DataTable';
+import Badge from '../../components/shared/Badge';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning } from '../../utils/sweetAlert';
@@ -26,7 +26,7 @@ interface LeaveRequest {
   createdAt: string;
 }
 
-const LeavesManagement: React.FC = () => {
+const Leaves: React.FC = () => {
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_loading, setLoading] = useState(false);
@@ -113,29 +113,29 @@ const LeavesManagement: React.FC = () => {
     { 
       key: 'student', 
       label: 'Student', 
-      render: (leave: LeaveRequest) => (
+      render: (_value: any, leave: LeaveRequest) => (
         <div>
           <p className="font-medium">{leave.student?.fullName || 'N/A'}</p>
           <p className="text-sm text-gray-600">Roll: {leave.student?.rollNumber}</p>
         </div>
       )
     },
-    { key: 'class', label: 'Class', render: (leave: LeaveRequest) => `${leave.student?.class} ${leave.student?.section || ''}` },
+    { key: 'class', label: 'Class', render: (_value: any, leave: LeaveRequest) => `${leave.student?.class} ${leave.student?.section || ''}` },
     { key: 'leaveType', label: 'Leave Type' },
     { key: 'startDate', label: 'Start Date' },
     { key: 'endDate', label: 'End Date' },
     { 
       key: 'duration', 
       label: 'Duration', 
-      render: (leave: LeaveRequest) => `${calculateDays(leave.startDate, leave.endDate)} days`
+      render: (_value: any, leave: LeaveRequest) => `${calculateDays(leave.startDate, leave.endDate)} days`
     },
-    { key: 'reason', label: 'Reason', render: (leave: LeaveRequest) => (
+    { key: 'reason', label: 'Reason', render: (_value: any, leave: LeaveRequest) => (
       <span className="max-w-xs truncate block" title={leave.reason}>{leave.reason}</span>
     )},
     { 
       key: 'status', 
       label: 'Status', 
-      render: (leave: LeaveRequest) => {
+      render: (_value: any, leave: LeaveRequest) => {
         const variants: { [key: string]: any } = {
           pending: 'warning',
           approved: 'success',
@@ -228,4 +228,4 @@ const LeavesManagement: React.FC = () => {
   );
 };
 
-export default LeavesManagement;
+export default Leaves;

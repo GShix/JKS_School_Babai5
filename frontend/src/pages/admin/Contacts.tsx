@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Phone, Mail, User, GraduationCap, MessageSquare, Eye, Trash2, Check, Clock, Filter, RefreshCw } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
 import { contactService } from '../../api';
 import type { Contact } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
@@ -11,7 +11,7 @@ import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAler
 
 type StatusFilter = 'all' | 'pending' | 'contacted' | 'resolved';
 
-const ContactsManagement: React.FC = () => {
+const Contacts: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
@@ -180,7 +180,7 @@ const ContactsManagement: React.FC = () => {
     {
       key: 'phone',
       label: 'Phone',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <div className="flex items-center gap-2 text-gray-700">
           <Phone className="w-4 h-4 text-gray-400" />
           {value}
@@ -190,7 +190,7 @@ const ContactsManagement: React.FC = () => {
     {
       key: 'email',
       label: 'Email',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         value ? (
           <div className="flex items-center gap-2 text-gray-700">
             <Mail className="w-4 h-4 text-gray-400" />
@@ -204,12 +204,12 @@ const ContactsManagement: React.FC = () => {
     {
       key: 'status',
       label: 'Status',
-      render: (value: Contact['status']) => getStatusBadge(value)
+      render: (value: Contact['status'], _row: any) => getStatusBadge(value)
     },
     {
       key: 'createdAt',
       label: 'Submitted',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <span className="text-sm text-gray-600">{formatDate(value)}</span>
       )
     }
@@ -320,33 +320,31 @@ const ContactsManagement: React.FC = () => {
       </div>
 
       {/* Data Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <DataTable
-          data={filteredContacts}
-          columns={columns}
-          loading={loading}
-          searchPlaceholder="Search by name, phone, email, or message..."
-          onSearch={setSearchQuery}
-          actions={(contact) => (
-            <div className="flex items-center justify-end gap-2">
-              <button
-                onClick={() => handleViewDetails(contact)}
-                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                title="View Details"
-              >
-                <Eye className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => handleDelete(contact.id)}
-                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                title="Delete"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-        />
-      </div>
+      <DataTable
+        data={filteredContacts}
+        columns={columns}
+        loading={loading}
+        searchPlaceholder="Search by name, phone, email, or message..."
+        onSearch={setSearchQuery}
+        actions={(contact) => (
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={() => handleViewDetails(contact)}
+              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title="View Details"
+            >
+              <Eye className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => handleDelete(contact.id)}
+              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              title="Delete"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      />
 
       {/* Detail Modal */}
       {selectedContact && (
@@ -515,4 +513,4 @@ const ContactsManagement: React.FC = () => {
   );
 };
 
-export default ContactsManagement;
+export default Contacts;

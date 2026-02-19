@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Bell, Plus, Edit, Trash2, Pin, Upload, X, FileText, Image as ImageIcon } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
 import axios from 'axios';
 import { SERVER_URL, API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
 import { getImageUrl } from '../../utils/imageUtils';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 
 interface Attachment {
   filename: string;
@@ -35,7 +35,7 @@ interface Announcement {
   status: 'active' | 'expired';
 }
 
-const AnnouncementsManagement: React.FC = () => {
+const Announcements: React.FC = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -794,4 +794,4 @@ const AnnouncementsManagement: React.FC = () => {
   );
 };
 
-export default AnnouncementsManagement;
+export default Announcements;

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
 import { messageService } from '../../api';
 import type { SchoolMessage } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
 
-const MessageManagement: React.FC = () => {
+const Messages: React.FC = () => {
   const [messages, setMessages] = useState<SchoolMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -177,7 +177,7 @@ const MessageManagement: React.FC = () => {
     { 
       key: 'message', 
       label: 'Message',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <div className="max-w-xs truncate" title={value}>
           {value.substring(0, 100)}{value.length > 100 ? '...' : ''}
         </div>
@@ -186,7 +186,7 @@ const MessageManagement: React.FC = () => {
     { 
       key: 'displayOrder', 
       label: 'Order',
-      render: (value: number) => (
+      render: (value: number, _row: any) => (
         <span className="text-center block">{value}</span>
       )
     },
@@ -212,52 +212,54 @@ const MessageManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">School Messages</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Manage messages from Principal and other valuable persons
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          icon={<Plus className="w-5 h-5" />}
-          onClick={() => {
-            setEditingMessage(null);
-            resetForm();
-            setShowModal(true);
-          }}
-        >
-          Add New Message
-        </Button>
-      </div>
-
-      {/* Messages Table */}
-      <DataTable
-        data={messages}
-        columns={columns}
-        searchPlaceholder="Search by person name, position..."
-        loading={loading}
-        actions={(message: SchoolMessage) => (
-          <div className="flex gap-2">
-            <button
-              onClick={() => handleEdit(message)}
-              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              title="Edit"
-            >
-              <Edit className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => handleDelete(message.id)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              title="Delete"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">School Messages</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Manage messages from Principal and other valuable persons
+            </p>
           </div>
-        )}
-      />
+          <Button
+            variant="primary"
+            icon={<Plus className="w-5 h-5" />}
+            onClick={() => {
+              setEditingMessage(null);
+              resetForm();
+              setShowModal(true);
+            }}
+          >
+            Add New Message
+          </Button>
+        </div>
+
+        {/* Messages Table */}
+        <DataTable
+          data={messages}
+          columns={columns}
+          searchPlaceholder="Search by person name, position..."
+          loading={loading}
+          actions={(message: SchoolMessage) => (
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleEdit(message)}
+                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                title="Edit"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handleDelete(message.id)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                title="Delete"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        />
+      </div>
 
       {/* Add/Edit Modal */}
       <Modal
@@ -391,4 +393,4 @@ const MessageManagement: React.FC = () => {
   );
 };
 
-export default MessageManagement;
+export default Messages;

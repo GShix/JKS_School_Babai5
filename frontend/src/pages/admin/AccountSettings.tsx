@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { User, Lock, Bell, Settings } from 'lucide-react';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import LoadingSpinner from '../shared/LoadingSpinner';
+import Button from '../../components/shared/Button';
+import FormInput from '../../components/shared/FormInput';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning } from '../../utils/sweetAlert';

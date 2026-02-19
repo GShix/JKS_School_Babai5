@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Download as DownloadIcon, FileText, Upload, X } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Button from '../shared/Button';
-import Modal from '../shared/Modal';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import { showError, showDeleteConfirm, showSuccess } from '../../utils/sweetAlert';
 import { downloadService, type Download } from '../../api/services/downloadService';
 
-const DownloadsManagement = () => {
+const Downloads = () => {
   const [files, setFiles] = useState<Download[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_loading, setLoading] = useState(true);
@@ -220,7 +220,7 @@ const DownloadsManagement = () => {
     { 
       key: 'category', 
       label: 'Category',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <Badge variant={getCategoryBadgeVariant(value)}>
           {value.replace(/-/g, ' ').toUpperCase()}
         </Badge>
@@ -233,12 +233,12 @@ const DownloadsManagement = () => {
     { 
       key: 'createdAt', 
       label: 'Uploaded',
-      render: (value: string) => new Date(value).toLocaleDateString()
+      render: (value: string, _row: any) => new Date(value).toLocaleDateString()
     },
     {
       key: 'status',
       label: 'Status',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <Badge variant={value === 'active' ? 'success' : 'danger'}>
           {value}
         </Badge>
@@ -520,4 +520,4 @@ const DownloadsManagement = () => {
   );
 };
 
-export default DownloadsManagement;
+export default Downloads;

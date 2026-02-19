@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Plus, Edit, Trash2, Download } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
@@ -24,7 +24,7 @@ interface TimetableEntry {
   academicYear: string;
 }
 
-const TimetableManagement: React.FC = () => {
+const Timetable: React.FC = () => {
   const [timetable, setTimetable] = useState<TimetableEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -198,13 +198,13 @@ const TimetableManagement: React.FC = () => {
   };
 
   const columns = [
-    { key: 'class', label: 'Class', render: (entry: TimetableEntry) => `${entry.class} ${entry.section}` },
+    { key: 'class', label: 'Class', render: (_value: any, entry: TimetableEntry) => `${entry.class} ${entry.section}` },
     { key: 'day', label: 'Day' },
     { key: 'period', label: 'Period' },
     { key: 'subject', label: 'Subject' },
     { key: 'teacher', label: 'Teacher' },
-    { key: 'time', label: 'Time', render: (entry: TimetableEntry) => `${entry.startTime} - ${entry.endTime}` },
-    { key: 'room', label: 'Room', render: (entry: TimetableEntry) => entry.room || '-' }
+    { key: 'time', label: 'Time', render: (_value: any, entry: TimetableEntry) => `${entry.startTime} - ${entry.endTime}` },
+    { key: 'room', label: 'Room', render: (_value: any, entry: TimetableEntry) => entry.room || '-' }
   ];
 
   const dayOptions = [
@@ -388,4 +388,4 @@ const TimetableManagement: React.FC = () => {
   );
 };
 
-export default TimetableManagement;
+export default Timetable;

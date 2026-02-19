@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Save, MapPin, Target, Eye } from 'lucide-react';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
+import Button from '../../components/shared/Button';
+import FormInput from '../../components/shared/FormInput';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError } from '../../utils/sweetAlert';
@@ -28,7 +28,7 @@ interface SchoolProfile {
   schoolCode?: string;
 }
 
-const SchoolProfileManagement = () => {
+const SchoolProfile = () => {
   const [profile, setProfile] = useState<SchoolProfile>({
     id: 0,
     schoolName: '',
@@ -407,4 +407,4 @@ const SchoolProfileManagement = () => {
   );
 };
 
-export default SchoolProfileManagement;
+export default SchoolProfile;

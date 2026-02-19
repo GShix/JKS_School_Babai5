@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { heroSlideService, type HeroSlide } from '../../api/services';
 import { showSuccess, showError } from '../../utils/sweetAlert';
-import Modal from '../shared/Modal';
+import Modal from '../../components/shared/Modal';
 
 
 interface SlideFormData {
@@ -22,7 +22,7 @@ interface SlideFormData {
   image: File | null;
 }
 
-const HeroSlideManagement: React.FC = () => {
+const HeroSlides: React.FC = () => {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -527,4 +527,4 @@ const HeroSlideManagement: React.FC = () => {
   );
 };
 
-export default HeroSlideManagement;
+export default HeroSlides;

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FileText, Plus, Edit, Trash2, Download } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
@@ -31,7 +31,7 @@ interface Grade {
   term: string;
 }
 
-const GradesManagement: React.FC = () => {
+const Grades: React.FC = () => {
   const [grades, setGrades] = useState<Grade[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -220,21 +220,21 @@ const GradesManagement: React.FC = () => {
   };
 
   const columns = [
-    { key: 'student', label: 'Student', render: (grade: Grade) => (
+    { key: 'student', label: 'Student', render: (_value: any, grade: Grade) => (
       <div>
         <p className="font-medium">{grade.student?.fullName || 'N/A'}</p>
         <p className="text-sm text-gray-600">Roll: {grade.student?.rollNumber}</p>
       </div>
     )},
-    { key: 'class', label: 'Class', render: (grade: Grade) => `${grade.student?.class} ${grade.student?.section || ''}` },
+    { key: 'class', label: 'Class', render: (_value: any, grade: Grade) => `${grade.student?.class} ${grade.student?.section || ''}` },
     { key: 'subject', label: 'Subject' },
     { key: 'examType', label: 'Exam Type' },
-    { key: 'marks', label: 'Marks', render: (grade: Grade) => `${grade.obtainedMarks}/${grade.fullMarks}` },
-    { key: 'percentage', label: '%', render: (grade: Grade) => `${grade.percentage}%` },
+    { key: 'marks', label: 'Marks', render: (_value: any, grade: Grade) => `${grade.obtainedMarks}/${grade.fullMarks}` },
+    { key: 'percentage', label: '%', render: (_value: any, grade: Grade) => `${grade.percentage}%` },
     { 
       key: 'grade', 
       label: 'Grade', 
-      render: (grade: Grade) => {
+      render: (_value: any, grade: Grade) => {
         const variant = grade.grade === 'A+' || grade.grade === 'A' ? 'success' :
                        grade.grade === 'B+' || grade.grade === 'B' ? 'info' :
                        grade.grade === 'C+' || grade.grade === 'C' ? 'warning' : 'danger';
@@ -435,4 +435,4 @@ const GradesManagement: React.FC = () => {
   );
 };
 
-export default GradesManagement;
+export default Grades;

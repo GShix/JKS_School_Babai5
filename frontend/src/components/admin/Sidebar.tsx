@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
@@ -42,8 +43,6 @@ interface MenuItem {
 }
 
 interface SidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
   sidebarOpen: boolean;
   onToggle: () => void;
   mobileMenuOpen: boolean;
@@ -58,8 +57,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  activeTab,
-  onTabChange,
   sidebarOpen,
   onToggle,
   mobileMenuOpen,
@@ -67,6 +64,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   adminUser,
   // onLogout
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
   const toggleSubmenu = (menuId: string) => {
@@ -76,6 +75,19 @@ const Sidebar: React.FC<SidebarProps> = ({
         : [...prev, menuId]
     );
   };
+
+  const handleNavigation = (path: string) => {
+    navigate(`/admin/${path}`);
+    if (mobileMenuOpen) onMobileToggle();
+  };
+
+  // Get current active tab from URL
+  const getCurrentTab = () => {
+    const path = location.pathname.replace('/admin/', '');
+    return path || 'dashboard';
+  };
+
+  const activeTab = getCurrentTab();
 
   const menuItems: MenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -133,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         } bg-gradient-to-b from-blue-600 via-blue-700 to-blue-900 text-white transition-all duration-300 flex flex-col fixed h-full z-50`}
       >
         {/* Logo */}
-        <div className="px-4 py-3 flex items-center justify-between border-b border-gray-400">
+        <div className="px-3 py-3 flex items-center justify-between border-b border-gray-400">
           {(sidebarOpen || mobileMenuOpen) ? (
             <div className="flex items-center gap-3">
               <Shield className="w-8 h-8" />
@@ -174,7 +186,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         )} */}
 
         {/* Menu Items */}
-        <nav className="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-2 py-2 space-y-1 overflow-y-auto">
           {filteredMenuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id || item.subItems?.some(sub => sub.id === activeTab);
@@ -188,11 +200,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     if (hasSubItems) {
                       toggleSubmenu(item.id);
                     } else {
-                      onTabChange(item.id);
-                      if (mobileMenuOpen) onMobileToggle();
+                      handleNavigation(item.id);
                     }
                   }}
-                  className={`w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg transition-all ${
+                  className={`w-full flex items-center justify-between gap-3 px-2 py-2 rounded-lg transition-all text-sm ${
                     isActive
                       ? 'bg-white text-blue-900 shadow-lg'
                       : 'hover:bg-blue-800 text-white'
@@ -217,10 +228,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       return (
                         <button
                           key={subItem.id}
-                          onClick={() => {
-                            onTabChange(subItem.id);
-                            if (mobileMenuOpen) onMobileToggle();
-                          }}
+                          onClick={() => handleNavigation(subItem.id)}
                           className={`w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all ${
                             isSubActive
                               ? 'bg-white text-blue-900 shadow'

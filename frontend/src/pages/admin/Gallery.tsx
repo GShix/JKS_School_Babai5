@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Plus, Edit, Trash2, Image as ImageIcon, X, Video } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Button from '../shared/Button';
-import Modal from '../shared/Modal';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
@@ -36,7 +36,7 @@ interface GalleryImage {
   createdAt?: string;
 }
 
-const GalleryManagement = () => {
+const Gallery = () => {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -305,7 +305,7 @@ const GalleryManagement = () => {
     { 
       key: 'category', 
       label: 'Category',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <Badge variant={getCategoryBadgeVariant(value)}>
           {value.toUpperCase()}
         </Badge>
@@ -314,7 +314,7 @@ const GalleryManagement = () => {
     { 
       key: 'eventDate', 
       label: 'Event Date',
-      render: (value: string) => new Date(value).toLocaleDateString()
+      render: (value: string, _row: any) => new Date(value).toLocaleDateString()
     },
     {
       key: 'images',
@@ -404,13 +404,12 @@ const GalleryManagement = () => {
       </div>
 
       {/* Data Table */}
-      <div className="bg-white rounded-lg shadow-sm border">
-        <DataTable
-          columns={columns}
-          data={images}
-          loading={loading && images.length === 0}
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={images}
+        loading={loading && images.length === 0}
+        searchPlaceholder="Search by title, category, tags..."
+      />
 
       {/* Add/Edit Modal */}
       <Modal
@@ -664,4 +663,4 @@ const GalleryManagement = () => {
   );
 };
 
-export default GalleryManagement;
+export default Gallery;

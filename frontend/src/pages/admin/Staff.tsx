@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import { staffService } from '../../api';
-import type { Staff } from '../../api';
+import type { Staff as StaffType } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
 
-const StaffManagement: React.FC = () => {
-  const [staff, setStaff] = useState<Staff[]>([]);
-  const [filteredStaff, setFilteredStaff] = useState<Staff[]>([]);
+const StaffPage: React.FC = () => {
+  const [staff, setStaff] = useState<StaffType[]>([]);
+  const [filteredStaff, setFilteredStaff] = useState<StaffType[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
+  const [editingStaff, setEditingStaff] = useState<StaffType | null>(null);
   
   // Filter states
   const [filterGender, setFilterGender] = useState('');
@@ -51,7 +51,7 @@ const StaffManagement: React.FC = () => {
       setLoading(true);
       const response = await staffService.getAll();
       // Filter out teachers - only show non-teaching staff
-      const nonTeachingStaff = response.data?.filter((staff: Staff) => staff.position !== 'Teacher') || [];
+      const nonTeachingStaff = response.data?.filter((staff: StaffType) => staff.position !== 'Teacher') || [];
       setStaff(nonTeachingStaff);
       setFilteredStaff(nonTeachingStaff);
     } catch (error) {
@@ -133,7 +133,7 @@ const StaffManagement: React.FC = () => {
     }
   };
 
-  const handleEdit = (staffMember: Staff) => {
+  const handleEdit = (staffMember: StaffType) => {
     setEditingStaff(staffMember);
     setFormData({
       fullName: staffMember.fullName || '',
@@ -213,7 +213,7 @@ const StaffManagement: React.FC = () => {
     {
       key: 'profileImage',
       label: 'Photo',
-      render: (_value: string, row: Staff) => (
+      render: (_value: string, row: StaffType) => (
         <img 
           src={row.profileImage || '/img/default-avatar.svg'} 
           alt={row.fullName}
@@ -233,7 +233,7 @@ const StaffManagement: React.FC = () => {
     {
       key: 'status',
       label: 'Status',
-      render: (value: string) => {
+      render: (value: string, _row: any) => {
         const getStatusVariant = (status: string) => {
           switch (status) {
             case 'active': return 'success';
@@ -343,7 +343,7 @@ const StaffManagement: React.FC = () => {
         columns={columns}
         searchPlaceholder="Search staff by name, employee ID..."
         loading={loading}
-        actions={(staffMember: Staff) => (
+        actions={(staffMember: StaffType) => (
           <div className="flex gap-2">
             <button
               onClick={() => handleEdit(staffMember)}
@@ -591,4 +591,4 @@ const StaffManagement: React.FC = () => {
   );
 };
 
-export default StaffManagement;
+export default StaffPage;

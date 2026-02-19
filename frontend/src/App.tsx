@@ -23,8 +23,26 @@ import Results from './pages/results/Results'
 import Admission from './pages/admission/Admission'
 import SecondaryLevelProgram from './pages/academicPrograms/SecondaryLevelProgram'
 import BasicLevelProgram from './pages/academicPrograms/BasicLevelProgram'
-import AdminPanel from './pages/admin/AdminPanel'
 import StudentLogin from './pages/auth/StudentLogin'
+
+// Admin Layout and Pages
+import AdminLayout from './layouts/AdminLayout'
+import Dashboard from './pages/admin/Dashboard'
+import AdminStudents from './pages/admin/Students'
+import AdminTeachers from './pages/admin/Teachers'
+import AdminStaff from './pages/admin/Staff'
+import AdminAnnouncements from './pages/admin/Announcements'
+import AdminBlogs from './pages/admin/Blogs'
+import AdminGallery from './pages/admin/Gallery'
+import AdminCareer from './pages/admin/Career'
+import AdminDownloads from './pages/admin/Downloads'
+import AdminPrograms from './pages/admin/Programs'
+import Admins from './pages/admin/Admins'
+import SchoolProfile from './pages/admin/SchoolProfile'
+import Messages from './pages/admin/Messages'
+import Contacts from './pages/admin/Contacts'
+import HeroSlides from './pages/admin/HeroSlides'
+import Settings from './pages/admin/AccountSettings'
 
 function App() {
   return (
@@ -54,9 +72,29 @@ function App() {
             <Route path='/career' element={<Career/>}/>
             <Route path='/blogs' element={<AllBlogs/>}/>
 
+            {/* Admin Routes */}
             <Route path='/admin/login' element={<Login/>}/>
-            <Route path='/admin/dashboard' element={<AdminPanel/>}/>
+            <Route path='/admin' element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path='dashboard' element={<Dashboard />} />
+              <Route path='students' element={<AdminStudents />} />
+              <Route path='teachers' element={<AdminTeachers />} />
+              <Route path='staff' element={<AdminStaff />} />
+              <Route path='announcements' element={<AdminAnnouncements />} />
+              <Route path='blogs' element={<AdminBlogs />} />
+              <Route path='gallery' element={<AdminGallery />} />
+              <Route path='career' element={<AdminCareer />} />
+              <Route path='downloads' element={<AdminDownloads />} />
+              <Route path='programs' element={<AdminPrograms />} />
+              <Route path='admins' element={<Admins />} />
+              <Route path='school-profile' element={<SchoolProfile />} />
+              <Route path='messages' element={<Messages />} />
+              <Route path='contacts' element={<Contacts />} />
+              <Route path='hero-slides' element={<HeroSlides />} />
+              <Route path='settings' element={<Settings />} />
+            </Route>
 
+            {/* Student Routes */}
             <Route path='/student/login' element={<StudentLogin/>}/>
             {/* <Route path='/student/dashboard' element={<St/>}/> */}
 

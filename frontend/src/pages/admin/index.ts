@@ -1,0 +1,23 @@
+// Admin Pages Index - Centralized exports for all admin pages
+export { default as Dashboard } from './Dashboard';
+export { default as Students } from './Students';
+export { default as Teachers } from './Teachers';
+export { default as Staff } from './Staff';
+export { default as Announcements } from './Announcements';
+export { default as Blogs } from './Blogs';
+export { default as Gallery } from './Gallery';
+export { default as Career } from './Career';
+export { default as Downloads } from './Downloads';
+export { default as Programs } from './Programs';
+export { default as Admins } from './Admins';
+export { default as SchoolProfile } from './SchoolProfile';
+export { default as Messages } from './Messages';
+export { default as Contacts } from './Contacts';
+export { default as HeroSlides } from './HeroSlides';
+export { default as Settings } from './AccountSettings';
+export { default as Attendance } from './Attendance';
+export { default as Grades } from './Grades';
+export { default as Fees } from './Fees';
+export { default as Timetable } from './Timetable';
+export { default as Assignments } from './Assignments';
+export { default as Leaves } from './Leaves';

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
-import DataTable from '../shared/DataTable';
-import Modal from '../shared/Modal';
-import Button from '../shared/Button';
-import FormInput from '../shared/FormInput';
-import Select from '../shared/Select';
-import Badge from '../shared/Badge';
+import Badge from '../../components/shared/Badge';
+import Button from '../../components/shared/Button';
+import DataTable from '../../components/shared/DataTable';
+import Modal from '../../components/shared/Modal';
+import FormInput from '../../components/shared/FormInput';
+import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showError, showSuccess, showDeleteConfirm } from '../../utils/sweetAlert';
@@ -25,7 +25,7 @@ interface Student {
   gender: string;
 }
 
-const StudentsManagement: React.FC = () => {
+const Students: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -285,7 +285,7 @@ const StudentsManagement: React.FC = () => {
     {
       key: 'status',
       label: 'Status',
-      render: (value: string) => (
+      render: (value: string, _row: any) => (
         <Badge variant={value === 'active' ? 'success' : 'danger'}>
           {value}
         </Badge>
@@ -783,4 +783,4 @@ const StudentsManagement: React.FC = () => {
   );
 };
 
-export default StudentsManagement;
+export default Students;
