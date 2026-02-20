@@ -1,13 +1,35 @@
 const studentModel = (sequelize, DataTypes) => {
   const Student = sequelize.define('student', {
+    // Basic Information
+    nationalIdNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    middleName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     fullName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    iemisId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      // unique: true, // Temporarily disabled for schema sync, can be re-enabled after initial sync
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
       validate: {
         isEmail: true,
       },
@@ -18,6 +40,10 @@ const studentModel = (sequelize, DataTypes) => {
       comment: 'Password for student portal login',
     },
     phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    contactNumber: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -32,8 +58,66 @@ const studentModel = (sequelize, DataTypes) => {
         isIn: [['Male', 'Female', 'Other']],
       },
     },
+    isForeignStudent: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    
+    // Permanent Address (Not required for foreign students)
+    permanentProvince: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    permanentDistrict: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    permanentMunicipality: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    permanentWard: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    
+    // Temporary/Current Address (Required for all students)
+    temporaryProvince: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    temporaryDistrict: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    temporaryMunicipality: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    temporaryWard: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    sameAsPermAddress: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    
+    // Legacy address field (kept for backward compatibility)
     address: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    
+    // Family Information
+    fatherName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    motherName: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     guardianName: {
@@ -44,6 +128,10 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    guardianContactNo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     guardianEmail: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -51,6 +139,8 @@ const studentModel = (sequelize, DataTypes) => {
         isEmail: true,
       },
     },
+    
+    // Academic Information
     class: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -62,7 +152,11 @@ const studentModel = (sequelize, DataTypes) => {
     rollNumber: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
+    },
+    admitYear: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     admissionDate: {
       type: DataTypes.DATEONLY,
@@ -72,10 +166,48 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    previousGrade: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    previousPercentage: {
+      type: DataTypes.DECIMAL(5, 2),
+      allowNull: true,
+    },
+    subject: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    
+    // Personal Details
+    caste: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    motherTongue: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    disabilityType: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     bloodGroup: {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    
+    // School Information
+    schoolingSource: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    scholarship: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    
+    // Status and Media
     status: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -88,16 +220,13 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    // Academic Information
-    previousGrade: {
-      type: DataTypes.STRING,
+    photo: {
+      type: DataTypes.TEXT,
       allowNull: true,
+      comment: 'Student photo URL from file upload',
     },
-    previousPercentage: {
-      type: DataTypes.DECIMAL(5, 2),
-      allowNull: true,
-    },
-    // Additional Notes
+    
+    // Additional Information
     medicalInfo: {
       type: DataTypes.TEXT,
       allowNull: true,

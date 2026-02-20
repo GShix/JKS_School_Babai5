@@ -1,58 +1,159 @@
 const { students } = require('../database/connection');
+const { uploadToSupabase, deleteFromSupabase } = require('../config/supabase');
 
 // Create a new student
 exports.createStudent = async (req, res) => {
   try {
     const {
-      fullName,
+      // Basic Information
+      nationalIdNumber,
+      firstName,
+      middleName,
+      lastName,
+      iemisId,
       email,
       phone,
+      contactNumber,
       dateOfBirth,
       gender,
-      address,
+      isForeignStudent,
+      
+      // Permanent Address
+      permanentProvince,
+      permanentDistrict,
+      permanentMunicipality,
+      permanentWard,
+      
+      // Temporary Address
+      temporaryProvince,
+      temporaryDistrict,
+      temporaryMunicipality,
+      temporaryWard,
+      sameAsPermAddress,
+      
+      // Family Information
+      fatherName,
+      motherName,
       guardianName,
       guardianPhone,
+      guardianContactNo,
       guardianEmail,
+      
+      // Academic Information
       class: studentClass,
       section,
       rollNumber,
+      admitYear,
       admissionDate,
       previousSchool,
-      bloodGroup,
-      status,
-      profileImage,
       previousGrade,
       previousPercentage,
+      subject,
+      
+      // Personal Details
+      caste,
+      motherTongue,
+      disabilityType,
+      bloodGroup,
+      
+      // School Information
+      schoolingSource,
+      scholarship,
+      
+      // Status and Other
+      status,
+      profileImage,
+      photo,
       medicalInfo,
       notes,
+      
+      // Legacy field
+      address,
     } = req.body;
 
-    if (!fullName || !studentClass) {
-      return res.status(400).json({ message: 'Full name and class are required' });
+    // Validate required fields
+    if (!firstName || !lastName || !studentClass) {
+      return res.status(400).json({ 
+        message: 'First name, last name, and class are required' 
+      });
+    }
+
+    // Build full name
+    const fullName = [firstName, middleName, lastName].filter(Boolean).join(' ');
+
+    // Handle photo upload to Supabase if file is provided
+    let photoUrl = null;
+    if (req.file) {
+      try {
+        const uploadResult = await uploadToSupabase(
+          req.file.buffer,
+          req.file.originalname,
+          'student-images', // Supabase bucket for student photos
+          req.file.mimetype
+        );
+        photoUrl = uploadResult.url;
+      } catch (uploadError) {
+        console.error('Error uploading student photo:', uploadError);
+        // Continue without photo rather than failing the whole operation
+      }
     }
 
     const newStudent = await students.create({
+      nationalIdNumber,
+      firstName,
+      middleName,
+      lastName,
       fullName,
+      iemisId,
       email,
       phone,
+      contactNumber,
       dateOfBirth,
       gender,
-      address,
+      isForeignStudent: isForeignStudent || false,
+      
+      permanentProvince,
+      permanentDistrict,
+      permanentMunicipality,
+      permanentWard,
+      
+      temporaryProvince,
+      temporaryDistrict,
+      temporaryMunicipality,
+      temporaryWard,
+      sameAsPermAddress: sameAsPermAddress || false,
+      
+      fatherName,
+      motherName,
       guardianName,
       guardianPhone,
+      guardianContactNo,
       guardianEmail,
+      
       class: studentClass,
       section,
       rollNumber,
+      admitYear,
       admissionDate,
       previousSchool,
-      bloodGroup,
-      status,
-      profileImage,
       previousGrade,
       previousPercentage,
+      subject,
+      
+      caste,
+      motherTongue,
+      disabilityType,
+      bloodGroup,
+      
+      schoolingSource,
+      scholarship,
+      
+      status: status || 'active',
+      profileImage,
+      photo: photoUrl || photo, // Use uploaded photo URL or provided photo URL
       medicalInfo,
       notes,
+      address,
     });
 
     res.status(201).json({
@@ -121,51 +222,162 @@ exports.updateStudent = async (req, res) => {
     }
 
     const {
-      fullName,
+      // Basic Information
+      nationalIdNumber,
+      firstName,
+      middleName,
+      lastName,
+      iemisId,
       email,
       phone,
+      contactNumber,
       dateOfBirth,
       gender,
-      address,
+      isForeignStudent,
+      
+      // Permanent Address
+      permanentProvince,
+      permanentDistrict,
+      permanentMunicipality,
+      permanentWard,
+      
+      // Temporary Address
+      temporaryProvince,
+      temporaryDistrict,
+      temporaryMunicipality,
+      temporaryWard,
+      sameAsPermAddress,
+      
+      // Family Information
+      fatherName,
+      motherName,
       guardianName,
       guardianPhone,
+      guardianContactNo,
       guardianEmail,
+      
+      // Academic Information
       class: studentClass,
       section,
       rollNumber,
+      admitYear,
       admissionDate,
       previousSchool,
-      bloodGroup,
-      status,
-      profileImage,
       previousGrade,
       previousPercentage,
+      subject,
+      
+      // Personal Details
+      caste,
+      motherTongue,
+      disabilityType,
+      bloodGroup,
+      
+      // School Information
+      schoolingSource,
+      scholarship,
+      
+      // Status and Other
+      status,
+      profileImage,
+      photo,
       medicalInfo,
       notes,
+      
+      // Legacy field
+      address,
     } = req.body;
 
+    // Build full name if name fields are provided
+    let fullName = student.fullName;
+    if (firstName || lastName) {
+      fullName = [
+        firstName || student.firstName, 
+        middleName, 
+        lastName || student.lastName
+      ].filter(Boolean).join(' ');
+    }
+
+    // Handle photo upload to Supabase if new file is provided
+    let photoUrl = photo; // Use provided photo URL by default
+    if (req.file) {
+      try {
+        // Delete old photo if exists
+        if (student.photo) {
+          await deleteFromSupabase(student.photo, 'student-images');
+        }
+        
+        // Upload new photo
+        const uploadResult = await uploadToSupabase(
+          req.file.buffer,
+          req.file.originalname,
+          'student-images',
+          req.file.mimetype
+        );
+        photoUrl = uploadResult.url;
+      } catch (uploadError) {
+        console.error('Error uploading student photo:', uploadError);
+        // Keep existing photo if upload fails
+        photoUrl = student.photo;
+      }
+    }
+
     await student.update({
+      nationalIdNumber,
+      firstName,
+      middleName,
+      lastName,
       fullName,
+      iemisId,
       email,
       phone,
+      contactNumber,
       dateOfBirth,
       gender,
-      address,
+      isForeignStudent,
+      
+      permanentProvince,
+      permanentDistrict,
+      permanentMunicipality,
+      permanentWard,
+      
+      temporaryProvince,
+      temporaryDistrict,
+      temporaryMunicipality,
+      temporaryWard,
+      sameAsPermAddress,
+      
+      fatherName,
+      motherName,
       guardianName,
       guardianPhone,
+      guardianContactNo,
       guardianEmail,
+      
       class: studentClass,
       section,
       rollNumber,
+      admitYear,
       admissionDate,
       previousSchool,
-      bloodGroup,
-      status,
-      profileImage,
       previousGrade,
       previousPercentage,
+      subject,
+      
+      caste,
+      motherTongue,
+      disabilityType,
+      bloodGroup,
+      
+      schoolingSource,
+      scholarship,
+      
+      status,
+      profileImage,
+      photo: photoUrl,
       medicalInfo,
       notes,
+      address,
     });
 
     res.json({

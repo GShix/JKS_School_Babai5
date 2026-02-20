@@ -7,7 +7,7 @@ const adminModel = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
       validate: {
         isEmail: true,
       },

@@ -12,6 +12,7 @@ const teacherRoute = require('./routes/teacherRoute');
 const attendanceRoute = require('./routes/attendanceRoute');
 const gradeRoute = require('./routes/gradeRoute');
 const feeRoute = require('./routes/feeRoute');
+const feeManagementRoute = require('./routes/feeManagementRoute');
 const leaveRoute = require('./routes/leaveRoute');
 const announcementRoute = require('./routes/announcementRoute');
 const timetableRoute = require('./routes/timetableRoute');
@@ -56,6 +57,7 @@ app.use("/api/", teacherRoute);
 app.use("/api/", attendanceRoute);
 app.use("/api/", gradeRoute);
 app.use("/api/", feeRoute);
+app.use("/api/fee-management", feeManagementRoute);
 app.use("/api/", leaveRoute);
 app.use("/api/", announcementRoute);
 app.use("/api/", timetableRoute);
@@ -84,6 +86,25 @@ app.get('/health', (req, res) => {
       hasJwtSecret: !!process.env.JWT_SECRET,
       hasSupabaseUrl: !!process.env.SUPABASE_URL,
       hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+    }
+  });
+});
+
+// Debug route to check available student routes
+app.get('/api/debug/routes', (req, res) => {
+  res.json({
+    message: 'Available student routes',
+    routes: {
+      students: {
+        'GET /api/students': 'List all students',
+        'GET /api/students/:id': 'Get single student',
+        'POST /api/students/create': 'Create new student (with photo upload)',
+        'PUT /api/students/:id/update': 'Update student (with photo upload)',
+        'DELETE /api/students/:id/delete': 'Delete student',
+        'GET /api/students/class/:className': 'Get students by class',
+        'GET /api/students/status/:status': 'Get students by status'
+      },
+      note: 'Protected routes require Bearer token in Authorization header'
     }
   });
 });

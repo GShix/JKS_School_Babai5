@@ -16,7 +16,7 @@ const teacherModel = (sequelize, DataTypes) => {
     nin: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
       comment: 'National Identification Number',
     },
     dateOfBirth: {
@@ -110,7 +110,7 @@ const teacherModel = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
       validate: {
         isEmail: true,
       },
@@ -133,7 +133,7 @@ const teacherModel = (sequelize, DataTypes) => {
     employeeId: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
     },
     department: {
       type: DataTypes.STRING,

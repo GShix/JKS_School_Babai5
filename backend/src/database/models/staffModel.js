@@ -7,7 +7,7 @@ const staffModel = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
       validate: {
         isEmail: true,
       },
@@ -42,7 +42,7 @@ const staffModel = (sequelize, DataTypes) => {
     employeeId: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      // unique: true, // Temporarily disabled for schema sync
     },
     joiningDate: {
       type: DataTypes.DATEONLY,

@@ -47,6 +47,12 @@ db.teacher = require('./models/teacherModel')(sequelize, DataTypes);
 db.attendance = require('./models/attendanceModel')(sequelize, DataTypes);
 db.grades = require('./models/gradeModel')(sequelize, DataTypes);
 db.fees = require('./models/feeModel')(sequelize, DataTypes);
+// New Fee Management System Models
+db.feeCategories = require('./models/feeCategoryModel')(sequelize, DataTypes);
+db.feeStructures = require('./models/feeStructureModel')(sequelize, DataTypes);
+db.feeStructureItems = require('./models/feeStructureItemModel')(sequelize, DataTypes);
+db.feeAllocations = require('./models/feeAllocationModel')(sequelize, DataTypes);
+db.feeTransactions = require('./models/feeTransactionModel')(sequelize, DataTypes);
 db.timetables = require('./models/timetableModel')(sequelize, DataTypes);
 db.assignments = require('./models/assignmentModel')(sequelize, DataTypes);
 db.submissions = require('./models/submissionModel')(sequelize, DataTypes);
@@ -61,14 +67,111 @@ db.contacts = require('./models/contactModel')(sequelize, DataTypes);
 db.careerPositions = require('./models/careerPositionModel')(sequelize, DataTypes);
 db.jobApplications = require('./models/jobApplicationModel')(sequelize, DataTypes);
 
+// Define Relationships for Fee Management System
+// FeeStructure has many FeeStructureItems
+db.feeStructures.hasMany(db.feeStructureItems, {
+  foreignKey: 'feeStructureId',
+  as: 'items',
+  onDelete: 'CASCADE',
+});
+db.feeStructureItems.belongsTo(db.feeStructures, {
+  foreignKey: 'feeStructureId',
+  as: 'feeStructure',
+});
+
+// FeeCategory has many FeeStructureItems
+db.feeCategories.hasMany(db.feeStructureItems, {
+  foreignKey: 'feeCategoryId',
+  as: 'structureItems',
+});
+db.feeStructureItems.belongsTo(db.feeCategories, {
+  foreignKey: 'feeCategoryId',
+  as: 'category',
+});
+
+// Student has many FeeAllocations
+db.students.hasMany(db.feeAllocations, {
+  foreignKey: 'studentId',
+  as: 'feeAllocations',
+  onDelete: 'CASCADE',
+});
+db.feeAllocations.belongsTo(db.students, {
+  foreignKey: 'studentId',
+  as: 'student',
+});
+
+// FeeStructure has many FeeAllocations
+db.feeStructures.hasMany(db.feeAllocations, {
+  foreignKey: 'feeStructureId',
+  as: 'allocations',
+});
+db.feeAllocations.belongsTo(db.feeStructures, {
+  foreignKey: 'feeStructureId',
+  as: 'feeStructure',
+});
+
+// FeeAllocation has many FeeTransactions
+db.feeAllocations.hasMany(db.feeTransactions, {
+  foreignKey: 'feeAllocationId',
+  as: 'transactions',
+});
+db.feeTransactions.belongsTo(db.feeAllocations, {
+  foreignKey: 'feeAllocationId',
+  as: 'feeAllocation',
+});
+
+// Student has many FeeTransactions
+db.students.hasMany(db.feeTransactions, {
+  foreignKey: 'studentId',
+  as: 'feeTransactions',
+});
+db.feeTransactions.belongsTo(db.students, {
+  foreignKey: 'studentId',
+  as: 'student',
+});
+
+// Admin collected FeeTransactions
+db.admins.hasMany(db.feeTransactions, {
+  foreignKey: 'collectedBy',
+  as: 'collectedTransactions',
+});
+db.feeTransactions.belongsTo(db.admins, {
+  foreignKey: 'collectedBy',
+  as: 'collector',
+});
+
 // DO NOT run sync() in production/serverless - it's slow and can crash functions
 // Tables should already exist in production database
-// Only run sync in local development if needed
+// For development: only sync NEW fee management tables (without alter on existing tables)
 if (process.env.NODE_ENV === 'development') {
-  sequelize.sync({ alter: false }).then(() => {
-    console.log('✅ Database & tables synced (development mode)');
+  // Sync existing tables without alteration
+  sequelize.sync({ alter: false }).then(async () => {
+    console.log('✅ Database connected');
+    
+    // Now sync ONLY the new fee management tables with force: false
+    // This will create them if they don't exist, but won't modify if they do
+    try {
+      await db.feeCategories.sync();
+      await db.feeStructures.sync();
+      await db.feeStructureItems.sync();
+      await db.feeAllocations.sync();
+      await db.feeTransactions.sync();
+      console.log('✅ Fee management tables created successfully');
+    } catch (err) {
+      console.error('❌ Fee management tables sync error:', err.message);
+    }
   }).catch(err => {
     console.error('❌ Database sync error:', err.message);
+  });
+}
+
+// For production/Vercel deployment, sync with alter on first deploy to add columns
+// After columns are added, change this back to false or remove
+if (process.env.NODE_ENV === 'production' && process.env.SYNC_DB === 'true') {
+  sequelize.sync({ alter: true }).then(() => {
+    console.log('✅ Production database schema updated');
+  }).catch(err => {
+    console.error('❌ Production sync error:', err.message);
   });
 }
 
@@ -98,3 +201,9 @@ exports.schoolMessages = db.schoolMessages;
 exports.contacts = db.contacts;
 exports.careerPositions = db.careerPositions;
 exports.jobApplications = db.jobApplications;
+// Fee Management System exports
+exports.feeCategories = db.feeCategories;
+exports.feeStructures = db.feeStructures;
+exports.feeStructureItems = db.feeStructureItems;
+exports.feeAllocations = db.feeAllocations;
+exports.feeTransactions = db.feeTransactions;
