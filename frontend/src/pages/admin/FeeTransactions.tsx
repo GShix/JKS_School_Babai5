@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Search, Calendar, DollarSign, Filter, Receipt } from 'lucide-react';
+import { Download, Search, DollarSign, Filter, Receipt } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import DataTable from '../../components/shared/DataTable';
 import Badge from '../../components/shared/Badge';
