@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, DollarSign, User, CreditCard, Calendar, Receipt, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, DollarSign, User, CreditCard, Receipt, AlertCircle } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import FormInput from '../../components/shared/FormInput';
 import Select from '../../components/shared/Select';

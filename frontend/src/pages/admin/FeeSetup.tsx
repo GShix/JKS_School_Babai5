@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Save, X, FolderPlus, List } from 'lucide-react';
+import { Plus, Edit, Trash2, X, FolderPlus, List } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import FormInput from '../../components/shared/FormInput';
 import Select from '../../components/shared/Select';
@@ -488,7 +488,7 @@ const FeeSetup: React.FC = () => {
         isOpen={structureModalOpen}
         onClose={handleCloseStructureModal}
         title={editingStructure ? 'Edit Fee Structure' : 'Add Fee Structure'}
-        size="large"
+        size="lg"
       >
         <form onSubmit={handleStructureSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -542,7 +542,7 @@ const FeeSetup: React.FC = () => {
           <div className="border-t pt-4">
             <div className="flex justify-between items-center mb-3">
               <h4 className="font-semibold">Fee Items</h4>
-              <Button type="button" size="small" onClick={handleAddItem}>
+              <Button type="button" size="sm" onClick={handleAddItem}>
                 <Plus className="w-4 h-4 mr-1" /> Add Item
               </Button>
             </div>
@@ -560,7 +560,7 @@ const FeeSetup: React.FC = () => {
                       { value: '', label: 'Select Category' },
                       ...categories
                         .filter((c) => c.isActive)
-                        .map((c) => ({ value: c.id, label: c.name })),
+                        .map((c) => ({ value: c.id.toString(), label: c.name })),
                     ]}
                     required
                   />

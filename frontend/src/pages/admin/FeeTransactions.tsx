@@ -312,7 +312,7 @@ const FeeTransactions: React.FC = () => {
           searchPlaceholder="Search by receipt number, student name..."
           actions={(transaction: FeeTransaction) => (
             <Button
-              size="small"
+              size="sm"
               variant="secondary"
               onClick={() => handleDownloadReceipt(transaction)}
             >
