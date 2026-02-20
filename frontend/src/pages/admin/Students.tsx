@@ -9,6 +9,12 @@ import Select from '../../components/shared/Select';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showError, showSuccess, showDeleteConfirm } from '../../utils/sweetAlert';
+import {
+  getProvinceOptions,
+  getDistrictOptions,
+  getLocalBodyOptions,
+  getWardOptions
+} from '../../utils/addressUtils';
 
 interface Student {
   id: number;
@@ -69,9 +75,74 @@ const Students: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  // State for cascading dropdown options
+  const [permanentDistrictOptions, setPermanentDistrictOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select District' }]);
+  const [permanentLocalBodyOptions, setPermanentLocalBodyOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Local Body' }]);
+  const [permanentWardOptions, setPermanentWardOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Ward' }]);
+  
+  const [temporaryDistrictOptions, setTemporaryDistrictOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select District' }]);
+  const [temporaryLocalBodyOptions, setTemporaryLocalBodyOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Local Body' }]);
+  const [temporaryWardOptions, setTemporaryWardOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Ward' }]);
+
   useEffect(() => {
     fetchStudents();
   }, []);
+
+  // Effect for permanent address cascading
+  useEffect(() => {
+    if (formData.permanentProvince) {
+      setPermanentDistrictOptions(getDistrictOptions(formData.permanentProvince));
+    } else {
+      setPermanentDistrictOptions([{ value: '', label: 'Select District' }]);
+      setPermanentLocalBodyOptions([{ value: '', label: 'Select Local Body' }]);
+      setPermanentWardOptions([{ value: '', label: 'Select Ward' }]);
+    }
+  }, [formData.permanentProvince]);
+
+  useEffect(() => {
+    if (formData.permanentProvince && formData.permanentDistrict) {
+      setPermanentLocalBodyOptions(getLocalBodyOptions(formData.permanentProvince, formData.permanentDistrict));
+    } else {
+      setPermanentLocalBodyOptions([{ value: '', label: 'Select Local Body' }]);
+      setPermanentWardOptions([{ value: '', label: 'Select Ward' }]);
+    }
+  }, [formData.permanentProvince, formData.permanentDistrict]);
+
+  useEffect(() => {
+    if (formData.permanentProvince && formData.permanentDistrict && formData.permanentMunicipality) {
+      setPermanentWardOptions(getWardOptions(formData.permanentProvince, formData.permanentDistrict, formData.permanentMunicipality));
+    } else {
+      setPermanentWardOptions([{ value: '', label: 'Select Ward' }]);
+    }
+  }, [formData.permanentProvince, formData.permanentDistrict, formData.permanentMunicipality]);
+
+  // Effect for temporary address cascading
+  useEffect(() => {
+    if (formData.temporaryProvince) {
+      setTemporaryDistrictOptions(getDistrictOptions(formData.temporaryProvince));
+    } else {
+      setTemporaryDistrictOptions([{ value: '', label: 'Select District' }]);
+      setTemporaryLocalBodyOptions([{ value: '', label: 'Select Local Body' }]);
+      setTemporaryWardOptions([{ value: '', label: 'Select Ward' }]);
+    }
+  }, [formData.temporaryProvince]);
+
+  useEffect(() => {
+    if (formData.temporaryProvince && formData.temporaryDistrict) {
+      setTemporaryLocalBodyOptions(getLocalBodyOptions(formData.temporaryProvince, formData.temporaryDistrict));
+    } else {
+      setTemporaryLocalBodyOptions([{ value: '', label: 'Select Local Body' }]);
+      setTemporaryWardOptions([{ value: '', label: 'Select Ward' }]);
+    }
+  }, [formData.temporaryProvince, formData.temporaryDistrict]);
+
+  useEffect(() => {
+    if (formData.temporaryProvince && formData.temporaryDistrict && formData.temporaryMunicipality) {
+      setTemporaryWardOptions(getWardOptions(formData.temporaryProvince, formData.temporaryDistrict, formData.temporaryMunicipality));
+    } else {
+      setTemporaryWardOptions([{ value: '', label: 'Select Ward' }]);
+    }
+  }, [formData.temporaryProvince, formData.temporaryDistrict, formData.temporaryMunicipality]);
 
   const fetchStudents = async () => {
     try {
@@ -272,6 +343,81 @@ const Students: React.FC = () => {
         temporaryMunicipality: prev.permanentMunicipality,
         temporaryWard: prev.permanentWard
       } : {})
+    }));
+  };
+
+  // Handle permanent province change - reset dependent fields
+  const handlePermanentProvinceChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      permanentProvince: value,
+      permanentDistrict: '',
+      permanentMunicipality: '',
+      permanentWard: '',
+      ...(prev.sameAsPermAddress ? {
+        temporaryProvince: value,
+        temporaryDistrict: '',
+        temporaryMunicipality: '',
+        temporaryWard: ''
+      } : {})
+    }));
+  };
+
+  // Handle permanent district change - reset dependent fields
+  const handlePermanentDistrictChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      permanentDistrict: value,
+      permanentMunicipality: '',
+      permanentWard: '',
+      ...(prev.sameAsPermAddress ? {
+        temporaryDistrict: value,
+        temporaryMunicipality: '',
+        temporaryWard: ''
+      } : {})
+    }));
+  };
+
+  // Handle permanent municipality change - reset ward
+  const handlePermanentMunicipalityChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      permanentMunicipality: value,
+      permanentWard: '',
+      ...(prev.sameAsPermAddress ? {
+        temporaryMunicipality: value,
+        temporaryWard: ''
+      } : {})
+    }));
+  };
+
+  // Handle temporary province change - reset dependent fields
+  const handleTemporaryProvinceChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      temporaryProvince: value,
+      temporaryDistrict: '',
+      temporaryMunicipality: '',
+      temporaryWard: ''
+    }));
+  };
+
+  // Handle temporary district change - reset dependent fields
+  const handleTemporaryDistrictChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      temporaryDistrict: value,
+      temporaryMunicipality: '',
+      temporaryWard: ''
+    }));
+  };
+
+  // Handle temporary municipality change - reset ward
+  const handleTemporaryMunicipalityChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      temporaryMunicipality: value,
+      temporaryWard: ''
     }));
   };
 
@@ -481,7 +627,21 @@ const Students: React.FC = () => {
                 <input
                   type="checkbox"
                   checked={formData.isForeignStudent}
-                  onChange={(e) => setFormData({ ...formData, isForeignStudent: e.target.checked })}
+                  onChange={(e) => {
+                    const isForeign = e.target.checked;
+                    setFormData(prev => ({
+                      ...prev,
+                      isForeignStudent: isForeign,
+                      // Clear permanent address if foreign student
+                      ...(isForeign ? {
+                        permanentProvince: '',
+                        permanentDistrict: '',
+                        permanentMunicipality: '',
+                        permanentWard: '',
+                        sameAsPermAddress: false
+                      } : {})
+                    }));
+                  }}
                   className="mr-2"
                 />
                 Is Foreign Student?
@@ -489,55 +649,46 @@ const Students: React.FC = () => {
             </div>
           </div>
 
-          {/* Permanent Address */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+          {/* Permanent Address - Hidden for Foreign Students */}
+          {!formData.isForeignStudent && (
+            <>
+              <div className="border-t pt-4">
+                <h3 className="text-sm font-semibold text-gray-700 mb-4">Permanent Address</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
             <Select
               label="Permanent Province"
               required
               value={formData.permanentProvince}
-              onChange={(e) => setFormData({ ...formData, permanentProvince: e.target.value })}
-              options={[
-                { value: '', label: 'Select Province' },
-                { value: 'Province 1', label: 'Province 1' },
-                { value: 'Madhesh', label: 'Madhesh' },
-                { value: 'Bagmati', label: 'Bagmati' },
-                { value: 'Gandaki', label: 'Gandaki' },
-                { value: 'Lumbini', label: 'Lumbini' },
-                { value: 'Karnali', label: 'Karnali' },
-                { value: 'Sudurpashchim', label: 'Sudurpashchim' }
-              ]}
+              onChange={(e) => handlePermanentProvinceChange(e.target.value)}
+              options={getProvinceOptions()}
             />
             
             <Select
               label="Permanent District"
               required
               value={formData.permanentDistrict}
-              onChange={(e) => setFormData({ ...formData, permanentDistrict: e.target.value })}
-              options={[
-                { value: '', label: 'Select District' },
-                { value: 'Kathmandu', label: 'Kathmandu' },
-                { value: 'Lalitpur', label: 'Lalitpur' },
-                { value: 'Bhaktapur', label: 'Bhaktapur' }
-              ]}
+              onChange={(e) => handlePermanentDistrictChange(e.target.value)}
+              options={permanentDistrictOptions}
+              disabled={!formData.permanentProvince}
             />
             
             <Select
-              label="Permanent Municipality"
+              label="Permanent Local Body"
               required
               value={formData.permanentMunicipality}
-              onChange={(e) => setFormData({ ...formData, permanentMunicipality: e.target.value })}
-              options={[
-                { value: '', label: 'Select Municipality' }
-              ]}
+              onChange={(e) => handlePermanentMunicipalityChange(e.target.value)}
+              options={permanentLocalBodyOptions}
+              disabled={!formData.permanentDistrict}
             />
             
-            <FormInput
+            <Select
               label="Permanent Ward"
               required
-              type="number"
               value={formData.permanentWard}
               onChange={(e) => setFormData({ ...formData, permanentWard: e.target.value })}
-              placeholder="0"
+              options={permanentWardOptions}
+              disabled={!formData.permanentMunicipality}
             />
           </div>
 
@@ -553,60 +704,50 @@ const Students: React.FC = () => {
               Has Temporary address same as Permanent Address ?
             </label>
           </div>
+            </>
+          )}
 
-          {/* Temporary Address */}
+          {/* Temporary Address / Current Address for Foreign Students */}
+          <div className="border-t pt-4">
+            <h3 className="text-sm font-semibold text-gray-700 mb-4">
+              {formData.isForeignStudent ? 'Current Address in Nepal' : 'Temporary Address'}
+            </h3>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
             <Select
-              label="Temporary Province"
+              label={formData.isForeignStudent ? 'Province' : 'Temporary Province'}
               required
               value={formData.temporaryProvince}
-              onChange={(e) => setFormData({ ...formData, temporaryProvince: e.target.value })}
-              disabled={formData.sameAsPermAddress}
-              options={[
-                { value: '', label: 'Select Province' },
-                { value: 'Province 1', label: 'Province 1' },
-                { value: 'Madhesh', label: 'Madhesh' },
-                { value: 'Bagmati', label: 'Bagmati' },
-                { value: 'Gandaki', label: 'Gandaki' },
-                { value: 'Lumbini', label: 'Lumbini' },
-                { value: 'Karnali', label: 'Karnali' },
-                { value: 'Sudurpashchim', label: 'Sudurpashchim' }
-              ]}
+              onChange={(e) => handleTemporaryProvinceChange(e.target.value)}
+              disabled={!formData.isForeignStudent && formData.sameAsPermAddress}
+              options={getProvinceOptions()}
             />
             
             <Select
-              label="Temporary District"
+              label={formData.isForeignStudent ? 'District' : 'Temporary District'}
               required
               value={formData.temporaryDistrict}
-              onChange={(e) => setFormData({ ...formData, temporaryDistrict: e.target.value })}
-              disabled={formData.sameAsPermAddress}
-              options={[
-                { value: '', label: 'Select District' },
-                { value: 'Kathmandu', label: 'Kathmandu' },
-                { value: 'Lalitpur', label: 'Lalitpur' },
-                { value: 'Bhaktapur', label: 'Bhaktapur' }
-              ]}
+              onChange={(e) => handleTemporaryDistrictChange(e.target.value)}
+              disabled={(!formData.isForeignStudent && formData.sameAsPermAddress) || !formData.temporaryProvince}
+              options={temporaryDistrictOptions}
             />
             
             <Select
-              label="Temporary Municipality"
+              label={formData.isForeignStudent ? 'Local Body' : 'Temporary Local Body'}
               required
               value={formData.temporaryMunicipality}
-              onChange={(e) => setFormData({ ...formData, temporaryMunicipality: e.target.value })}
-              disabled={formData.sameAsPermAddress}
-              options={[
-                { value: '', label: 'Select Municipality' }
-              ]}
+              onChange={(e) => handleTemporaryMunicipalityChange(e.target.value)}
+              disabled={(!formData.isForeignStudent && formData.sameAsPermAddress) || !formData.temporaryDistrict}
+              options={temporaryLocalBodyOptions}
             />
             
-            <FormInput
-              label="Temporary Ward"
+            <Select
+              label={formData.isForeignStudent ? 'Ward' : 'Temporary Ward'}
               required
-              type="number"
               value={formData.temporaryWard}
               onChange={(e) => setFormData({ ...formData, temporaryWard: e.target.value })}
-              disabled={formData.sameAsPermAddress}
-              placeholder="0"
+              disabled={(!formData.isForeignStudent && formData.sameAsPermAddress) || !formData.temporaryMunicipality}
+              options={temporaryWardOptions}
             />
           </div>
 

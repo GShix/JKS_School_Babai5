@@ -43,6 +43,8 @@ import Messages from './pages/admin/Messages'
 import Contacts from './pages/admin/Contacts'
 import HeroSlides from './pages/admin/HeroSlides'
 import Settings from './pages/admin/AccountSettings'
+import Fees from './pages/admin/Fees'
+import { FeeCollection, FeeSetup, FeeTransactions } from './pages/admin'
 
 function App() {
   return (
@@ -92,6 +94,11 @@ function App() {
               <Route path='contacts' element={<Contacts />} />
               <Route path='hero-slides' element={<HeroSlides />} />
               <Route path='settings' element={<Settings />} />
+              {/* Fee Management Routes */}
+              <Route path='fees' element={<Fees />} />
+              <Route path='fee-setup' element={<FeeSetup />} />
+              <Route path='fee-collection' element={<FeeCollection />} />
+              <Route path='fee-transactions' element={<FeeTransactions />} />
             </Route>
 
             {/* Student Routes */}
