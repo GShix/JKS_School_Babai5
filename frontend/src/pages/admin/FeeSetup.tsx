@@ -180,10 +180,19 @@ const FeeSetup: React.FC = () => {
       return;
     }
 
+    // Check for duplicate categories
+    const categoryIds = structureFormData.items.map(item => item.feeCategoryId);
+    const duplicates = categoryIds.filter((id, index) => categoryIds.indexOf(id) !== index && id > 0);
+    if (duplicates.length > 0) {
+      showError('Duplicate fee categories are not allowed. Please remove duplicate items.');
+      return;
+    }
+
     try {
       setLoading(true);
       const data = {
         ...structureFormData,
+        dueDate: structureFormData.dueDate || null,
         items: structureFormData.items.map((item) => ({
           feeCategoryId: parseInt(item.feeCategoryId.toString()),
           amount: parseFloat(item.amount.toString()),
@@ -304,7 +313,7 @@ const FeeSetup: React.FC = () => {
     {
       key: 'totalAmount',
       label: 'Total Amount',
-      render: (value: number) => `NPR ${value.toFixed(2)}`,
+      render: (value: number) => `NPR ${(Number(value) || 0).toFixed(2)}`,
     },
     {
       key: 'isActive',
@@ -552,9 +561,9 @@ const FeeSetup: React.FC = () => {
                 <div key={index} className="flex gap-3 items-start">
                   <Select
                     label="Category *"
-                    value={item.feeCategoryId}
+                    value={item.feeCategoryId.toString()}
                     onChange={(e) =>
-                      handleItemChange(index, 'feeCategoryId', parseInt(e.target.value))
+                      handleItemChange(index, 'feeCategoryId', parseInt(e.target.value) || 0)
                     }
                     options={[
                       { value: '', label: 'Select Category' },
@@ -568,9 +577,9 @@ const FeeSetup: React.FC = () => {
                     label="Amount *"
                     type="number"
                     step="0.01"
-                    value={item.amount}
+                    value={item.amount || ''}
                     onChange={(e) =>
-                      handleItemChange(index, 'amount', parseFloat(e.target.value))
+                      handleItemChange(index, 'amount', parseFloat(e.target.value) || 0)
                     }
                     required
                   />

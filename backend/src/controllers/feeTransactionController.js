@@ -54,7 +54,7 @@ exports.collectFeePayment = async (req, res) => {
     } = req.body;
 
     const collectedBy = req.admin.id; // From auth middleware
-    const collectedByName = req.admin.fullName || req.admin.username;
+    const collectedByName = req.admin.fullName || req.admin.email;
 
     // Validation
     if (!feeAllocationId || !amount) {
@@ -179,7 +179,7 @@ exports.collectFeePayment = async (req, res) => {
         {
           model: admins,
           as: 'collector',
-          attributes: ['id', 'username', 'fullName'],
+          attributes: ['id', 'fullName', 'email'],
         },
       ],
     });
@@ -247,6 +247,7 @@ exports.getAllFeeTransactions = async (req, res) => {
         {
           model: feeAllocations,
           as: 'feeAllocation',
+          required: false, // Allow null for flexible collections
           include: [
             {
               model: students,
@@ -261,9 +262,14 @@ exports.getAllFeeTransactions = async (req, res) => {
           ],
         },
         {
+          model: students,
+          as: 'student', // Direct student relation for flexible collections
+          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'iemisId'],
+        },
+        {
           model: admins,
           as: 'collector',
-          attributes: ['id', 'username', 'fullName'],
+          attributes: ['id', 'fullName', 'email'],
         },
       ],
       order: [['transactionDate', 'DESC']],
@@ -353,7 +359,7 @@ exports.getFeeTransactionById = async (req, res) => {
         {
           model: admins,
           as: 'collector',
-          attributes: ['id', 'username', 'fullName', 'email'],
+          attributes: ['id', 'fullName', 'email'],
         },
       ],
     });
@@ -414,7 +420,7 @@ exports.getFeeTransactionByReceiptNumber = async (req, res) => {
         {
           model: admins,
           as: 'collector',
-          attributes: ['id', 'username', 'fullName', 'email'],
+          attributes: ['id', 'fullName', 'email'],
         },
       ],
     });
@@ -556,7 +562,7 @@ exports.getDailyCollectionReport = async (req, res) => {
         {
           model: admins,
           as: 'collector',
-          attributes: ['id', 'username', 'fullName'],
+          attributes: ['id', 'fullName', 'email'],
         },
       ],
       order: [['transactionDate', 'ASC']],
@@ -599,6 +605,132 @@ exports.getDailyCollectionReport = async (req, res) => {
     console.error('Error generating daily collection report:', error);
     res.status(500).json({
       message: 'Error generating daily collection report',
+      error: error.message,
+    });
+  }
+};
+
+// Collect flexible fee payment (with custom categories)
+exports.collectFlexibleFeePayment = async (req, res) => {
+  const t = await sequelize.transaction();
+
+  try {
+    const {
+      studentId,
+      iemisId,
+      feeItems, // Array of { feeCategoryId, amount }
+      totalAmount,
+      paidAmount,
+      dueAmount,
+      paymentMethod,
+      paymentDate,
+      bankName,
+      bankAccountNumber,
+      referenceNumber,
+      remarks,
+    } = req.body;
+
+    const collectedBy = req.admin.id;
+    const collectedByName = req.admin.fullName || req.admin.email;
+
+    // Validation
+    if (!studentId || !feeItems || feeItems.length === 0) {
+      await t.rollback();
+      return res.status(400).json({
+        message: 'Student ID and fee items are required',
+      });
+    }
+
+    if (!paidAmount || parseFloat(paidAmount) <= 0) {
+      await t.rollback();
+      return res.status(400).json({
+        message: 'Payment amount must be greater than zero',
+      });
+    }
+
+    if (parseFloat(paidAmount) > parseFloat(totalAmount)) {
+      await t.rollback();
+      return res.status(400).json({
+        message: 'Payment amount cannot exceed total amount',
+      });
+    }
+
+    // Verify student exists
+    const student = await students.findByPk(studentId);
+    if (!student) {
+      await t.rollback();
+      return res.status(404).json({
+        message: 'Student not found',
+      });
+    }
+
+    // Generate receipt number
+    const receiptNumber = await generateReceiptNumber();
+
+    // Create fee items description for storage
+    const feeItemsDescription = await Promise.all(
+      feeItems.map(async (item) => {
+        const category = await feeCategories.findByPk(item.feeCategoryId);
+        return {
+          categoryId: item.feeCategoryId,
+          categoryName: category?.name || 'Unknown',
+          amount: parseFloat(item.amount),
+        };
+      })
+    );
+
+    // Create transaction record
+    const transaction = await feeTransactions.create(
+      {
+        receiptNumber,
+        feeAllocationId: null, // No allocation for flexible fees
+        studentId,
+        amount: parseFloat(paidAmount),
+        paymentMethod: paymentMethod || 'cash',
+        paymentDate: paymentDate || new Date(),
+        transactionDate: new Date(),
+        bankName: bankName?.trim(),
+        bankAccountNumber: bankAccountNumber?.trim(),
+        referenceNumber: referenceNumber?.trim(),
+        collectedBy,
+        collectedByName,
+        remarks: JSON.stringify({
+          userRemarks: remarks?.trim(),
+          feeItems: feeItemsDescription,
+          totalAmount: parseFloat(totalAmount),
+          dueAmount: parseFloat(dueAmount),
+        }),
+        status: 'confirmed',
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    res.status(201).json({
+      message: 'Payment collected successfully',
+      data: {
+        receiptNumber,
+        transaction,
+        student: {
+          id: student.id,
+          iemisId: student.iemisId,
+          fullName: student.fullName,
+          rollNumber: student.rollNumber,
+          class: student.class,
+          section: student.section,
+        },
+        feeItems: feeItemsDescription,
+        totalAmount: parseFloat(totalAmount),
+        paidAmount: parseFloat(paidAmount),
+        dueAmount: parseFloat(dueAmount),
+      },
+    });
+  } catch (error) {
+    await t.rollback();
+    console.error('Error collecting flexible fee payment:', error);
+    res.status(500).json({
+      message: 'Error collecting fee payment',
       error: error.message,
     });
   }

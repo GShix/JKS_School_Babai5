@@ -7,7 +7,6 @@ import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import About from './pages/about/About'
 import GameZone from './pages/game/GameZone'
-import AllBlogs from './pages/blogs/AllBlogs'
 import Announcements from './pages/announcements/Announcements'
 import AnnouncementDetail from './pages/announcements/AnnouncementDetail'
 import Downloads from './pages/download/Downloads'
@@ -43,8 +42,12 @@ import Messages from './pages/admin/Messages'
 import Contacts from './pages/admin/Contacts'
 import HeroSlides from './pages/admin/HeroSlides'
 import Settings from './pages/admin/AccountSettings'
-import Fees from './pages/admin/Fees'
-import { FeeCollection, FeeSetup, FeeTransactions } from './pages/admin'
+import { FeeTransactions } from './pages/admin'
+import FeeCollection from './pages/admin/FeeCollection'
+import FeeStructureManager from './pages/admin/FeeStructureManager'
+import SmartAllocation from './pages/admin/SmartAllocation'
+import Blogs from './pages/blogs/Blogs'
+import BlogDetail from './pages/blogs/BlogDetail'
 
 function App() {
   return (
@@ -72,7 +75,8 @@ function App() {
             <Route path='/announcements/:id' element={<AnnouncementDetail/>}/>
             <Route path='/downloads' element={<Downloads/>}/>
             <Route path='/career' element={<Career/>}/>
-            <Route path='/blogs' element={<AllBlogs/>}/>
+            <Route path='/blogs' element={<Blogs/>}/>
+            <Route path='/blogs/:id' element={<BlogDetail/>}/>
 
             {/* Admin Routes */}
             <Route path='/admin/login' element={<Login/>}/>
@@ -94,9 +98,9 @@ function App() {
               <Route path='contacts' element={<Contacts />} />
               <Route path='hero-slides' element={<HeroSlides />} />
               <Route path='settings' element={<Settings />} />
-              {/* Fee Management Routes */}
-              <Route path='fees' element={<Fees />} />
-              <Route path='fee-setup' element={<FeeSetup />} />
+              {/* Enhanced Fee Management Routes */}
+              <Route path='fee-structures' element={<FeeStructureManager />} />
+              <Route path='smart-allocation' element={<SmartAllocation />} />
               <Route path='fee-collection' element={<FeeCollection />} />
               <Route path='fee-transactions' element={<FeeTransactions />} />
             </Route>

@@ -1,4 +1,5 @@
 const { schoolProfile } = require('../database/connection');
+const { uploadToSupabase, deleteFromSupabase } = require('../config/supabase');
 
 // Get school profile
 const getSchoolProfile = async (req, res) => {
@@ -35,6 +36,7 @@ const updateSchoolProfile = async (req, res) => {
       schoolName,
       schoolNameNepali,
       phone,
+      fax,
       email,
       address,
       addressNepali,
@@ -46,13 +48,51 @@ const updateSchoolProfile = async (req, res) => {
       establishedYear,
       principalName,
       website,
-      facebookUrl
+      facebookUrl,
+      logoUrl,
+      panNumber,
+      registrationNumber,
+      affiliation,
+      taxPercentage
     } = req.body;
+
+    let finalLogoUrl = logoUrl; // Use provided logoUrl by default
+
+    // Handle logo file upload if present
+    if (req.file) {
+      try {
+        const uploadResult = await uploadToSupabase(
+          req.file.buffer,
+          req.file.originalname || `logo-${Date.now()}.png`,
+          'school-logos',
+          req.file.mimetype
+        );
+        finalLogoUrl = uploadResult.url;
+        
+        // Delete old logo if exists and is different
+        const existingProfile = await schoolProfile.findOne();
+        if (existingProfile?.logoUrl && existingProfile.logoUrl !== finalLogoUrl) {
+          try {
+            await deleteFromSupabase(existingProfile.logoUrl, 'school-logos');
+          } catch (deleteError) {
+            console.warn('Could not delete old logo:', deleteError.message);
+          }
+        }
+      } catch (uploadError) {
+        console.error('Error uploading logo:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading school logo',
+          error: uploadError.message,
+        });
+      }
+    }
 
     const profileData = {
       schoolName,
       schoolNameNepali,
       phone,
+      fax,
       email,
       address,
       addressNepali,
@@ -64,7 +104,12 @@ const updateSchoolProfile = async (req, res) => {
       establishedYear,
       principalName,
       website,
-      facebookUrl
+      facebookUrl,
+      logoUrl: finalLogoUrl,
+      panNumber,
+      registrationNumber,
+      affiliation,
+      taxPercentage: taxPercentage ? parseFloat(taxPercentage) : 0.00
     };
 
     // Check if profile exists

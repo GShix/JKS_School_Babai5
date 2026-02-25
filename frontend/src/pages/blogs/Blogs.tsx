@@ -2,33 +2,32 @@ import BlogCard from "../../components/BlogCard";
 import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
 import { useEffect, useState } from "react";
-import { blogService, type Blog } from "../../api";
-import { getErrorMessage } from '../../utils/errorHandler';
+import { API_BASE_URL, type Blog } from "../../api";
+import axios from "axios";
 
-const AllBlogs = () => {
+const Blogs = () => {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchBlogs = async () => {
         try {
-            setLoading(true);
-            setError(null);
-            const response = await blogService.getAll();
-            setBlogs(response.data || []);
-        } catch (err) {
-            console.error("Error fetching blogs:", err);
-            setError(getErrorMessage(err));
-            setBlogs([]);
+        setLoading(true);
+        const response = await axios.get(`${API_BASE_URL}/blogs`);
+        setBlogs(response.data.data || []);
+        } catch (error) {
+        setError('Failed to fetch blogs. Please try again later.');
+        console.error('Error fetching blogs:', error);
+        setBlogs([]);
         } finally {
-            setLoading(false);
+        setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchBlogs();
     }, []);
-    console.log(blogs)
+    // console.log(blogs)
   return (
     <div className="">
         <Header/>
@@ -40,11 +39,6 @@ const AllBlogs = () => {
                 <div className="text-center">
                     <h2 className="text-3xl font-bold tracking-tight text-[#035CB0] sm:text-4xl">Our Blogs</h2>
                 </div>
-                {/* <div className="create-blog flex items-center max-sm:justify-center justify-end">
-                    <Link to="/blogs/create" className="mt-6 rounded-md bg-[#035CB0] px-4 py-2 text-base font-semibold text-white hover:bg-[#023f7a]">
-                        Create New Blog
-                    </Link>
-                </div> */}
 
                 {loading && (
                     <div className="text-center mt-12">
@@ -68,11 +62,22 @@ const AllBlogs = () => {
                     <div className="mx-auto mt-12 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
                         {blogs.length > 0 ? (
                             blogs.map((blog, index) => (
-                                <BlogCard key={blog.id || index} blog={blog} />
+                                <BlogCard
+                                    key={blog.id || index}
+                                    blog={{
+                                        id: blog.id,
+                                        title: blog.title,
+                                        content: blog.content,
+                                        author: blog.author,
+                                        createdAt: blog.createdAt,
+                                        featuredImage: blog.featuredImage,
+                                        category: blog.category
+                                    }}
+                                />
                             ))
                         ) : (
                             <div className="col-span-3 text-center">
-                                <p className="text-gray-600">No blogs found.</p>
+                                <p className="text-gray-600">No published blogs found.</p>
                             </div>
                         )}
                     </div>
@@ -84,4 +89,4 @@ const AllBlogs = () => {
   )
 }
 
-export default AllBlogs;
+export default Blogs;

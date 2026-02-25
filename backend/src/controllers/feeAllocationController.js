@@ -24,6 +24,8 @@ exports.allocateFeeToStudent = async (req, res) => {
       discountReason,
       dueDate,
       notes,
+      allocationBatch,
+      purpose,
     } = req.body;
 
     // Validation
@@ -57,17 +59,27 @@ exports.allocateFeeToStudent = async (req, res) => {
       });
     }
 
-    // Check if already allocated
+    // Check if already allocated (same structure + batch combination)
+    // Allow multiple allocations if batch is different (e.g., different exams)
+    const whereClause = {
+      studentId,
+      feeStructureId,
+    };
+    
+    // If allocationBatch is provided, include it in duplicate check
+    if (allocationBatch) {
+      whereClause.allocationBatch = allocationBatch;
+    }
+    
     const existingAllocation = await feeAllocations.findOne({
-      where: {
-        studentId,
-        feeStructureId,
-      },
+      where: whereClause,
     });
 
     if (existingAllocation) {
       return res.status(400).json({
-        message: 'Fee structure already allocated to this student',
+        message: allocationBatch 
+          ? `Fee structure already allocated to this student for batch: ${allocationBatch}`
+          : 'Fee structure already allocated to this student. Use allocationBatch to create multiple allocations.',
         data: existingAllocation,
       });
     }
@@ -88,6 +100,9 @@ exports.allocateFeeToStudent = async (req, res) => {
       dueDate: dueDate || feeStructure.dueDate,
       allocationDate: new Date(),
       notes: notes?.trim(),
+      allocationBatch: allocationBatch?.trim() || null,
+      purpose: purpose || 'tuition',
+      allocatedBy: req.user?.id || null,
     });
 
     // Fetch complete allocation with relations
@@ -139,6 +154,8 @@ exports.allocateFeeToMultipleStudents = async (req, res) => {
       discount,
       discountReason,
       dueDate,
+      allocationBatch,
+      purpose,
     } = req.body;
 
     // Validation
@@ -178,13 +195,22 @@ exports.allocateFeeToMultipleStudents = async (req, res) => {
           continue;
         }
 
-        // Check if already allocated
+        // Check if already allocated (same structure + batch combination)
+        const whereClause = {
+          studentId,
+          feeStructureId,
+        };
+        
+        if (allocationBatch) {
+          whereClause.allocationBatch = allocationBatch;
+        }
+        
         const existingAllocation = await feeAllocations.findOne({
-          where: { studentId, feeStructureId },
+          where: whereClause,
         });
 
         if (existingAllocation) {
-          errors.push({ studentId, error: 'Already allocated' });
+          errors.push({ studentId, error: 'Already allocated for this batch' });
           continue;
         }
 
@@ -200,6 +226,9 @@ exports.allocateFeeToMultipleStudents = async (req, res) => {
           discountReason: discountReason?.trim(),
           dueDate: dueDate || feeStructure.dueDate,
           allocationDate: new Date(),
+          allocationBatch: allocationBatch?.trim() || null,
+          purpose: purpose || 'tuition',
+          allocatedBy: req.user?.id || null,
         });
 
         allocations.push(allocation);
@@ -236,6 +265,8 @@ exports.allocateFeeToClass = async (req, res) => {
       discount,
       discountReason,
       dueDate,
+      allocationBatch,
+      purpose,
     } = req.body;
 
     // Validation
@@ -271,7 +302,10 @@ exports.allocateFeeToClass = async (req, res) => {
           discount,
           discountReason,
           dueDate,
+          allocationBatch,
+          purpose,
         },
+        user: req.user,
       },
       res
     );

@@ -20,13 +20,13 @@ const feeTransactionModel = (sequelize, DataTypes) => {
     },
     feeAllocationId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Allow null for flexible fee collection
       references: {
         model: 'fee_allocations',
         key: 'id',
       },
       onDelete: 'RESTRICT',
-      comment: 'Reference to the fee allocation',
+      comment: 'Reference to the fee allocation (nullable for flexible collection)',
     },
     studentId: {
       type: DataTypes.INTEGER,

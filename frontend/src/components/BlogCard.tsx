@@ -23,7 +23,7 @@ const BlogCard = ({ blog }: BlogCardProps) => {
   return (
     <Link to={`/blogs/${blog.id}`} className="block hover:shadow-xl transition-shadow duration-300">
         <div className="flex flex-col overflow-hidden rounded-lg shadow-lg">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
                 <img 
                     className="h-48 w-full object-cover" 
                     src={blog.featuredImage || "/img/jkss_logo.png"} 
@@ -53,7 +53,7 @@ const BlogCard = ({ blog }: BlogCardProps) => {
                     </div>
                 </div>
                 <div className="mt-6 flex items-center">
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                         <div>
                             <span className="sr-only">{blog.author || "Anonymous"}</span>
                             <img 

@@ -98,6 +98,9 @@ exports.protectAdmin = async (req, res, next) => {
       type: 'admin',
     };
 
+    // Also set req.admin for backward compatibility
+    req.admin = req.user;
+
     return next();
   } catch (error) {
     const message = error.name === 'TokenExpiredError' ? 'Token expired' : 'Invalid token';
@@ -151,6 +154,8 @@ exports.requireAdmin = (req, res, next) => {
   if (!req.user || req.user.type !== 'admin' || (req.user.role !== 'admin' && req.user.role !== 'superAdmin')) {
     return res.status(403).json({ message: 'Admin access required' });
   }
+  // Set req.admin for backward compatibility
+  req.admin = req.user;
   return next();
 };
 

@@ -11,6 +11,7 @@ const {
   getFeeTransactionByReceiptNumber,
   cancelFeeTransaction,
   getDailyCollectionReport,
+  collectFlexibleFeePayment,
 } = require('../controllers/feeTransactionController');
 const { protectAdmin, requireAdmin } = require('../middlewares/authMiddleware');
 
@@ -20,6 +21,9 @@ router.use(requireAdmin);
 
 // Collect fee payment (create new transaction)
 router.post('/collect', collectFeePayment);
+
+// Collect flexible fee payment (custom categories)
+router.post('/collect-flexible', collectFlexibleFeePayment);
 
 // Get all fee transactions
 router.get('/', getAllFeeTransactions);

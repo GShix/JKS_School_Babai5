@@ -55,6 +55,29 @@ module.exports = (sequelize, DataTypes) => {
     facebookUrl: {
       type: DataTypes.STRING(255),
       field: 'facebook_url'
+    },
+    logoUrl: {
+      type: DataTypes.STRING(500),
+      field: 'logo_url'
+    },
+    panNumber: {
+      type: DataTypes.STRING(50),
+      field: 'pan_number'
+    },
+    registrationNumber: {
+      type: DataTypes.STRING(100),
+      field: 'registration_number'
+    },
+    affiliation: {
+      type: DataTypes.STRING(255)
+    },
+    fax: {
+      type: DataTypes.STRING(20)
+    },
+    taxPercentage: {
+      type: DataTypes.DECIMAL(5, 2),
+      field: 'tax_percentage',
+      defaultValue: 0.00
     }
   }, {
     tableName: 'school_profile',

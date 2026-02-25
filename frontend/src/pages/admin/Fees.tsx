@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DollarSign, Plus, Edit, Trash2, CheckCircle, Download } from 'lucide-react';
+import { Plus, Edit, Trash2, CheckCircle, Download } from 'lucide-react';
 import Badge from '../../components/shared/Badge';
 import Button from '../../components/shared/Button';
 import DataTable from '../../components/shared/DataTable';
@@ -274,7 +274,7 @@ const Fees: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <DollarSign className="w-7 h-7 text-green-600" />
+              <span className="text-3xl font-bold text-green-600">रु</span>
               Fees Management
             </h2>
             <p className="text-sm text-gray-600 mt-1">Manage student fees and payments</p>

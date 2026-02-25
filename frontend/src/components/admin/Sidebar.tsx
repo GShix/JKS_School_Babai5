@@ -109,9 +109,9 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: 'Fee Management', 
       icon: DollarSign,
       subItems: [
-        { id: 'fees', label: 'Fee Overview' },
-        { id: 'fee-setup', label: 'Fee Setup' },
-        { id: 'fee-collection', label: 'Collect Fees' },
+        { id: 'fee-structures', label: 'Fee Structures' },
+        { id: 'smart-allocation', label: 'Smart Allocation' },
+        { id: 'fee-collection', label: 'Fee Collection' },
         { id: 'fee-transactions', label: 'Transactions' }
       ]
     },

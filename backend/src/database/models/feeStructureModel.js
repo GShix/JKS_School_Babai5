@@ -54,6 +54,24 @@ const feeStructureModel = (sequelize, DataTypes) => {
       allowNull: true,
       comment: 'Default due date for this fee structure',
     },
+    purpose: {
+      type: DataTypes.ENUM('admission', 'tuition', 'examination', 'event', 'transport', 'hostel', 'library', 'lab', 'sports', 'other'),
+      allowNull: false,
+      defaultValue: 'tuition',
+      comment: 'Purpose/type of this fee structure',
+    },
+    isTemplate: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      field: 'istemplate', // PostgreSQL created lowercase column name
+      comment: 'Whether this is a template for cloning',
+    },
+    clonedFrom: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: 'ID of the template this was cloned from',
+    },
   }, {
     tableName: 'fee_structures',
     timestamps: true,
@@ -63,6 +81,9 @@ const feeStructureModel = (sequelize, DataTypes) => {
       },
       {
         fields: ['isActive'],
+      },
+      {
+        fields: ['purpose'],
       },
     ],
   });

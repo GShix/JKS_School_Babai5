@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Download, Search, DollarSign, Filter, Receipt } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Printer, Search, Filter, Receipt, X } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import DataTable from '../../components/shared/DataTable';
 import Badge from '../../components/shared/Badge';
 import FormInput from '../../components/shared/FormInput';
 import Select from '../../components/shared/Select';
+import FeeReceipt from '../../components/admin/FeeReceipt';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
-import { showError, showSuccess } from '../../utils/sweetAlert';
+import { showError } from '../../utils/sweetAlert';
+import { schoolProfileService } from '../../api';
+import type { SchoolProfile } from '../../api/types';
 
 interface FeeTransaction {
   id: number;
@@ -19,17 +22,26 @@ interface FeeTransaction {
   bankName?: string;
   referenceNumber?: string;
   remarks?: string;
-  feeAllocation: {
+  feeAllocationId?: number | null;
+  feeAllocation?: {
     student: {
       fullName: string;
       rollNumber: string;
       class: string;
       section: string;
+      iemisId?: string;
     };
     feeStructure: {
       name: string;
       academicYear: string;
     };
+  } | null;
+  student?: {
+    fullName: string;
+    rollNumber: string;
+    class: string;
+    section: string;
+    iemisId?: string;
   };
   collector?: {
     fullName: string;
@@ -45,6 +57,10 @@ const FeeTransactions: React.FC = () => {
     totalAmount: 0,
     byPaymentMethod: {} as Record<string, { count: number; amount: number }>,
   });
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [receiptData, setReceiptData] = useState<any>(null);
+  const [schoolProfile, setSchoolProfile] = useState<SchoolProfile | null>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   // Filters
   const [filters, setFilters] = useState({
@@ -58,7 +74,19 @@ const FeeTransactions: React.FC = () => {
 
   useEffect(() => {
     fetchTransactions();
+    fetchSchoolProfile();
   }, []);
+
+  const fetchSchoolProfile = async () => {
+    try {
+      const response = await schoolProfileService.get();
+      if (response.data) {
+        setSchoolProfile(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching school profile:', error);
+    }
+  };
 
   const fetchTransactions = async () => {
     try {
@@ -103,17 +131,58 @@ const FeeTransactions: React.FC = () => {
     setTimeout(() => fetchTransactions(), 100);
   };
 
-  const handleDownloadReceipt = async (transaction: FeeTransaction) => {
+  const handlePrintReceipt = async (transaction: FeeTransaction) => {
     try {
-      // This would generate a PDF receipt
-      // For now, show success message
-      showSuccess(`Receipt ${transaction.receiptNumber} will be downloaded`);
-      
-      // TODO: Implement actual PDF generation
-      // You can use libraries like jsPDF or pdfmake
-      // Or create a backend endpoint that generates PDFs
+      // Get student info from transaction
+      const student = transaction.feeAllocation?.student || transaction.student;
+      if (!student) {
+        showError('Student information not available');
+        return;
+      }
+
+      // Prepare receipt data with proper null handling
+      const receipt = {
+        receiptNumber: transaction.receiptNumber,
+        date: transaction.paymentDate,
+        student: {
+          fullName: student.fullName,
+          class: student.class,
+          section: student.section,
+          rollNumber: student.rollNumber,
+          iemisId: student.iemisId || '',
+        },
+        feeItems: transaction.feeAllocation?.feeStructure ? [
+          {
+            categoryName: transaction.feeAllocation.feeStructure.name,
+            amount: parseFloat(transaction.amount.toString()),
+          }
+        ] : [
+          {
+            categoryName: 'Fee Payment',
+            amount: parseFloat(transaction.amount.toString()),
+          }
+        ],
+        totalAmount: parseFloat(transaction.amount.toString()),
+        paidAmount: parseFloat(transaction.amount.toString()),
+        dueAmount: 0,
+        scholar: 0,
+        penal: 0,
+        tax: 0,
+        paymentMethod: transaction.paymentMethod || 'cash',
+        bankName: transaction.bankName || undefined,
+        referenceNumber: transaction.referenceNumber || undefined,
+        collectedBy: transaction.collectedByName || transaction.collector?.fullName || 'Admin',
+        remarks: transaction.remarks || undefined,
+      };
+
+      console.log('Receipt Data:', receipt);
+      console.log('School Profile:', schoolProfile);
+
+      setReceiptData(receipt);
+      setShowReceiptModal(true);
     } catch (error) {
-      showError('Error downloading receipt');
+      console.error('Error preparing receipt:', error);
+      showError('Error preparing receipt');
     }
   };
 
@@ -131,32 +200,52 @@ const FeeTransactions: React.FC = () => {
       render: (value: string) => new Date(value).toLocaleDateString(),
     },
     {
-      key: 'feeAllocation',
+      key: 'student',
       label: 'Student',
-      render: (value: any) => (
-        <div>
-          <p className="font-semibold">{value.student.fullName}</p>
-          <p className="text-xs text-gray-500">
-            {value.student.rollNumber} | Class {value.student.class}-{value.student.section}
-          </p>
-        </div>
-      ),
+      render: (_value: any, row: FeeTransaction) => {
+        const student = row.feeAllocation?.student || row.student;
+        return student ? (
+          <div>
+            <p className="font-semibold">{student.fullName}</p>
+            <p className="text-xs text-gray-500">
+              {student.rollNumber} | Class {student.class}-{student.section}
+            </p>
+          </div>
+        ) : (
+          <span className="text-gray-400">N/A</span>
+        );
+      },
     },
     {
       key: 'feeAllocation',
-      label: 'Fee Structure',
-      render: (value: any) => (
-        <div>
-          <p className="text-sm">{value.feeStructure.name}</p>
-          <p className="text-xs text-gray-500">{value.feeStructure.academicYear}</p>
-        </div>
-      ),
+      label: 'Fee Type',
+      render: (_value: any, row: FeeTransaction) => {
+        // Check if this is a flexible collection (no feeAllocationId)
+        if (!row.feeAllocationId) {
+          return (
+            <Badge variant="info">Flexible Collection</Badge>
+          );
+        }
+        // Regular fee collection with fee structure
+        if (row.feeAllocation?.feeStructure) {
+          return (
+            <div>
+              <p className="text-sm">{row.feeAllocation.feeStructure.name}</p>
+              <p className="text-xs text-gray-500">{row.feeAllocation.feeStructure.academicYear}</p>
+            </div>
+          );
+        }
+        // Regular collection but fee structure not loaded
+        return (
+          <Badge variant="success">Regular Collection</Badge>
+        );
+      },
     },
     {
       key: 'amount',
       label: 'Amount',
       render: (value: number) => (
-        <span className="font-semibold text-green-600">NPR {value.toFixed(2)}</span>
+        <span className="font-semibold text-green-600">NPR {(Number(value) || 0).toFixed(2)}</span>
       ),
     },
     {
@@ -188,20 +277,20 @@ const FeeTransactions: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Fee Transactions</h2>
+        <h2 className="text-xl font-bold text-gray-900">Fee Transactions</h2>
         <p className="text-gray-600">View and manage all fee payment transactions</p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm p-2 border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Transactions</p>
-              <p className="text-2xl font-bold text-gray-900">{summary.totalTransactions}</p>
+              <p className="text-xl font-bold text-gray-900">{summary.totalTransactions}</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-lg">
               <Receipt className="w-6 h-6 text-blue-600" />
@@ -209,28 +298,28 @@ const FeeTransactions: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm p-2 border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Collection</p>
-              <p className="text-2xl font-bold text-green-600">
-                NPR {summary.totalAmount.toFixed(2)}
+              <p className="text-xl font-bold text-green-600">
+                NPR {(Number(summary.totalAmount) || 0).toFixed(2)}
               </p>
             </div>
             <div className="p-3 bg-green-50 rounded-lg">
-              <DollarSign className="w-6 h-6 text-green-600" />
+              <span className="text-2xl font-bold text-green-600">रु</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm p-2 border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Payment Methods</p>
               <div className="mt-2 space-y-1">
                 {Object.entries(summary.byPaymentMethod).map(([method, data]) => (
                   <p key={method} className="text-xs text-gray-600">
-                    {method}: {data.count} (NPR {data.amount.toFixed(2)})
+                    {method}: {data.count} (NPR {(Number(data.amount) || 0).toFixed(2)})
                   </p>
                 ))}
               </div>
@@ -244,14 +333,15 @@ const FeeTransactions: React.FC = () => {
 
       {/* Filters */}
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-xl shadow-sm p-2 border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
           <Filter className="w-5 h-5" />
           Filters
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <FormInput
+            className="text-sm"
             label="Start Date"
             type="date"
             value={filters.startDate}
@@ -259,6 +349,7 @@ const FeeTransactions: React.FC = () => {
           />
 
           <FormInput
+            className="text-sm"
             label="End Date"
             type="date"
             value={filters.endDate}
@@ -266,6 +357,7 @@ const FeeTransactions: React.FC = () => {
           />
 
           <Select
+            className="text-sm"
             label="Payment Method"
             value={filters.paymentMethod}
             onChange={(e) => setFilters({ ...filters, paymentMethod: e.target.value })}
@@ -280,6 +372,7 @@ const FeeTransactions: React.FC = () => {
           />
 
           <Select
+            className="text-sm"
             label="Status"
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
@@ -292,12 +385,12 @@ const FeeTransactions: React.FC = () => {
           />
         </div>
 
-        <div className="flex gap-3 mt-4">
-          <Button onClick={handleApplyFilters} disabled={loading}>
+        <div className="flex gap-3 mt-3">
+          <Button className=' text-sm' onClick={handleApplyFilters} disabled={loading}>
             <Search className="w-4 h-4 mr-2" />
             Apply Filters
           </Button>
-          <Button variant="secondary" onClick={handleClearFilters}>
+          <Button className=' text-sm' variant="secondary" onClick={handleClearFilters}>
             Clear
           </Button>
         </div>
@@ -314,13 +407,96 @@ const FeeTransactions: React.FC = () => {
             <Button
               size="sm"
               variant="secondary"
-              onClick={() => handleDownloadReceipt(transaction)}
+              onClick={() => handlePrintReceipt(transaction)}
+              title="Print Receipt"
             >
-              <Download className="w-4 h-4" />
+              <Printer className="w-4 h-4" />
             </Button>
           )}
         />
       </div>
+
+      {/* Receipt Modal */}
+      {showReceiptModal && receiptData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 no-print">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
+            <div className="sticky top-0 bg-white border-b p-4 flex justify-between items-center no-print">
+              <h3 className="text-lg font-semibold">Fee Receipt</h3>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    // Set dynamic filename
+                    const originalTitle = document.title;
+                    const studentIEMIS = receiptData?.student?.iemisId || 'STUDENT';
+                    const receiptNo = receiptData?.receiptNumber || 'RECEIPT';
+                    document.title = `Receipt_${studentIEMIS}_${receiptNo}`;
+                    
+                    // Print
+                    window.print();
+                    
+                    // Restore original title after print dialog
+                    setTimeout(() => {
+                      document.title = originalTitle;
+                    }, 1000);
+                  }}
+                  icon={<Printer className="w-5 h-5" />}
+                  variant="primary"
+                >
+                  Print Receipt
+                </Button>
+                <button
+                  onClick={() => setShowReceiptModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+            <div ref={receiptRef} className="p-6">
+              <FeeReceipt schoolProfile={schoolProfile} receiptData={receiptData} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Global Print Styles */}
+      <style>{`
+        @media print {
+          /* Hide everything except the receipt content */
+          body * {
+            visibility: hidden;
+          }
+          
+          /* Show only receipt and its children */
+          #receipt-content,
+          #receipt-content * {
+            visibility: visible !important;
+          }
+          
+          /* Position receipt at top of page */
+          #receipt-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+          }
+          
+          /* Page setup */
+          @page {
+            size: A4 portrait;
+            margin: 8mm;
+          }
+          
+          body, html {
+            margin: 0;
+            padding: 0;
+            height: auto;
+            overflow: visible;
+          }
+        }
+      `}</style>
     </div>
   );
 };

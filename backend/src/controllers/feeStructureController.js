@@ -17,6 +17,9 @@ exports.createFeeStructure = async (req, res) => {
       section,
       description,
       dueDate,
+      purpose,
+      isTemplate,
+      clonedFrom,
       items, // Array of { feeCategoryId, amount, description }
     } = req.body;
 
@@ -50,7 +53,10 @@ exports.createFeeStructure = async (req, res) => {
       section: section?.trim(),
       totalAmount,
       description: description?.trim(),
-      dueDate,
+      dueDate: dueDate && dueDate !== '' ? dueDate : null,
+      purpose: purpose || 'tuition',
+      isTemplate: isTemplate || false,
+      clonedFrom: clonedFrom || null,
       isActive: true,
     });
 
@@ -185,6 +191,8 @@ exports.updateFeeStructure = async (req, res) => {
       section,
       description,
       dueDate,
+      purpose,
+      isTemplate,
       isActive,
       items,
     } = req.body;
@@ -203,7 +211,9 @@ exports.updateFeeStructure = async (req, res) => {
     if (className !== undefined) structure.class = className.trim();
     if (section !== undefined) structure.section = section?.trim();
     if (description !== undefined) structure.description = description?.trim();
-    if (dueDate !== undefined) structure.dueDate = dueDate;
+    if (dueDate !== undefined) structure.dueDate = dueDate && dueDate !== '' ? dueDate : null;
+    if (purpose !== undefined) structure.purpose = purpose;
+    if (isTemplate !== undefined) structure.isTemplate = isTemplate;
     if (isActive !== undefined) structure.isActive = isActive;
 
     // If items are provided, update them

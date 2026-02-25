@@ -96,6 +96,22 @@ const feeAllocationModel = (sequelize, DataTypes) => {
       allowNull: true,
       comment: 'Reason for discount (scholarship, sibling discount, etc.)',
     },
+    allocationBatch: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      comment: 'Batch identifier for grouping allocations (e.g., 2081-MIDTERM-EXAM, 2081-ANNUAL-FEE)',
+    },
+    purpose: {
+      type: DataTypes.ENUM('admission', 'tuition', 'examination', 'event', 'transport', 'hostel', 'library', 'lab', 'sports', 'other'),
+      allowNull: false,
+      defaultValue: 'tuition',
+      comment: 'Purpose of this fee allocation',
+    },
+    allocatedBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: 'Admin user who created this allocation',
+    },
   }, {
     tableName: 'fee_allocations',
     timestamps: true,

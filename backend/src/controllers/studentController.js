@@ -172,9 +172,39 @@ exports.createStudent = async (req, res) => {
 // Fetch all students
 exports.fetchStudents = async (req, res) => {
   try {
+    const { class: className, section, search, status } = req.query;
+    const whereClause = {};
+
+    // Filter by class if provided
+    if (className) {
+      whereClause.class = className;
+    }
+
+    // Filter by section if provided
+    if (section) {
+      whereClause.section = section;
+    }
+
+    // Filter by status if provided
+    if (status) {
+      whereClause.status = status;
+    }
+
+    // Search by name or roll number if provided
+    if (search) {
+      const { Op } = require('sequelize');
+      whereClause[Op.or] = [
+        { firstName: { [Op.iLike]: `%${search}%` } },
+        { lastName: { [Op.iLike]: `%${search}%` } },
+        { rollNumber: { [Op.iLike]: `%${search}%` } },
+      ];
+    }
+
     const allStudents = await students.findAll({
+      where: whereClause,
       order: [['createdAt', 'DESC']],
     });
+    
     res.json({
       message: 'Students fetched successfully',
       data: allStudents,

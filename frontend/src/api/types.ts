@@ -359,6 +359,7 @@ export interface SchoolProfile {
   schoolNameNepali?: string;
   schoolTypeNepali?: string;
   phone?: string;
+  fax?: string;
   email?: string;
   address?: string;
   addressNepali?: string;
@@ -378,6 +379,11 @@ export interface SchoolProfile {
   mission?: string;
   website?: string;
   facebookUrl?: string;
+  logoUrl?: string;
+  panNumber?: string;
+  registrationNumber?: string;
+  affiliation?: string;
+  taxPercentage?: number;
   createdAt?: string;
   updatedAt?: string;
 }

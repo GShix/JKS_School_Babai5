@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Save, MapPin, Target, Eye } from 'lucide-react';
+import { Save, MapPin, Target, Eye, X } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import FormInput from '../../components/shared/FormInput';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
-import { showSuccess, showError } from '../../utils/sweetAlert';
+import { showSuccess, showError, showWarning } from '../../utils/sweetAlert';
 
 interface SchoolProfile {
   id: number;
@@ -15,6 +15,7 @@ interface SchoolProfile {
   vision: string;
   address: string;
   phone: string;
+  fax?: string;
   email: string;
   website: string;
   facebookUrl?: string;
@@ -26,6 +27,11 @@ interface SchoolProfile {
   establishedYear?: string;
   affiliationNumber?: string;
   schoolCode?: string;
+  logoUrl?: string;
+  panNumber?: string;
+  registrationNumber?: string;
+  affiliation?: string;
+  taxPercentage?: number;
 }
 
 const SchoolProfile = () => {
@@ -38,6 +44,7 @@ const SchoolProfile = () => {
     vision: '',
     address: '',
     phone: '',
+    fax: '',
     email: '',
     website: '',
     facebookUrl: '',
@@ -48,12 +55,19 @@ const SchoolProfile = () => {
     introduction: '',
     establishedYear: '',
     affiliationNumber: '',
-    schoolCode: ''
+    schoolCode: '',
+    logoUrl: '',
+    panNumber: '',
+    registrationNumber: '',
+    affiliation: '',
+    taxPercentage: 0
   });
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
+  const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProfile();
@@ -78,6 +92,7 @@ const SchoolProfile = () => {
           vision: data.introduction || '',
           address: data.address || '',
           phone: data.phone || '',
+          fax: data.fax || '',
           email: data.email || '',
           website: data.website || '',
           facebookUrl: data.facebookUrl || '',
@@ -88,8 +103,17 @@ const SchoolProfile = () => {
           introduction: data.introduction || '',
           establishedYear: data.establishedYear || '',
           affiliationNumber: data.affiliationNumber || '',
-          schoolCode: data.schoolCode || ''
+          schoolCode: data.schoolCode || '',
+          logoUrl: data.logoUrl || '',
+          panNumber: data.panNumber || '',
+          registrationNumber: data.registrationNumber || '',
+          affiliation: data.affiliation || '',
+          taxPercentage: data.taxPercentage || 0
         });
+        // Set logo preview from existing URL
+        if (data.logoUrl) {
+          setLogoPreview(data.logoUrl);
+        }
       }
       setLoading(false);
     } catch (error) {
@@ -98,37 +122,91 @@ const SchoolProfile = () => {
     }
   };
 
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showWarning('File size too large', 'File size must be less than 5MB.');
+        return;
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        showWarning('Invalid file type', 'Please select an image file.');
+        return;
+      }
+      
+      setSelectedLogo(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setSelectedLogo(null);
+    setLogoPreview(null);
+    setProfile({ ...profile, logoUrl: '' });
+  };
+
   const handleSave = async () => {
     try {
       setSaving(true);
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       
-      const payload = {
-        schoolName: profile.schoolName,
-        schoolNameNepali: profile.schoolNameNepali,
-        phone: profile.phone,
-        email: profile.email,
-        address: profile.address,
-        addressNepali: profile.schoolNameNepali,
-        province: profile.province,
-        district: profile.district,
-        municipality: profile.municipality,
-        ward: profile.ward,
-        introduction: profile.introduction,
-        establishedYear: profile.establishedYear,
-        principalName: '',
-        website: profile.website,
-        facebookUrl: profile.facebookUrl
-      };
+      // Create FormData for multipart/form-data (to support file upload)
+      const formData = new FormData();
+      
+      // Append all profile fields
+      formData.append('schoolName', profile.schoolName);
+      if (profile.schoolNameNepali) formData.append('schoolNameNepali', profile.schoolNameNepali);
+      formData.append('phone', profile.phone);
+      if (profile.fax) formData.append('fax', profile.fax);
+      formData.append('email', profile.email);
+      formData.append('address', profile.address);
+      if (profile.schoolNameNepali) formData.append('addressNepali', profile.schoolNameNepali);
+      if (profile.province) formData.append('province', profile.province);
+      if (profile.district) formData.append('district', profile.district);
+      if (profile.municipality) formData.append('municipality', profile.municipality);
+      if (profile.ward) formData.append('ward', profile.ward);
+      if (profile.introduction) formData.append('introduction', profile.introduction);
+      if (profile.establishedYear) formData.append('establishedYear', profile.establishedYear);
+      formData.append('principalName', '');
+      if (profile.website) formData.append('website', profile.website);
+      if (profile.facebookUrl) formData.append('facebookUrl', profile.facebookUrl);
+      if (profile.panNumber) formData.append('panNumber', profile.panNumber);
+      if (profile.registrationNumber) formData.append('registrationNumber', profile.registrationNumber);
+      if (profile.affiliation) formData.append('affiliation', profile.affiliation);
+      formData.append('taxPercentage', profile.taxPercentage?.toString() || '0');
+      
+      // Append logo file if selected, otherwise keep existing logoUrl
+      if (selectedLogo) {
+        formData.append('logo', selectedLogo);
+      } else if (profile.logoUrl) {
+        formData.append('logoUrl', profile.logoUrl);
+      }
       
       const response = await axios.put(
         `${API_BASE_URL}/school-profile`,
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+        formData,
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          } 
+        }
       );
       
       if (response.data.success) {
         showSuccess('School profile has been updated successfully!');
+        // Refresh data to get updated logo URL
+        fetchProfile();
+        setSelectedLogo(null);
       }
       setSaving(false);
     } catch (error: any) {
@@ -274,6 +352,13 @@ const SchoolProfile = () => {
               />
               
               <FormInput
+                label="Fax"
+                value={profile.fax || ''}
+                onChange={(e) => setProfile({ ...profile, fax: e.target.value })}
+                placeholder="057-527263"
+              />
+              
+              <FormInput
                 label="Email"
                 type="email"
                 value={profile.email}
@@ -292,6 +377,80 @@ const SchoolProfile = () => {
                 value={profile.facebookUrl}
                 onChange={(e) => setProfile({ ...profile, facebookUrl: e.target.value })}
                 placeholder="https://facebook.com/yourschool"
+              />
+              
+              {/* Logo Upload Section */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  School Logo
+                </label>
+                <div className="flex items-center gap-4">
+                  {logoPreview && (
+                    <div className="relative">
+                      <img 
+                        src={logoPreview} 
+                        alt="School Logo" 
+                        className="w-24 h-24 object-contain border-2 border-gray-200 rounded-lg bg-white p-2"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveLogo}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleLogoChange}
+                      className="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-lg file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100
+                        cursor-pointer"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Recommended: Square or rectangular logo, max 5MB (PNG with transparent background preferred)
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <FormInput
+                label="PAN Number"
+                value={profile.panNumber || ''}
+                onChange={(e) => setProfile({ ...profile, panNumber: e.target.value })}
+                placeholder="301480818"
+              />
+              
+              <FormInput
+                label="Registration Number"
+                value={profile.registrationNumber || ''}
+                onChange={(e) => setProfile({ ...profile, registrationNumber: e.target.value })}
+                placeholder="345/65"
+              />
+              
+              <FormInput
+                label="Affiliation"
+                value={profile.affiliation || ''}
+                onChange={(e) => setProfile({ ...profile, affiliation: e.target.value })}
+                placeholder="Ministry of Education, Government of Nepal"
+              />
+              
+              <FormInput
+                label="Tax Percentage (%)"
+                type="number"
+                value={profile.taxPercentage?.toString() || '0'}
+                onChange={(e) => setProfile({ ...profile, taxPercentage: parseFloat(e.target.value) || 0 })}
+                placeholder="0.00"
+                step="0.01"
+                min="0"
+                max="100"
               />
               
               <div className="md:col-span-2">
