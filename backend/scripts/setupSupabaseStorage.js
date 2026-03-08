@@ -24,7 +24,7 @@ async function createBucket(bucketName, isPublic = true, options = {}) {
   try {
     // Check if bucket exists
     const { data: buckets, error: listError } = await supabase.storage.listBuckets();
-    
+
     if (listError) {
       throw new Error(`Error listing buckets: ${listError.message}`);
     }
@@ -41,7 +41,7 @@ async function createBucket(bucketName, isPublic = true, options = {}) {
 
     if (bucketExists) {
       console.log(`✅ Bucket "${bucketName}" already exists`);
-      
+
       // Update bucket to ensure it's public if needed
       if (isPublic) {
         const { error: updateError } = await supabase.storage.updateBucket(bucketName, {
@@ -55,7 +55,7 @@ async function createBucket(bucketName, isPublic = true, options = {}) {
           console.log(`✅ Bucket "${bucketName}" updated with correct settings`);
         }
       }
-      
+
       return true;
     }
 
@@ -84,50 +84,58 @@ async function setupStorage() {
   console.log(`📍 Supabase URL: ${supabaseUrl}\n`);
 
   const buckets = [
-    { 
-      name: 'staff-images', 
+    {
+      name: 'staff-images',
       public: true,
       options: {
         fileSizeLimit: 5242880, // 5MB
         allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
       }
     },
-    { 
-      name: 'student-images', 
+    {
+      name: 'student-images',
       public: true,
       options: {
         fileSizeLimit: 5242880, // 5MB
         allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
       }
     },
-    { 
-      name: 'blog-images', 
+    {
+      name: 'blog-images',
       public: true,
       options: {
         fileSizeLimit: 5242880, // 5MB
         allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
       }
     },
-    { 
-      name: 'downloads', 
+    {
+      name: 'downloads',
       public: true,
       options: {
         fileSizeLimit: 10485760, // 10MB for documents and images
         allowedMimeTypes: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
       }
     },
-    { 
-      name: 'hero-slides', 
+    {
+      name: 'hero-slides',
       public: true,
       options: {
         fileSizeLimit: 5242880, // 5MB for hero images
         allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
       }
     },
+    {
+      name: 'teacher-images',
+      public: true,
+      options: {
+        fileSizeLimit: 10485760, // 10MB
+        allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+      }
+    },
   ];
 
   let successCount = 0;
-  
+
   for (const bucket of buckets) {
     const success = await createBucket(bucket.name, bucket.public, bucket.options);
     if (success) successCount++;

@@ -6,6 +6,16 @@ import { teacherService } from '../../api';
 import type { Teacher } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
 
+// Hierarchy definition — order matters for display
+const POSITION_HIERARCHY = [
+  { key: 'Principal', label: 'Principal', highlighted: true },
+  { key: 'Vice-Principal', label: 'Vice-Principal', highlighted: true },
+  { key: 'Co-ordinator (Primary Level)', label: 'Co-ordinator — Primary Level', highlighted: false },
+  { key: 'Co-ordinator (Basic Level)', label: 'Co-ordinator — Basic Level', highlighted: false },
+  { key: 'Co-ordinator (Secondary Level)', label: 'Co-ordinator — Secondary Level', highlighted: false },
+  { key: 'Teacher', label: 'Teachers', highlighted: false },
+];
+
 const JKSSTeachers = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,8 +29,7 @@ const JKSSTeachers = () => {
     try {
       setLoading(true);
       const response = await teacherService.getAll();
-      // Only show active teachers
-      const activeTeachers = response.data?.filter((teacher: Teacher) => teacher.status === 'active') || [];
+      const activeTeachers = response.data?.filter((t: Teacher) => t.status === 'active') || [];
       setTeachers(activeTeachers);
       setError(null);
     } catch (err) {
@@ -31,21 +40,25 @@ const JKSSTeachers = () => {
     }
   };
 
-  // Group teachers by department
-  const teachersByDepartment: Record<string, Teacher[]> = {};
-  teachers.forEach(teacher => {
-    const dept = teacher.department || 'Other';
-    if (!teachersByDepartment[dept]) {
-      teachersByDepartment[dept] = [];
-    }
-    teachersByDepartment[dept].push(teacher);
+  // Group teachers by position, bucket unknown positions into 'Teacher'
+  const grouped: Record<string, Teacher[]> = {};
+  teachers.forEach(t => {
+    const pos = POSITION_HIERARCHY.some(p => p.key === t.position) ? (t.position || 'Teacher') : 'Teacher';
+    if (!grouped[pos]) grouped[pos] = [];
+    grouped[pos].push(t);
   });
+
+  // Build ordered sections (skip empty groups)
+  const sections = POSITION_HIERARCHY.filter(p => grouped[p.key]?.length);
 
   return (
     <div className="JKSSTeachers-page min-h-screen bg-[#F7F7F7]">
       <Header />
       <main className="min-h-screen">
-        <div className="teachers-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12" style={{ backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity: 0.9 }}>
+        <div
+          className="teachers-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12"
+          style={{ backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity: 0.9 }}
+        >
           <h1 className="text-5xl font-medium text-center my-8 text-white">JKSS Teachers</h1>
         </div>
 
@@ -70,48 +83,52 @@ const JKSSTeachers = () => {
               <p className="text-gray-600">No teachers to display</p>
             </div>
           ) : (
-            <div className="space-y-10">
-              {Object.entries(teachersByDepartment).map(([department, deptTeachers], index) => (
-                <div key={department} className="space-y-5">
-                  {/* Department Header */}
-                  <div className="text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                      {department} Department
-                    </h2>
-                    <div className="w-20 h-1 bg-blue-600 mx-auto rounded-full"></div>
-                    <p className="mt-2 text-gray-600">{deptTeachers.length} Teacher{deptTeachers.length !== 1 ? 's' : ''}</p>
-                  </div>
-
-                  {/* Teachers Grid */}
-                  <div className="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    {deptTeachers.map((teacher: Teacher) => (
-                      <TeamCard
-                        key={teacher.id}
-                        fullName={`${teacher.firstName} ${teacher.middleName || ''} ${teacher.lastName}`.trim()}
-                        position="Teacher"
-                        department={teacher.department}
-                        profileImage={teacher.profileImage}
-                        email={teacher.email}
-                        highlighted={false}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Divider (except for last section) */}
-                  {index < Object.keys(teachersByDepartment).length - 1 && (
-                    <div className="pt-6">
-                      <div className="border-t border-gray-200"></div>
+            <div className="space-y-12">
+              {sections.map(({ key, label, highlighted }, idx) => {
+                const group = grouped[key];
+                return (
+                  <div key={key} className="space-y-5">
+                    {/* Section Header */}
+                    <div className="text-center">
+                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{label}</h2>
+                      <div className={`h-1 mx-auto rounded-full ${highlighted ? 'w-24 bg-yellow-400' : 'w-16 bg-blue-600'}`}></div>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    {/* Cards */}
+                    <div className={`grid gap-6 justify-center ${highlighted
+                      ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-2xl mx-auto'
+                      : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                      }`}>
+                      {group.map((t: Teacher) => (
+                        <TeamCard
+                          key={t.id}
+                          fullName={`${t.firstName} ${t.middleName || ''} ${t.lastName}`.trim()}
+                          position={t.position || 'Teacher'}
+                          department={t.department}
+                          profileImage={t.profileImage}
+                          email={t.email}
+                          highlighted={highlighted}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Divider (except last) */}
+                    {idx < sections.length - 1 && (
+                      <div className="pt-4">
+                        <div className="border-t border-gray-200"></div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 export default JKSSTeachers
+

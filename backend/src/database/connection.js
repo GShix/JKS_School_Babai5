@@ -1,4 +1,4 @@
-const {Sequelize, DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 // Ensure db_string exists
 if (!process.env.db_string) {
@@ -31,7 +31,7 @@ sequelize.authenticate()
   })
   .catch(err => {
     console.error('❌ Unable to connect to the database:', err.message);
-  });   
+  });
 
 const db = {};
 db.Sequelize = Sequelize;
@@ -60,7 +60,7 @@ db.leaves = require('./models/leaveModel')(sequelize, DataTypes);
 db.announcements = require('./models/announcementModel')(sequelize, DataTypes);
 db.contents = require('./models/contentModel')(sequelize, DataTypes);
 db.gallery = require('./models/galleryModel')(sequelize, DataTypes);
-db.downloads = require('./models/downloadModel')(sequelize, DataTypes);db.heroSlides = require('./models/heroSlideModel')(sequelize, DataTypes);
+db.downloads = require('./models/downloadModel')(sequelize, DataTypes); db.heroSlides = require('./models/heroSlideModel')(sequelize, DataTypes);
 db.schoolProfile = require('./models/schoolProfileModel')(sequelize, DataTypes);
 db.schoolMessages = require('./models/schoolMessageModel')(sequelize, DataTypes);
 db.contacts = require('./models/contactModel')(sequelize, DataTypes);
@@ -147,7 +147,7 @@ if (process.env.NODE_ENV === 'development') {
   // Sync existing tables without alteration
   sequelize.sync({ alter: false }).then(async () => {
     console.log('✅ Database connected');
-    
+
     // Now sync ONLY the new fee management tables with force: false
     // This will create them if they don't exist, but won't modify if they do
     try {
@@ -159,6 +159,14 @@ if (process.env.NODE_ENV === 'development') {
       console.log('✅ Fee management tables created successfully');
     } catch (err) {
       console.error('❌ Fee management tables sync error:', err.message);
+    }
+
+    // Sync teacher table with alter to add new columns (e.g. position)
+    try {
+      await db.teacher.sync({ alter: true });
+      console.log('✅ Teacher table schema updated');
+    } catch (err) {
+      console.error('❌ Teacher table sync error:', err.message);
     }
   }).catch(err => {
     console.error('❌ Database sync error:', err.message);
@@ -175,7 +183,7 @@ if (process.env.NODE_ENV === 'production' && process.env.SYNC_DB === 'true') {
   });
 }
 
-module.exports = db; 
+module.exports = db;
 // exports models
 exports.programs = db.programs;
 exports.activities = db.activities;

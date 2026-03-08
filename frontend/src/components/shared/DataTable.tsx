@@ -78,13 +78,13 @@ function DataTable<T extends { id?: any }>({
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider whitespace-nowrap"
+                  className="px-5 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider whitespace-nowrap"
                 >
                   {column.label}
                 </th>
               ))}
               {actions && (
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider whitespace-nowrap">
+                <th className="px-5 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider whitespace-nowrap">
                   Actions
                 </th>
               )}
@@ -95,7 +95,7 @@ function DataTable<T extends { id?: any }>({
               <tr>
                 <td
                   colSpan={columns.length + (actions ? 1 : 0)}
-                  className="px-6 py-12 text-center text-gray-500"
+                  className="px-5 py-12 text-center text-gray-500"
                 >
                   <div className="flex items-center justify-center gap-2">
                     <svg className="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -114,14 +114,14 @@ function DataTable<T extends { id?: any }>({
                   className={`${onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''} transition-colors`}
                 >
                   {columns.map((column, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td key={colIndex} className="px-5 py-4 whitespace-nowrap text-sm text-gray-900">
                       {column.render
                         ? column.render(getValue(row, column.key as string), row)
                         : getValue(row, column.key as string)}
                     </td>
                   ))}
                   {actions && (
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
                       {actions(row)}
                     </td>
                   )}
@@ -131,7 +131,7 @@ function DataTable<T extends { id?: any }>({
               <tr>
                 <td
                   colSpan={columns.length + (actions ? 1 : 0)}
-                  className="px-6 py-12 text-center text-gray-500"
+                  className="px-5 py-12 text-center text-gray-500"
                 >
                   No data found
                 </td>
@@ -170,11 +170,10 @@ function DataTable<T extends { id?: any }>({
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1 rounded-lg transition-colors ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white'
-                      : 'border border-gray-300 hover:bg-gray-50'
-                  }`}
+                  className={`px-3 py-1 rounded-lg transition-colors ${currentPage === page
+                    ? 'bg-blue-600 text-white'
+                    : 'border border-gray-300 hover:bg-gray-50'
+                    }`}
                 >
                   {page}
                 </button>

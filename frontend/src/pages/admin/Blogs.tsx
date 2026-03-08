@@ -89,7 +89,7 @@ const Blogs: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/blogs/upload-image`,
+        `${API_BASE_URL}/admin/blogs/upload-image`,
         formData,
         {
           headers: {
@@ -114,7 +114,7 @@ const Blogs: React.FC = () => {
         showError('Please select a valid image file');
         return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         showError('Image size should be less than 5MB');
@@ -122,7 +122,7 @@ const Blogs: React.FC = () => {
       }
 
       setCoverImageFile(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -135,12 +135,14 @@ const Blogs: React.FC = () => {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/blogs`, {
+      const response = await axios.get(`${API_BASE_URL}/admin/blogs`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setBlogs(response.data.data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching blogs:', error);
+      const msg = error?.response?.data?.message || error?.message || 'Failed to fetch blogs';
+      showError(`Failed to load blogs: ${msg}`);
       setBlogs([]);
     } finally {
       setLoading(false);
@@ -169,7 +171,7 @@ const Blogs: React.FC = () => {
 
       if (editingBlog) {
         await axios.put(
-          `${API_BASE_URL}/blogs/${editingBlog.id}`,
+          `${API_BASE_URL}/admin/blogs/${editingBlog.id}`,
           submitData,
           {
             headers: {
@@ -181,7 +183,7 @@ const Blogs: React.FC = () => {
         showSuccess(`Blog post has been ${status === 'published' ? 'published' : 'saved as draft'} successfully!`);
       } else {
         await axios.post(
-          `${API_BASE_URL}/blogs`,
+          `${API_BASE_URL}/admin/blogs`,
           submitData,
           {
             headers: {
@@ -213,12 +215,12 @@ const Blogs: React.FC = () => {
       audience: blog.audience,
       tags: blog.tags || ''
     });
-    
+
     // Set cover image preview if exists
     if (blog.blogImage) {
       setCoverImagePreview(blog.blogImage);
     }
-    
+
     setModalOpen(true);
   };
 
@@ -228,7 +230,7 @@ const Blogs: React.FC = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`${API_BASE_URL}/blogs/${id}`, {
+      await axios.delete(`${API_BASE_URL}/admin/blogs/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       showSuccess('Blog post has been deleted successfully!');

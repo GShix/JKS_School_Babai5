@@ -5,7 +5,7 @@ import {
   Users,
   GraduationCap,
   // ClipboardCheck,
-  // FileText,
+  FileText,
   DollarSign,
   // Calendar,
   // BookOpen,
@@ -26,7 +26,7 @@ import {
   ChevronDown,
   ChevronRight,
   MessageSquare,
-  Mail
+  Mail,
 } from 'lucide-react';
 
 interface SubMenuItem {
@@ -69,8 +69,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
   const toggleSubmenu = (menuId: string) => {
-    setExpandedMenus(prev => 
-      prev.includes(menuId) 
+    setExpandedMenus(prev =>
+      prev.includes(menuId)
         ? prev.filter(id => id !== menuId)
         : [...prev, menuId]
     );
@@ -93,9 +93,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'admins', label: 'Admins', icon: Shield, roles: ['superAdmin'] },
     { id: 'students', label: 'Students', icon: GraduationCap },
-    { 
-      id: 'staff-menu', 
-      label: 'Teacher | Staff', 
+    {
+      id: 'staff-menu',
+      label: 'Teacher | Staff',
       icon: Users,
       subItems: [
         { id: 'teachers', label: 'Teacher' },
@@ -103,10 +103,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       ]
     },
     // { id: 'attendance', label: 'Attendance', icon: ClipboardCheck },
-    // { id: 'grades', label: 'Grades', icon: FileText },
-    { 
-      id: 'fee-management', 
-      label: 'Fee Management', 
+    { id: 'grades', label: 'Grades', icon: FileText },
+    {
+      id: 'fee-management',
+      label: 'Fee Management',
       icon: DollarSign,
       subItems: [
         { id: 'fee-structures', label: 'Fee Structures' },
@@ -148,11 +148,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Sidebar */}
       <aside
-        className={`${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } ${
-          mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'
-        } bg-gradient-to-b from-blue-600 via-blue-700 to-blue-900 text-white transition-all duration-300 flex flex-col fixed h-full z-50`}
+        className={`${sidebarOpen ? 'w-64' : 'w-20'
+          } ${mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'
+          } bg-gradient-to-b from-blue-600 via-blue-700 to-blue-900 text-white transition-all duration-300 flex flex-col fixed h-full z-50`}
       >
         {/* Logo */}
         <div className="px-3 py-3 flex items-center justify-between border-b border-gray-400">
@@ -202,7 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             const isActive = activeTab === item.id || item.subItems?.some(sub => sub.id === activeTab);
             const hasSubItems = item.subItems && item.subItems.length > 0;
             const isExpanded = expandedMenus.includes(item.id);
-            
+
             return (
               <div key={item.id}>
                 <button
@@ -213,11 +211,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                       handleNavigation(item.id);
                     }
                   }}
-                  className={`w-full flex items-center justify-between gap-3 px-2 py-2 rounded-lg transition-all text-sm ${
-                    isActive
+                  className={`w-full flex items-center justify-between gap-3 px-2 py-2 rounded-lg transition-all text-sm ${isActive
                       ? 'bg-white text-blue-900 shadow-lg'
                       : 'hover:bg-blue-800 text-white'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon className="w-5 h-5 shrink-0" />
@@ -229,7 +226,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
                   )}
                 </button>
-                
+
                 {/* Sub Items */}
                 {hasSubItems && isExpanded && (sidebarOpen || mobileMenuOpen) && (
                   <div className="ml-8 mt-1 space-y-1">
@@ -239,11 +236,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <button
                           key={subItem.id}
                           onClick={() => handleNavigation(subItem.id)}
-                          className={`w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all ${
-                            isSubActive
+                          className={`w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all ${isSubActive
                               ? 'bg-white text-blue-900 shadow'
                               : 'hover:bg-blue-800 text-blue-100'
-                          }`}
+                            }`}
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
                           <span className="font-medium">{subItem.label}</span>

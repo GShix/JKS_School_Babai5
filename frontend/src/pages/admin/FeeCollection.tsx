@@ -90,7 +90,7 @@ const FeeCollection: React.FC = () => {
     totalBalance: 0,
     totalDiscount: 0,
   });
-  
+
   // Custom fee collection (for miscellaneous fees)
   const [showCustomFees, setShowCustomFees] = useState(false);
   const [categories, setCategories] = useState<FeeCategory[]>([]);
@@ -156,7 +156,7 @@ const FeeCollection: React.FC = () => {
     const hasSearchQuery = searchQuery.trim().length > 0;
     const hasClassFilter = filterClass !== 'all';
     const hasStatusFilter = filterStatus !== 'all';
-    
+
     // Must have at least one search criteria
     if (!hasSearchQuery && !hasClassFilter && !hasStatusFilter) {
       showError('Please enter student details OR select class/status filter');
@@ -165,31 +165,31 @@ const FeeCollection: React.FC = () => {
 
     try {
       setLoading(true);
-      
+
       // Build query parameters
       const params: any = {};
-      
+
       // Add class filter if selected
       if (hasClassFilter) {
         params.class = filterClass;
       }
-      
+
       // Add search query for student details if provided
       if (hasSearchQuery) {
         params.search = searchQuery.trim();
       }
-      
+
       const response = await axios.get(`${API_BASE_URL}/students`, {
         params,
         headers: { Authorization: `Bearer ${getToken()}` },
       });
 
       let students = response.data.data || [];
-      
+
       // If search query is provided, filter locally for better matching
       if (hasSearchQuery) {
         const query = searchQuery.toLowerCase().trim();
-        
+
         // Prioritize IEMIS ID search, then name and roll number
         students = students.filter((student: Student) =>
           (student.iemisId && student.iemisId.toLowerCase().includes(query)) ||
@@ -228,7 +228,7 @@ const FeeCollection: React.FC = () => {
   const fetchPaymentStatusForStudents = async (students: Student[]) => {
     try {
       setLoadingStatus(true);
-      
+
       // Fetch status for each student in parallel
       const statusPromises = students.map(async (student) => {
         try {
@@ -247,7 +247,7 @@ const FeeCollection: React.FC = () => {
           };
 
           const pendingCount = allocations.filter((a: FeeAllocation) => a.balance > 0).length;
-          
+
           let status: 'paid' | 'partial' | 'pending' | 'none' = 'none';
           if (summary.totalAllocated === 0) {
             status = 'none';
@@ -276,13 +276,13 @@ const FeeCollection: React.FC = () => {
       });
 
       const studentsWithStatus = await Promise.all(statusPromises);
-      
+
       // Filter by payment status if specified
       let filteredStudents = studentsWithStatus;
       if (filterStatus !== 'all') {
         filteredStudents = studentsWithStatus.filter((student) => {
           if (!student.paymentStatus) return false;
-          
+
           // Map status filter to payment status
           switch (filterStatus) {
             case 'pending':
@@ -298,14 +298,14 @@ const FeeCollection: React.FC = () => {
               return true;
           }
         });
-        
+
         if (filteredStudents.length < studentsWithStatus.length) {
           showSuccess(
             `Filtered to ${filteredStudents.length} student${filteredStudents.length !== 1 ? 's' : ''} with ${filterStatus} status`
           );
         }
       }
-      
+
       setSearchResults(filteredStudents);
     } catch (error) {
       console.error('Error fetching payment status:', error);
@@ -548,7 +548,7 @@ const FeeCollection: React.FC = () => {
         setPendingAllocations(pendingAllocations.filter((a) => a.id !== updatedAllocation.id));
         setPaidAllocations([...paidAllocations, { ...selectedAllocation, ...updatedAllocation }]);
         setSelectedAllocation(null);
-        
+
         // Update summary
         setFeeSummary(prev => ({
           ...prev,
@@ -562,7 +562,7 @@ const FeeCollection: React.FC = () => {
             a.id === updatedAllocation.id ? { ...a, ...updatedAllocation } : a
           )
         );
-        
+
         // Update summary for partial payment
         setFeeSummary(prev => ({
           ...prev,
@@ -738,7 +738,7 @@ const FeeCollection: React.FC = () => {
   const handleExport = () => {
     try {
       const filtered = getFilteredAllocations();
-      
+
       if (filtered.length === 0) {
         showError('No data to export');
         return;
@@ -787,7 +787,7 @@ const FeeCollection: React.FC = () => {
   const handleGenerateReport = () => {
     try {
       const filtered = getFilteredAllocations();
-      
+
       if (filtered.length === 0) {
         showError('No data for report');
         return;
@@ -932,12 +932,12 @@ const FeeCollection: React.FC = () => {
               <Button
                 onClick={handleSearch}
                 disabled={loading}
-                className="w-full h-full relative"
-                icon={loading ? <Loader className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                className="w-full relative text-sm"
+                icon={loading ? <Loader className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4 text-sm" />}
               >
                 {loading ? 'Searching...' : 'Search'}
                 {!loading && (searchQuery.trim() || filterClass !== 'all' || filterStatus !== 'all') && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-sm rounded-full flex items-center justify-center font-bold">
                     {[searchQuery.trim(), filterClass !== 'all', filterStatus !== 'all'].filter(Boolean).length}
                   </span>
                 )}
@@ -1177,7 +1177,7 @@ const FeeCollection: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Payment Status Section */}
                       {student.paymentStatus && student.paymentStatus.status !== 'none' && (
                         <div className="ml-13 mt-2 flex items-center gap-3 text-xs">
@@ -1209,7 +1209,7 @@ const FeeCollection: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="text-right ml-4">
                       {/* Payment Status Badge */}
                       <div className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-semibold mb-2 ${statusBadge.className}`}>
@@ -1238,7 +1238,7 @@ const FeeCollection: React.FC = () => {
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-3">Ready to Collect Fees</h3>
             <p className="text-gray-600 mb-6 max-w-2xl">
-              Flexible search options: Enter student details (IEMIS ID, name, or roll number) <strong>OR</strong> select class/status filters above. 
+              Flexible search options: Enter student details (IEMIS ID, name, or roll number) <strong>OR</strong> select class/status filters above.
               You can also combine both for refined results. Date filters are always optional.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mb-6">
@@ -1371,16 +1371,15 @@ const FeeCollection: React.FC = () => {
                 other: 'bg-gray-100 text-gray-700 border-gray-300',
               };
               const purposeColor = purposeColors[allocation.purpose || 'tuition'] || purposeColors.other;
-              
+
               return (
                 <button
                   key={allocation.id}
                   onClick={() => handleSelectAllocation(allocation)}
-                  className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
-                    selectedAllocation?.id === allocation.id
-                      ? 'border-blue-500 bg-blue-50 shadow-md'
-                      : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-                  }`}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-all ${selectedAllocation?.id === allocation.id
+                    ? 'border-blue-500 bg-blue-50 shadow-md'
+                    : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                    }`}
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -1418,7 +1417,7 @@ const FeeCollection: React.FC = () => {
                       </div>
                       {allocation.discount > 0 && (
                         <div className="mt-2 text-xs text-green-700 bg-green-50 px-2 py-1 rounded inline-block">
-                          💰 Discount: NPR {allocation.discount} 
+                          💰 Discount: NPR {allocation.discount}
                           {allocation.discountReason && ` (${allocation.discountReason})`}
                         </div>
                       )}
@@ -1620,7 +1619,7 @@ const FeeCollection: React.FC = () => {
                         </span>
                       ))}
                     </div>
-                    
+
                     {/* Payment History for this allocation */}
                     {allocation.transactions && allocation.transactions.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-green-200">
@@ -1629,8 +1628,8 @@ const FeeCollection: React.FC = () => {
                           {allocation.transactions.map((txn, idx) => (
                             <div key={idx} className="text-xs text-gray-600 flex justify-between">
                               <span>
-                                {new Date(txn.paymentDate).toLocaleDateString()} - 
-                                {txn.paymentMethod.toUpperCase()} - 
+                                {new Date(txn.paymentDate).toLocaleDateString()} -
+                                {txn.paymentMethod.toUpperCase()} -
                                 Receipt: {txn.receiptNumber}
                               </span>
                               <span className="font-semibold text-green-700">
@@ -1719,11 +1718,11 @@ const FeeCollection: React.FC = () => {
                   required
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  {isFlexibleCollection 
+                  {isFlexibleCollection
                     ? `Maximum: NPR ${customFees.reduce((sum, f) => sum + f.amount, 0).toFixed(2)}`
-                    : selectedAllocation 
-                    ? `Maximum: NPR ${(Number(selectedAllocation.balance) || 0).toFixed(2)}`
-                    : ''}
+                    : selectedAllocation
+                      ? `Maximum: NPR ${(Number(selectedAllocation.balance) || 0).toFixed(2)}`
+                      : ''}
                 </p>
               </div>
 
@@ -1856,10 +1855,10 @@ const FeeCollection: React.FC = () => {
                     const studentIEMIS = receiptData?.student?.iemisId || 'STUDENT';
                     const receiptNo = receiptData?.receiptNumber || 'RECEIPT';
                     document.title = `Receipt_${studentIEMIS}_${receiptNo}`;
-                    
+
                     // Print
                     window.print();
-                    
+
                     // Restore original title after print dialog
                     setTimeout(() => {
                       document.title = originalTitle;

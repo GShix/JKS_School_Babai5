@@ -4,7 +4,7 @@
  */
 
 // Common types
-export type Gender = 'Male' | 'Female' | 'Other';
+export type Gender = "Male" | "Female" | "Other";
 
 // Base API Response
 export interface ApiResponse<T = any> {
@@ -69,7 +69,10 @@ export interface Student {
   updatedAt?: string;
 }
 
-export interface StudentFormData extends Omit<Student, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface StudentFormData extends Omit<
+  Student,
+  "id" | "createdAt" | "updatedAt"
+> {}
 
 // Staff
 export interface Staff {
@@ -98,7 +101,10 @@ export interface Staff {
   updatedAt?: string;
 }
 
-export interface StaffFormData extends Omit<Staff, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface StaffFormData extends Omit<
+  Staff,
+  "id" | "createdAt" | "updatedAt"
+> {}
 
 // Teacher
 export interface Teacher {
@@ -111,25 +117,25 @@ export interface Teacher {
   dateOfBirth?: string;
   gender?: Gender;
   citizenship?: string;
-  
+
   // Permanent Address
   permanentProvince?: string;
   permanentDistrict?: string;
   permanentMunicipality?: string;
   permanentWard?: string;
-  
+
   // Temporary Address
   temporaryProvince?: string;
   temporaryDistrict?: string;
   temporaryMunicipality?: string;
   temporaryWard?: string;
-  
+
   // Family Information
   fatherName?: string;
   motherName?: string;
   spouseName?: string;
   willPerson?: string;
-  
+
   // Additional Information
   caste?: string;
   motherTongue?: string;
@@ -139,7 +145,7 @@ export interface Teacher {
   pan?: string;
   bankName?: string;
   bankAccount?: string;
-  
+
   // Professional Information
   employeeId?: string;
   department: string;
@@ -149,41 +155,50 @@ export interface Teacher {
   qualification?: string;
   experience?: string;
   bloodGroup?: string;
-  
+
   // Government Schemes
   karmachariSanachayakosh?: string;
   sabadhikBimaKosh?: string;
   ssf?: string;
   nagarikLaganiKosh?: string;
-  
+
   // Status and Image
   status: string;
   profileImage?: string;
   notes?: string;
-  
+  position?: string;
+
   createdAt?: string;
   updatedAt?: string;
 }
 
-export interface TeacherFormData extends Omit<Teacher, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface TeacherFormData extends Omit<
+  Teacher,
+  "id" | "createdAt" | "updatedAt"
+> {}
 
 // Blog
 export interface Blog {
   id: number;
-  title: string;
-  content: string;
-  excerpt?: string;
-  author?: string;
-  category?: string;
+  blogTitle: string;
+  blogDescription: string;
+  blogAuthor?: string;
+  authorId?: number;
+  blogCategory?: string;
+  blogImage?: string;
+  blogStatus: string;
+  audience?: string;
   tags?: string;
-  featuredImage?: string;
-  status: string;
-  publishedAt?: string;
+  views?: number;
+  publishedDate?: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
-export interface BlogFormData extends Omit<Blog, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface BlogFormData extends Omit<
+  Blog,
+  "id" | "createdAt" | "updatedAt"
+> {}
 
 // Program
 export interface Program {
@@ -217,7 +232,7 @@ export interface Announcement {
   title: string;
   content: string;
   targetAudience?: string;
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  priority?: "low" | "medium" | "high" | "urgent";
   isPinned?: boolean;
   startDate?: string;
   endDate?: string;
@@ -228,7 +243,7 @@ export interface Announcement {
     url: string;
     size: number;
   }>;
-  status: 'active' | 'expired' | 'draft';
+  status: "active" | "expired" | "draft";
   createdBy?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -239,7 +254,7 @@ export interface Attendance {
   id: number;
   studentId: number;
   date: string;
-  status: 'present' | 'absent' | 'late' | 'excused';
+  status: "present" | "absent" | "late" | "excused";
   remarks?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -269,7 +284,7 @@ export interface Fee {
   dueDate: string;
   paidDate?: string;
   paymentMethod?: string;
-  status: 'paid' | 'pending' | 'overdue';
+  status: "paid" | "pending" | "overdue";
   remarks?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -278,13 +293,13 @@ export interface Fee {
 // Leave
 export interface Leave {
   id: number;
-  applicantType: 'student' | 'staff';
+  applicantType: "student" | "staff";
   applicantId: number;
   leaveType: string;
   startDate: string;
   endDate: string;
   reason: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   approvedBy?: number;
   approvalDate?: string;
   remarks?: string;
@@ -388,7 +403,10 @@ export interface SchoolProfile {
   updatedAt?: string;
 }
 
-export interface SchoolProfileFormData extends Omit<SchoolProfile, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface SchoolProfileFormData extends Omit<
+  SchoolProfile,
+  "id" | "createdAt" | "updatedAt"
+> {}
 
 // School Message (Principal message, etc.)
 export interface SchoolMessage {
@@ -403,7 +421,10 @@ export interface SchoolMessage {
   updatedAt?: string;
 }
 
-export interface SchoolMessageFormData extends Omit<SchoolMessage, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface SchoolMessageFormData extends Omit<
+  SchoolMessage,
+  "id" | "createdAt" | "updatedAt"
+> {}
 
 // Contact Form
 export interface Contact {
@@ -414,7 +435,7 @@ export interface Contact {
   message?: string;
   isStudent: boolean;
   className?: string;
-  status: 'pending' | 'contacted' | 'resolved';
+  status: "pending" | "contacted" | "resolved";
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -434,7 +455,7 @@ export interface CareerPosition {
   id: number;
   title: string;
   department: string;
-  type: 'Full-time' | 'Part-time' | 'Contract' | 'Temporary';
+  type: "Full-time" | "Part-time" | "Contract" | "Temporary";
   location: string;
   description: string;
   requirements?: string;
@@ -444,7 +465,7 @@ export interface CareerPosition {
   applicationDeadline?: string;
   noticeFileName?: string;
   noticeFileUrl?: string;
-  status: 'active' | 'closed' | 'draft';
+  status: "active" | "closed" | "draft";
   postedDate: string;
   createdBy?: number;
   createdAt?: string;
@@ -454,7 +475,7 @@ export interface CareerPosition {
 export interface CareerPositionFormData {
   title: string;
   department: string;
-  type: 'Full-time' | 'Part-time' | 'Contract' | 'Temporary';
+  type: "Full-time" | "Part-time" | "Contract" | "Temporary";
   location: string;
   description: string;
   requirements?: string;
@@ -462,7 +483,7 @@ export interface CareerPositionFormData {
   salaryRange?: string;
   vacancies?: number;
   applicationDeadline?: string;
-  status?: 'active' | 'closed' | 'draft';
+  status?: "active" | "closed" | "draft";
   postedDate?: string;
   noticeFile?: File;
 }
@@ -478,7 +499,7 @@ export interface JobApplication {
   coverLetter?: string;
   resumeFileName: string;
   resumeFileUrl: string;
-  status: 'pending' | 'reviewing' | 'shortlisted' | 'rejected' | 'accepted';
+  status: "pending" | "reviewing" | "shortlisted" | "rejected" | "accepted";
   notes?: string;
   reviewedBy?: number;
   reviewedAt?: string;

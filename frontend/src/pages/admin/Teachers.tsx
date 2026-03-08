@@ -22,7 +22,7 @@ const Teachers: React.FC = () => {
   const [importFile, setImportFile] = useState<File | null>(null);
   const [importData, setImportData] = useState<any[]>([]);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  
+
   // Filter states
   const [filterGender, setFilterGender] = useState('');
   const [filterTeacherLevel, setFilterTeacherLevel] = useState('');
@@ -76,6 +76,8 @@ const Teachers: React.FC = () => {
     // Status
     status: 'active',
     notes: '',
+    // Position
+    position: 'Teacher',
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -100,17 +102,17 @@ const Teachers: React.FC = () => {
 
   const handleLoadFilters = () => {
     let filtered = [...teachers];
-    
+
     // Apply gender filter
     if (filterGender) {
       filtered = filtered.filter(teacher => teacher.gender?.toLowerCase() === filterGender.toLowerCase());
     }
-    
+
     // Apply teacher level filter (assuming qualification field)
     if (filterTeacherLevel) {
       filtered = filtered.filter(teacher => teacher.qualification?.toLowerCase().includes(filterTeacherLevel.toLowerCase()));
     }
-    
+
     setFilteredTeachers(filtered);
     // showSuccess(`Loaded ${filtered.length} teacher(s) matching filters`);
   };
@@ -126,25 +128,28 @@ const Teachers: React.FC = () => {
     try {
       // Create FormData for multipart/form-data
       const submitData = new FormData();
-      
+
       // Append all form fields
       Object.entries(formData).forEach(([key, value]) => {
         if (value) {
           submitData.append(key, value);
         }
       });
-      
+
+      // Always ensure position is sent (even if value somehow became empty)
+      submitData.set('position', formData.position || 'Teacher');
+
       // Append image file if selected
       if (selectedImage) {
         submitData.append('profileImage', selectedImage);
       }
-      
+
       if (editingTeacher) {
         await teacherService.update(editingTeacher.id, submitData);
       } else {
         await teacherService.create(submitData);
       }
-      
+
       setShowModal(false);
       setEditingTeacher(null);
       resetForm();
@@ -159,7 +164,7 @@ const Teachers: React.FC = () => {
   const handleDelete = async (id: number) => {
     const result = await showDeleteConfirm('this teacher');
     if (!result.isConfirmed) return;
-    
+
     try {
       await teacherService.delete(id);
       fetchTeachers();
@@ -214,6 +219,7 @@ const Teachers: React.FC = () => {
       nagarikLaganiKosh: teacher.nagarikLaganiKosh || '',
       status: teacher.status || 'active',
       notes: teacher.notes || '',
+      position: teacher.position || 'Teacher',
     });
     // Set image preview if teacher has profile image
     if (teacher.profileImage) {
@@ -265,6 +271,7 @@ const Teachers: React.FC = () => {
       nagarikLaganiKosh: '',
       status: 'active',
       notes: '',
+      position: 'Teacher',
     });
     setSelectedImage(null);
     setImagePreview(null);
@@ -278,15 +285,15 @@ const Teachers: React.FC = () => {
         showWarning('File size too large', 'File size must be less than 2MB.');
         return;
       }
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         showWarning('Invalid file type', 'Please select an image file.');
         return;
       }
-      
+
       setSelectedImage(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -340,7 +347,7 @@ const Teachers: React.FC = () => {
 
     // Create worksheet
     const ws = XLSX.utils.json_to_sheet(sampleData);
-    
+
     // Set column widths
     const colWidths = [
       { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 },
@@ -372,12 +379,12 @@ const Teachers: React.FC = () => {
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.ms-excel'
       ];
-      
+
       if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls)$/)) {
         showWarning('Invalid file type', 'Please select an Excel file (.xlsx or .xls)');
         return;
       }
-      
+
       setImportFile(file);
       parseExcelFile(file);
     }
@@ -385,30 +392,30 @@ const Teachers: React.FC = () => {
 
   const parseExcelFile = (file: File) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const data = e.target?.result;
         const workbook = XLSX.read(data, { type: 'binary' });
-        
+
         // Get first worksheet
         const worksheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[worksheetName];
-        
+
         // Convert to JSON
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        
+
         if (jsonData.length === 0) {
           showWarning('Empty file', 'The Excel file is empty. Please add data and try again.');
           return;
         }
-        
+
         // Validate and transform data
         const { validData, errors } = validateImportData(jsonData);
-        
+
         setImportData(validData);
         setValidationErrors(errors);
-        
+
         if (errors.length > 0) {
           showWarning('Validation warnings', `Found ${errors.length} validation issue(s). Please review before importing.`);
         }
@@ -417,14 +424,14 @@ const Teachers: React.FC = () => {
         showError('Failed to parse Excel file. Please ensure it is a valid Excel file.');
       }
     };
-    
+
     reader.readAsBinaryString(file);
   };
 
   const validateImportData = (data: any[]) => {
     const errors: string[] = [];
     const validData: any[] = [];
-    
+
     // Define column mappings (Excel column name -> form field name)
     const columnMap: { [key: string]: string } = {
       'First Name*': 'firstName',
@@ -477,17 +484,17 @@ const Teachers: React.FC = () => {
       'Status': 'status',
       'Notes': 'notes'
     };
-    
+
     data.forEach((row, index) => {
       const rowNum = index + 2; // +2 because Excel rows start at 1 and first row is header
       const transformedRow: any = {};
-      
+
       // Transform column names
       Object.keys(row).forEach(key => {
         const mappedKey = columnMap[key] || key;
         transformedRow[mappedKey] = row[key];
       });
-      
+
       // Validate required fields
       if (!transformedRow.firstName) {
         errors.push(`Row ${rowNum}: First Name is required`);
@@ -513,20 +520,20 @@ const Teachers: React.FC = () => {
       if (!transformedRow.status) {
         transformedRow.status = 'active'; // Default value
       }
-      
+
       // Validate gender values
       if (transformedRow.gender && !['Male', 'Female', 'Other'].includes(transformedRow.gender)) {
         errors.push(`Row ${rowNum}: Invalid gender value. Must be Male, Female, or Other`);
       }
-      
+
       // Validate status values
       if (transformedRow.status && !['active', 'inactive', 'on-leave', 'terminated'].includes(transformedRow.status)) {
         errors.push(`Row ${rowNum}: Invalid status value. Must be active, inactive, on-leave, or terminated`);
       }
-      
+
       validData.push(transformedRow);
     });
-    
+
     return { validData, errors };
   };
 
@@ -535,13 +542,13 @@ const Teachers: React.FC = () => {
       showWarning('No data to import', 'Please select a valid Excel file with teacher data.');
       return;
     }
-    
+
     try {
       setLoading(true);
       let successCount = 0;
       let failCount = 0;
       const failedRows: number[] = [];
-      
+
       // Import each teacher record
       for (let i = 0; i < importData.length; i++) {
         try {
@@ -554,13 +561,13 @@ const Teachers: React.FC = () => {
           failedRows.push(i + 2);
         }
       }
-      
+
       setShowImportModal(false);
       setImportFile(null);
       setImportData([]);
       setValidationErrors([]);
       fetchTeachers();
-      
+
       if (failCount === 0) {
         showSuccess(`Successfully imported ${successCount} teacher(s)!`);
       } else {
@@ -582,8 +589,8 @@ const Teachers: React.FC = () => {
       key: 'profileImage',
       label: 'Photo',
       render: (_value: string, row: Teacher) => (
-        <img 
-          src={row.profileImage || '/img/default-avatar.svg'} 
+        <img
+          src={row.profileImage || '/img/default-avatar.svg'}
           alt={`${row.firstName} ${row.lastName}`}
           className="w-10 h-10 rounded-full object-cover border border-gray-200"
           onError={(e) => {
@@ -593,14 +600,14 @@ const Teachers: React.FC = () => {
         />
       )
     },
+    { key: 'position', label: 'Position' },
     { key: 'employeeId', label: 'Employee ID' },
-    { 
-      key: 'firstName', 
+    {
+      key: 'firstName',
       label: 'Name',
       render: (_value: string, row: Teacher) => `${row.firstName} ${row.middleName || ''} ${row.lastName}`.trim()
     },
     { key: 'department', label: 'Department' },
-    { key: 'subjects', label: 'Subjects' },
     { key: 'mobile', label: 'Phone' },
     {
       key: 'status',
@@ -638,7 +645,7 @@ const Teachers: React.FC = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
             <Select
@@ -652,7 +659,7 @@ const Teachers: React.FC = () => {
               ]}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Teacher Level</label>
             <Select
@@ -668,7 +675,7 @@ const Teachers: React.FC = () => {
               ]}
             />
           </div>
-          
+
           <div className="flex gap-2">
             <Button
               variant="primary"
@@ -791,9 +798,9 @@ const Teachers: React.FC = () => {
             </label>
             <div className="flex items-center gap-4">
               {imagePreview && (
-                <img 
-                  src={imagePreview} 
-                  alt="Preview" 
+                <img
+                  src={imagePreview}
+                  alt="Preview"
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
                 />
               )}
@@ -828,14 +835,14 @@ const Teachers: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 placeholder="First Name"
               />
-              
+
               <FormInput
                 label="Middle Name"
                 value={formData.middleName}
                 onChange={(e) => setFormData({ ...formData, middleName: e.target.value })}
                 placeholder="Middle Name"
               />
-              
+
               <FormInput
                 label="Last Name"
                 required
@@ -843,7 +850,21 @@ const Teachers: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                 placeholder="Last Name"
               />
-              
+
+              <Select
+                label="Position"
+                value={formData.position}
+                onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                options={[
+                  { value: 'Principal', label: 'Principal' },
+                  { value: 'Vice-Principal', label: 'Vice-Principal' },
+                  { value: 'Co-ordinator (Primary Level)', label: 'Co-ordinator (Primary Level)' },
+                  { value: 'Co-ordinator (Basic Level)', label: 'Co-ordinator (Basic Level)' },
+                  { value: 'Co-ordinator (Secondary Level)', label: 'Co-ordinator (Secondary Level)' },
+                  { value: 'Teacher', label: 'Teacher' },
+                ]}
+              />
+
               <FormInput
                 label="National Identity Number"
                 value={formData.nin}
@@ -893,15 +914,15 @@ const Teachers: React.FC = () => {
                   </label>
                 </div>
               </div>
-              
+
               <FormInput
-                label="Date of Birth"
-                type="date"
+                label="Date of Birth (BS)"
                 required
                 value={formData.dateOfBirth}
                 onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                placeholder="e.g. 2050-01-15"
               />
-              
+
               <FormInput
                 label="Citizenship No."
                 value={formData.citizenship}
@@ -914,7 +935,7 @@ const Teachers: React.FC = () => {
           {/* Address Information */}
           <div className="border-b pb-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Address Information</h3>
-            
+
             {/* Permanent Address */}
             <h4 className="text-sm font-medium text-gray-700 mb-3">Permanent Address</h4>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -932,21 +953,21 @@ const Teachers: React.FC = () => {
                   { value: 'Sudurpashchim', label: 'Sudurpashchim' },
                 ]}
               />
-              
+
               <FormInput
                 label="District"
                 value={formData.permanentDistrict}
                 onChange={(e) => setFormData({ ...formData, permanentDistrict: e.target.value })}
                 placeholder="District"
               />
-              
+
               <FormInput
                 label="Municipality"
                 value={formData.permanentMunicipality}
                 onChange={(e) => setFormData({ ...formData, permanentMunicipality: e.target.value })}
                 placeholder="Municipality"
               />
-              
+
               <FormInput
                 label="Ward No."
                 value={formData.permanentWard}
@@ -972,21 +993,21 @@ const Teachers: React.FC = () => {
                   { value: 'Sudurpashchim', label: 'Sudurpashchim' },
                 ]}
               />
-              
+
               <FormInput
                 label="District"
                 value={formData.temporaryDistrict}
                 onChange={(e) => setFormData({ ...formData, temporaryDistrict: e.target.value })}
                 placeholder="District"
               />
-              
+
               <FormInput
                 label="Municipality"
                 value={formData.temporaryMunicipality}
                 onChange={(e) => setFormData({ ...formData, temporaryMunicipality: e.target.value })}
                 placeholder="Municipality"
               />
-              
+
               <FormInput
                 label="Ward No."
                 value={formData.temporaryWard}
@@ -1006,21 +1027,21 @@ const Teachers: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, fatherName: e.target.value })}
                 placeholder="Father Name"
               />
-              
+
               <FormInput
                 label="Mother Name"
                 value={formData.motherName}
                 onChange={(e) => setFormData({ ...formData, motherName: e.target.value })}
                 placeholder="Mother Name"
               />
-              
+
               <FormInput
                 label="Spouse Name"
                 value={formData.spouseName}
                 onChange={(e) => setFormData({ ...formData, spouseName: e.target.value })}
                 placeholder="Spouse Name"
               />
-              
+
               <FormInput
                 label="Will Person Name"
                 value={formData.willPerson}
@@ -1050,7 +1071,7 @@ const Teachers: React.FC = () => {
                   { value: 'Other', label: 'Other' },
                 ]}
               />
-              
+
               <Select
                 label="Mother Tongue"
                 value={formData.motherTongue}
@@ -1066,7 +1087,7 @@ const Teachers: React.FC = () => {
                   { value: 'Other', label: 'Other' },
                 ]}
               />
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Has Disability?
@@ -1096,7 +1117,7 @@ const Teachers: React.FC = () => {
                   </label>
                 </div>
               </div>
-              
+
               <FormInput
                 label="Mobile No."
                 required
@@ -1115,21 +1136,21 @@ const Teachers: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="Email Address"
               />
-              
+
               <FormInput
                 label="PAN Number"
                 value={formData.pan}
                 onChange={(e) => setFormData({ ...formData, pan: e.target.value })}
                 placeholder="PAN Number"
               />
-              
+
               <FormInput
                 label="Bank Name"
                 value={formData.bankName}
                 onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
                 placeholder="Bank Name"
               />
-              
+
               <FormInput
                 label="Bank Account Number"
                 value={formData.bankAccount}
@@ -1149,7 +1170,7 @@ const Teachers: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
                 placeholder="Employee ID"
               />
-              
+
               <Select
                 label="Department"
                 required
@@ -1164,14 +1185,14 @@ const Teachers: React.FC = () => {
                   { value: 'Sports', label: 'Sports' },
                 ]}
               />
-              
+
               <FormInput
                 label="Subjects (comma separated)"
                 value={formData.subjects}
                 onChange={(e) => setFormData({ ...formData, subjects: e.target.value })}
                 placeholder="Mathematics, Physics"
               />
-              
+
               <FormInput
                 label="Teaching License Number"
                 value={formData.teachingLicense}
@@ -1187,21 +1208,21 @@ const Teachers: React.FC = () => {
                 value={formData.joiningDate}
                 onChange={(e) => setFormData({ ...formData, joiningDate: e.target.value })}
               />
-              
+
               <FormInput
                 label="Qualification"
                 value={formData.qualification}
                 onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
                 placeholder="B.Ed, M.Ed"
               />
-              
+
               <FormInput
                 label="Experience (years)"
                 value={formData.experience}
                 onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
                 placeholder="5 years"
               />
-              
+
               <Select
                 label="Blood Group"
                 value={formData.bloodGroup}
@@ -1226,21 +1247,21 @@ const Teachers: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, karmachariSanachayakosh: e.target.value })}
                 placeholder="Sanachayakosh Number"
               />
-              
+
               <FormInput
                 label="Sabadhik Bima Kosh Number"
                 value={formData.sabadhikBimaKosh}
                 onChange={(e) => setFormData({ ...formData, sabadhikBimaKosh: e.target.value })}
                 placeholder="SABADHIK BIMA KOSH NUMBER"
               />
-              
+
               <FormInput
                 label="SSF Number"
                 value={formData.ssf}
                 onChange={(e) => setFormData({ ...formData, ssf: e.target.value })}
                 placeholder="SSF NUMBER"
               />
-              
+
               <FormInput
                 label="Nagarik Lagani Kosh Number"
                 value={formData.nagarikLaganiKosh}

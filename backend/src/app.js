@@ -3,7 +3,8 @@ require('dotenv').config();
 
 const express = require('express');
 const programRoute = require('./routes/programRoute');
-const blogRoute = require('./routes/blogRoute');
+const publicBlogRoute = require('./routes/publicBlogRoute');
+const adminBlogRoute = require('./routes/adminBlogRoute');
 const adminAuthRoute = require('./routes/adminAuthRoute');
 const studentAuthRoute = require('./routes/studentAuthRoute');
 const studentRoute = require('./routes/studentRoute');
@@ -50,7 +51,8 @@ app.use("/api/", studentAuthRoute);
 
 // Resource routes
 app.use("/api/", programRoute);
-app.use("/api/", blogRoute);
+app.use("/api/", publicBlogRoute);
+app.use("/api/", adminBlogRoute);
 app.use("/api/", studentRoute);
 app.use("/api/", staffRoute);
 app.use("/api/", teacherRoute);

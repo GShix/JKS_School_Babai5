@@ -3,9 +3,9 @@
  * API service for authentication and authorization
  */
 
-import { api } from '../client';
-import { API_ENDPOINTS, TOKEN_KEY } from '../config';
-import type { LoginRequest, LoginResponse, ApiResponse } from '../types';
+import { api } from "../client";
+import { API_ENDPOINTS, TOKEN_KEY } from "../config";
+import type { LoginRequest, LoginResponse, ApiResponse } from "../types";
 
 export const authService = {
   /**
@@ -14,7 +14,7 @@ export const authService = {
   adminLogin: async (credentials: LoginRequest): Promise<LoginResponse> => {
     const response = await api.postDirect<LoginResponse>(
       API_ENDPOINTS.AUTH.ADMIN_LOGIN,
-      credentials
+      credentials,
     );
 
     // Store token based on rememberMe preference
@@ -32,7 +32,7 @@ export const authService = {
   studentLogin: async (credentials: LoginRequest): Promise<LoginResponse> => {
     const response = await api.postDirect<LoginResponse>(
       API_ENDPOINTS.AUTH.STUDENT_LOGIN,
-      credentials
+      credentials,
     );
 
     // Store token based on rememberMe preference
@@ -64,14 +64,16 @@ export const authService = {
   logout: (): void => {
     localStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(TOKEN_KEY);
-    window.location.href = '/login';
+    window.location.href = "/admin/login";
   },
 
   /**
    * Check if user is authenticated
    */
   isAuthenticated: (): boolean => {
-    return !!(localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY));
+    return !!(
+      localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
+    );
   },
 
   /**

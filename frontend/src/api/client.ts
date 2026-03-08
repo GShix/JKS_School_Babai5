@@ -3,17 +3,53 @@
  * Configured Axios instance with interceptors for request/response handling
  */
 
-import axios, { AxiosError } from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
-import { API_BASE_URL, REQUEST_TIMEOUT, TOKEN_KEY } from './config';
-import type { ApiError, ApiResponse } from './types';
+import axios, { AxiosError } from "axios";
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+} from "axios";
+import {
+  API_BASE_URL,
+  REQUEST_TIMEOUT,
+  TOKEN_KEY,
+  SESSION_TOKEN_KEY,
+} from "./config";
+import type { ApiError, ApiResponse } from "./types";
+
+const getStoredAuthToken = (): string | null => {
+  return (
+    localStorage.getItem(TOKEN_KEY) ||
+    sessionStorage.getItem(TOKEN_KEY) ||
+    localStorage.getItem(SESSION_TOKEN_KEY) ||
+    sessionStorage.getItem(SESSION_TOKEN_KEY) ||
+    localStorage.getItem("studentToken") ||
+    sessionStorage.getItem("studentToken")
+  );
+};
+
+const clearStoredAuth = () => {
+  const keys = [
+    TOKEN_KEY,
+    SESSION_TOKEN_KEY,
+    "studentToken",
+    "isAdmin",
+    "userRole",
+    "user",
+    "admin",
+  ];
+  keys.forEach((key) => {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+  });
+};
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: REQUEST_TIMEOUT,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -24,8 +60,8 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Get token from localStorage or sessionStorage
-    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
-    
+    const token = getStoredAuthToken();
+
     // Add token to headers if available
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -33,19 +69,19 @@ apiClient.interceptors.request.use(
 
     // Log request in development mode
     if (import.meta.env.DEV) {
-      console.log('🚀 API Request:', {
+      console.log("🚀 API Request:", {
         method: config.method?.toUpperCase(),
         url: config.url,
-        data: config.data,
+        ...(config.data !== undefined && { data: config.data }),
       });
     }
 
     return config;
   },
   (error: AxiosError) => {
-    console.error('❌ Request Error:', error);
+    console.error("❌ Request Error:", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -56,7 +92,7 @@ apiClient.interceptors.response.use(
   (response) => {
     // Log response in development mode
     if (import.meta.env.DEV) {
-      console.log('✅ API Response:', {
+      console.log("✅ API Response:", {
         url: response.config.url,
         status: response.status,
         data: response.data,
@@ -68,7 +104,7 @@ apiClient.interceptors.response.use(
   (error: AxiosError<ApiError>) => {
     // Log error in development mode
     if (import.meta.env.DEV) {
-      console.error('❌ API Error:', {
+      console.error("❌ API Error:", {
         url: error.config?.url,
         status: error.response?.status,
         message: error.response?.data?.message || error.message,
@@ -80,39 +116,54 @@ apiClient.interceptors.response.use(
       const { status, data } = error.response;
 
       switch (status) {
-        case 401:
-          // Unauthorized - clear token and redirect to login
-          localStorage.removeItem(TOKEN_KEY);
-          sessionStorage.removeItem(TOKEN_KEY);
-          
-          // Only redirect if not already on login page
-          if (!window.location.pathname.includes('/login')) {
-            window.location.href = '/login';
+        case 401: {
+          const message = (data.message || "").toLowerCase();
+          const isSessionError =
+            message.includes("token expired") ||
+            message.includes("invalid token") ||
+            message.includes("authorization token missing") ||
+            message.includes("jwt expired") ||
+            message.includes("unauthorized");
+
+          // Only redirect if the user HAD a token (i.e. session expired).
+          // Unauthenticated public requests should NOT be redirected.
+          const hadToken = !!getStoredAuthToken();
+          clearStoredAuth();
+
+          if (
+            (hadToken || isSessionError) &&
+            !window.location.pathname.includes("/login")
+          ) {
+            const loginPath = window.location.pathname.startsWith("/student")
+              ? "/student/login"
+              : "/admin/login";
+            window.location.href = loginPath;
           }
           break;
+        }
 
         case 403:
           // Forbidden
-          console.error('Access Forbidden:', data.message);
+          console.error("Access Forbidden:", data.message);
           break;
 
         case 404:
           // Not Found
-          console.error('Resource Not Found:', data.message);
+          console.error("Resource Not Found:", data.message);
           break;
 
         case 500:
           // Server Error
-          console.error('Server Error:', data.message);
+          console.error("Server Error:", data.message);
           break;
 
         default:
-          console.error('API Error:', data.message);
+          console.error("API Error:", data.message);
       }
 
       // Return formatted error
       return Promise.reject({
-        message: data.message || 'An error occurred',
+        message: data.message || "An error occurred",
         error: data.error,
         errors: data.errors,
         statusCode: status,
@@ -120,19 +171,19 @@ apiClient.interceptors.response.use(
     } else if (error.request) {
       // Network Error
       return Promise.reject({
-        message: 'Network error. Please check your internet connection.',
-        error: 'NETWORK_ERROR',
+        message: "Network error. Please check your internet connection.",
+        error: "NETWORK_ERROR",
         statusCode: 0,
       } as ApiError);
     } else {
       // Other Error
       return Promise.reject({
-        message: error.message || 'An unexpected error occurred',
-        error: 'UNKNOWN_ERROR',
+        message: error.message || "An unexpected error occurred",
+        error: "UNKNOWN_ERROR",
         statusCode: 0,
       } as ApiError);
     }
-  }
+  },
 );
 
 /**
@@ -142,36 +193,62 @@ export const api = {
   /**
    * GET request
    */
-  get: <T = any>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+  get: <T = any>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> => {
     return apiClient.get<ApiResponse<T>>(url, config).then((res) => res.data);
   },
 
   /**
    * POST request
    */
-  post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
-    return apiClient.post<ApiResponse<T>>(url, data, config).then((res) => res.data);
+  post: <T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> => {
+    return apiClient
+      .post<ApiResponse<T>>(url, data, config)
+      .then((res) => res.data);
   },
 
   /**
    * PUT request
    */
-  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
-    return apiClient.put<ApiResponse<T>>(url, data, config).then((res) => res.data);
+  put: <T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> => {
+    return apiClient
+      .put<ApiResponse<T>>(url, data, config)
+      .then((res) => res.data);
   },
 
   /**
    * PATCH request
    */
-  patch: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
-    return apiClient.patch<ApiResponse<T>>(url, data, config).then((res) => res.data);
+  patch: <T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> => {
+    return apiClient
+      .patch<ApiResponse<T>>(url, data, config)
+      .then((res) => res.data);
   },
 
   /**
    * DELETE request
    */
-  delete: <T = any>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
-    return apiClient.delete<ApiResponse<T>>(url, config).then((res) => res.data);
+  delete: <T = any>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> => {
+    return apiClient
+      .delete<ApiResponse<T>>(url, config)
+      .then((res) => res.data);
   },
 
   /**
@@ -179,17 +256,17 @@ export const api = {
    * @param method - HTTP method (POST or PUT), defaults to POST
    */
   upload: <T = any>(
-    url: string, 
-    formData: FormData, 
-    method: 'POST' | 'PUT' = 'POST',
-    config?: AxiosRequestConfig
+    url: string,
+    formData: FormData,
+    method: "POST" | "PUT" = "POST",
+    config?: AxiosRequestConfig,
   ): Promise<ApiResponse<T>> => {
-    const requestMethod = method === 'PUT' ? apiClient.put : apiClient.post;
-    
+    const requestMethod = method === "PUT" ? apiClient.put : apiClient.post;
+
     return requestMethod<ApiResponse<T>>(url, formData, {
       ...config,
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
         ...config?.headers,
       },
     }).then((res) => res.data);
@@ -199,7 +276,11 @@ export const api = {
    * POST request for direct responses (not wrapped in ApiResponse)
    * Used for auth endpoints that return custom response structures
    */
-  postDirect: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
+  postDirect: <T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> => {
     return apiClient.post<T>(url, data, config).then((res) => res.data);
   },
 };

@@ -46,11 +46,12 @@ exports.createTeacher = async (req, res) => {
       nagarikLaganiKosh,
       status,
       notes,
+      position,
     } = req.body;
 
     if (!firstName || !lastName || !email || !mobile) {
-      return res.status(400).json({ 
-        message: 'First name, last name, email, and mobile are required' 
+      return res.status(400).json({
+        message: 'First name, last name, email, and mobile are required'
       });
     }
 
@@ -118,6 +119,7 @@ exports.createTeacher = async (req, res) => {
       status: status || 'active',
       profileImage: profileImageUrl,
       notes,
+      position: position || 'Teacher',
     });
 
     res.status(201).json({
@@ -137,7 +139,7 @@ exports.createTeacher = async (req, res) => {
 exports.fetchTeachers = async (req, res) => {
   try {
     const allTeachers = await teacher.findAll({
-      order: [['createdAt', 'DESC']],
+      order: [['position', 'ASC'], ['firstName', 'ASC']],
     });
     res.json({
       message: 'Teachers fetched successfully',
@@ -227,6 +229,7 @@ exports.updateTeacher = async (req, res) => {
       nagarikLaganiKosh,
       status,
       notes,
+      position,
     } = req.body;
 
     let profileImageUrl = teacherData.profileImage; // Keep existing image by default
@@ -299,6 +302,7 @@ exports.updateTeacher = async (req, res) => {
       status,
       profileImage: profileImageUrl,
       notes,
+      position: position || teacherData.position,
     });
 
     res.json({

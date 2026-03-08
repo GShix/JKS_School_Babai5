@@ -208,6 +208,14 @@ const teacherModel = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
+
+    // Display order
+    position: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'Teacher',
+      comment: 'Job position: Principal, Vice-Principal, Co-ordinator (Primary/Basic/Secondary Level), Teacher',
+    },
   });
 
   return Teacher;

@@ -33,7 +33,7 @@ const uploadToSupabase = async (fileBuffer, fileName, bucket = 'staff-images', m
 
     const timestamp = Date.now();
     const uniqueFileName = `${timestamp}-${fileName.replace(/\s+/g, '-')}`;
-    
+
     // Determine content type from filename if not provided
     let contentType = mimeType || 'image/jpeg';
     if (!mimeType) {
@@ -49,14 +49,35 @@ const uploadToSupabase = async (fileBuffer, fileName, bucket = 'staff-images', m
       };
       contentType = mimeTypes[ext] || 'image/jpeg';
     }
-    
-    const { data, error } = await supabase.storage
+
+    let { data, error } = await supabase.storage
       .from(bucket)
       .upload(uniqueFileName, fileBuffer, {
         contentType: contentType,
         upsert: false,
         cacheControl: '3600'
       });
+
+    // If bucket not found, try to create it and retry
+    if (error && error.message && error.message.includes('Bucket not found')) {
+      console.log(`Bucket "${bucket}" not found. Creating it...`);
+      const { error: createError } = await supabase.storage.createBucket(bucket, {
+        public: true,
+        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
+        fileSizeLimit: 5 * 1024 * 1024, // 5MB
+      });
+      if (createError && !createError.message.includes('already exists')) {
+        throw new Error(`Failed to create bucket "${bucket}": ${createError.message}`);
+      }
+      // Retry upload after bucket creation
+      ({ data, error } = await supabase.storage
+        .from(bucket)
+        .upload(uniqueFileName, fileBuffer, {
+          contentType: contentType,
+          upsert: false,
+          cacheControl: '3600'
+        }));
+    }
 
     if (error) {
       throw new Error(`Supabase upload error: ${error.message}`);
@@ -91,10 +112,10 @@ const deleteFromSupabase = async (filePath, bucket = 'staff-images') => {
     }
 
     if (!filePath) return;
-    
+
     // Extract filename from URL if full URL is provided
     const fileName = filePath.includes('/') ? filePath.split('/').pop() : filePath;
-    
+
     const { error } = await supabase.storage
       .from(bucket)
       .remove([fileName]);
