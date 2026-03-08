@@ -1179,6 +1179,7 @@ const Teachers: React.FC = () => {
                 options={[
                   { value: 'Science', label: 'Science' },
                   { value: 'Mathematics', label: 'Mathematics' },
+                  { value: 'English', label: 'English' },
                   { value: 'Languages', label: 'Languages' },
                   { value: 'Social Studies', label: 'Social Studies' },
                   { value: 'Arts', label: 'Arts' },

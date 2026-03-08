@@ -62,7 +62,7 @@ const JKSSTeachers = () => {
           <h1 className="text-5xl font-medium text-center my-8 text-white">JKSS Teachers</h1>
         </div>
 
-        <div className="teachers-content w-full mx-auto px-4 py-8 sm:px-6 md:px-10 lg:px-16 max-w-7xl">
+        <div className="teachers-content w-full mx-auto px-4 py-4 sm:px-6 md:px-10 lg:px-16 max-w-7xl">
           {loading ? (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -83,21 +83,24 @@ const JKSSTeachers = () => {
               <p className="text-gray-600">No teachers to display</p>
             </div>
           ) : (
-            <div className="space-y-12">
+            <div className="space-y-4">
               {sections.map(({ key, label, highlighted }, idx) => {
                 const group = grouped[key];
+                const isSingleTeacher = group.length === 1;
                 return (
-                  <div key={key} className="space-y-5">
+                  <div key={key} className="space-y-4">
                     {/* Section Header */}
                     <div className="text-center">
-                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{label}</h2>
+                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{label}</h2>
                       <div className={`h-1 mx-auto rounded-full ${highlighted ? 'w-24 bg-yellow-400' : 'w-16 bg-blue-600'}`}></div>
                     </div>
 
                     {/* Cards */}
-                    <div className={`grid gap-6 justify-center ${highlighted
-                      ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-2xl mx-auto'
-                      : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                    <div className={`grid gap-3 justify-center ${isSingleTeacher
+                      ? 'grid-cols-1 max-w-xs mx-auto'
+                      : highlighted
+                        ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-2xl mx-auto'
+                        : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
                       }`}>
                       {group.map((t: Teacher) => (
                         <TeamCard
@@ -114,7 +117,7 @@ const JKSSTeachers = () => {
 
                     {/* Divider (except last) */}
                     {idx < sections.length - 1 && (
-                      <div className="pt-4">
+                      <div className="pt-3">
                         <div className="border-t border-gray-200"></div>
                       </div>
                     )}
