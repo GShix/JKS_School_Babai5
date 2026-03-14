@@ -67,7 +67,7 @@ const Downloads = () => {
     return files.filter(file => {
       // Search filter
       if (searchQuery && !file.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-          !file.description?.toLowerCase().includes(searchQuery.toLowerCase())) {
+        !file.description?.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
       }
       // Category filter
@@ -135,9 +135,9 @@ const Downloads = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       {/* Hero Section */}
-      <div 
+      <div
         className="relative w-full h-[200px] flex items-center justify-center overflow-hidden bg-gradient-to-r from-blue-600 to-blue-800"
         style={{
           backgroundImage: 'url(/img/running-shield-blur.jpg)',
@@ -174,16 +174,14 @@ const Downloads = () => {
               <button
                 key={cat.value}
                 onClick={() => setSelectedCategory(cat.value)}
-                className={`px-6 py-2 max-sm:text-sm sm:py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 ${
-                  selectedCategory === cat.value
-                    ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 shadow'
-                }`}
+                className={`px-6 py-2 max-sm:text-sm sm:py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 ${selectedCategory === cat.value
+                  ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 shadow'
+                  }`}
               >
                 {cat.name}
-                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                  selectedCategory === cat.value ? 'bg-white/20' : 'bg-gray-100'
-                }`}>
+                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${selectedCategory === cat.value ? 'bg-white/20' : 'bg-gray-100'
+                  }`}>
                   {cat.count}
                 </span>
               </button>
@@ -192,7 +190,7 @@ const Downloads = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-4 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
@@ -202,14 +200,14 @@ const Downloads = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by title or description..."
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
             {/* Filter Toggle Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+              className="flex items-center gap-2 px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
             >
               <Filter className="w-5 h-5" />
               <span className="hidden sm:inline">Filters</span>
@@ -224,7 +222,7 @@ const Downloads = () => {
             {(searchQuery || selectedCategory !== 'all' || selectedClass !== 'all' || selectedSubject !== 'all') && (
               <button
                 onClick={clearFilters}
-                className="px-6 py-3 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl transition-colors"
+                className="px-6 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl transition-colors"
               >
                 Clear All
               </button>
@@ -292,7 +290,7 @@ const Downloads = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredFiles.map((file) => {
               const { icon: Icon, color, bg } = getFileIcon(file.fileType);
-              
+
               return (
                 <div
                   key={file.id}
@@ -311,7 +309,7 @@ const Downloads = () => {
                     <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                       {file.title}
                     </h3>
-                    
+
                     {file.description && (
                       <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                         {file.description}
@@ -406,7 +404,7 @@ const Downloads = () => {
                 .slice(0, 3)
                 .map((file) => {
                   const { icon: Icon, color, bg } = getFileIcon(file.fileType);
-                  
+
                   return (
                     <div
                       key={file.id}
@@ -438,7 +436,7 @@ const Downloads = () => {
           </div>
         )}
       </main>
-      
+
       <Footer />
     </div>
   );
