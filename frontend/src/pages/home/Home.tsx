@@ -74,12 +74,12 @@ const Home = () => {
         <div className='h-full bg-white w-full relative'>
             {/* Loading Spinner */}
             {heroLoading && <LoadingSpinner />}
-            
+
             {/* <h1 className="text-red-500">This is Home Page</h1> */}
-            <Header/>
+            <Header />
 
             <Hero slides={heroSlides} loading={heroLoading} />
-            
+
             {/* Announcements Modal - Shows high/urgent priority announcements on first visit */}
             <AnnouncementsModal
                 isOpen={showAnnouncementsModal}
@@ -87,20 +87,20 @@ const Home = () => {
                 onDismiss={handleDismissAnnouncements}
                 prefetchedAnnouncements={announcements}
             />
-            
-            <Banner/>
-            <SchoolIntroduction_Announcements/>
+
+            <Banner />
+            <SchoolIntroduction_Announcements />
             <div id="message_from_principal">
-                <MessageFromPrincipal/>
+                <MessageFromPrincipal />
             </div>
 
             {/* <UpcomingEvents/> */}
             {/* <Feature/> */}
-            <AcademicProgramsCard/>
-            <FeaturedGallery/>
-            <FAQ/>
-            <ContactUs/>
-            <Footer/>
+            <AcademicProgramsCard />
+            <FeaturedGallery />
+            <FAQ />
+            <ContactUs />
+            <Footer />
 
         </div>
     );

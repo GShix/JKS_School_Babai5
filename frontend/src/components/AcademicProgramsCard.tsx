@@ -5,54 +5,75 @@ export const AcademicProgramsCard = () => {
     const content = {
         education: {
             title: "Education",
-            description: "The Department of Education at JKSS (presumably referring to Kathmandu Model College) has been established since the institution’s inception, with a primary focus on providing in-depth knowledge of education at its level. The faculty’s main objective is to produce future educators and experts by offering comprehensive education in pedagogy and teaching methods. The department is led by reputed and professional academicians in the field of education who bring their expertise and experience to the classroom. The curriculum not only covers the National Examination Board (NEB) syllabus but also emphasizes competitive examinations such as CA (Chartered Accountancy) and BBA (Bachelor of Business Administration) courses. This approach provides students with a practical knowledge base and prepares them for a wide range of opportunities in the education field.",
+            description: "The Education program at JKSS provides a strong foundation in teaching and learning at the secondary level. Our curriculum follows the National Examination Board (NEB) syllabus, focusing on core subjects and practical teaching methods. Experienced faculty guide students to develop essential skills for further studies and future careers in education.",
         },
         agriculture: {
             title: "Agriculture",
-            description: "The Department of Agriculture at JKSS (presumably referring to Kathmandu Model College) has been established since the institution’s inception, with a primary focus on providing in-depth knowledge of agriculture at its level. The faculty’s main objective is to produce future agriculturalists and experts by offering comprehensive education in agriculture. The department is led by reputed and professional academicians in the field of agriculture who bring their expertise and experience to the classroom. The curriculum not only covers the National Examination Board (NEB) syllabus but also emphasizes competitive examinations such as CA (Chartered Accountancy) and BBA (Bachelor of Business Administration) courses. This approach provides students with a practical knowledge base and prepares them for a wide range of opportunities in the agriculture field.",
+            description: "The Agriculture program at JKSS offers secondary-level students a comprehensive introduction to agricultural science and practices. The curriculum is based on the NEB syllabus and includes hands-on learning, preparing students for higher studies or careers in agriculture and related fields.",
         },
         management: {
             title: "Management",
-            description: "The Department of Management at JKSS (presumably referring to Kathmandu Model College) has been established since the institution’s inception, with a primary focus on providing in-depth knowledge of management at its level. The faculty’s main objective is to produce future managers and chartered accountants by offering comprehensive management education. The department is led by reputed and professional academicians in the field of management who bring their expertise and experience to the classroom. The curriculum not only covers the National Examination Board (NEB) syllabus but also emphasizes competitive examinations such as CA (Chartered Accountancy) and BBA (Bachelor of Business Administration) courses. This approach provides students with a practical knowledge base and prepares them for a wide range of opportunities in the management field.",
+            description: "The Management program at JKSS equips secondary-level students with fundamental knowledge in business, economics, and management. Following the NEB syllabus, the program helps students build analytical and leadership skills for further education and future opportunities in management and commerce.",
         }
     }
     return (
-        <div className="academic-programs px-4 sm:px-12 w-full h-full bg-[#F7F7F7] py-4">
-            <h1 className="text-2xl sm:text-4xl mb-4 font-bold text-[#035CB0]">Academic Programs</h1>
+        <section className="academic-programs px-4 sm:px-12 w-full h-full bg-[#F7F7F7] py-4">
+            <h2 className="text-2xl sm:text-4xl mb-4 font-bold text-[#035CB0]">Academic Programs</h2>
             <div className="tab-and-contents flex max-sm:flex-col w-full">
                 <div className="max-sm:w-full w-[40%] max-sm:hidden">
-                    {tab=="education" && <img className="w-full h-full rounded-l-md" src="/img/aca-education.jpg" alt="Education" />}
-                    {tab=="agriculture" && <img className="w-full h-100 rounded-l-md" src="/img/aca-agriculture.jpg" alt="Agriculture" />}
-                    {tab=="management" && <img className="w-full h-full rounded-l-md" src="/img/aca-management.jpeg" alt="Management" />}
+                    {tab == "education" && <img className="w-full h-full rounded-l-md" src="/img/aca-education.jpg" alt="Students in Education Program at JKSS" loading="lazy" />}
+                    {tab == "agriculture" && <img className="w-full h-full rounded-l-md" src="/img/aca-agriculture.jpg" alt="Practical Agriculture Session at JKSS" loading="lazy" />}
+                    {tab == "management" && <img className="w-full h-full rounded-l-md" src="/img/aca-management.jpeg" alt="Management Students Class" loading="lazy" />}
                 </div>
                 <div className="max-sm:w-full sm:w-[60%]">
-                    <div className="tabs flex sm:text-2xl font-semibold flex-wrap">
-                        <h1 className={`px-5 py-4 cursor-pointer ${tab === "education" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`} onClick={() => {setTab("education")}}>Education</h1>
-                        <h1 className={`px-5 py-4 cursor-pointer ${tab === "agriculture" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`} onClick={() => {setTab("agriculture")}}>Agriculture</h1>
-                        <h1 className={`px-5 py-4 cursor-pointer ${tab === "management" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`} onClick={() => {setTab("management")}}>Management</h1>
+                    <div className="tabs flex sm:text-2xl font-semibold flex-wrap" role="tablist">
+                        <button
+                            className={`px-5 py-4 cursor-pointer text-left border-0 ${tab === "education" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`}
+                            onClick={() => { setTab("education") }}
+                            role="tab"
+                            aria-selected={tab === "education"}
+                        >
+                            Education
+                        </button>
+                        <button
+                            className={`px-5 py-4 cursor-pointer text-left border-0 ${tab === "agriculture" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`}
+                            onClick={() => { setTab("agriculture") }}
+                            role="tab"
+                            aria-selected={tab === "agriculture"}
+                        >
+                            Agriculture
+                        </button>
+                        <button
+                            className={`px-5 py-4 cursor-pointer text-left border-0 ${tab === "management" ? "bg-[#035CB0] text-white" : "bg-white text-black "}`}
+                            onClick={() => { setTab("management") }}
+                            role="tab"
+                            aria-selected={tab === "management"}
+                        >
+                            Management
+                        </button>
                     </div>
-                    <div className="tab-content bg-[#035CB0] text-white p-2 sm:p-6 min-h-[200px] sm:rounded-r-md max-sm:rounded-b-md text-justify">
-                        {tab=="education" && (
-                            <div>
-                                <h1 className="font-semibold text-2xl mb-2">{content.education.title}</h1>
+                    <div className="tab-content bg-[#035CB0] text-white p-2 sm:p-6 min-h-[200px] sm:rounded-r-md max-sm:rounded-b-md text-justify" role="tabpanel">
+                        {tab == "education" && (
+                            <article>
+                                <h3 className="font-semibold text-2xl mb-2">{content.education.title}</h3>
                                 <p>{content.education.description}</p>
-                            </div>
+                            </article>
                         )}
-                        {tab=="agriculture" && (
-                            <div>
-                                <h1 className="font-semibold text-2xl mb-2">{content.agriculture.title}</h1>
+                        {tab == "agriculture" && (
+                            <article>
+                                <h3 className="font-semibold text-2xl mb-2">{content.agriculture.title}</h3>
                                 <p>{content.agriculture.description}</p>
-                            </div>
+                            </article>
                         )}
-                        {tab=="management" && (
-                            <div>
-                                <h1 className="font-semibold text-2xl mb-2">{content.management.title}</h1>
+                        {tab == "management" && (
+                            <article>
+                                <h3 className="font-semibold text-2xl mb-2">{content.management.title}</h3>
                                 <p>{content.management.description}</p>
-                            </div>
+                            </article>
                         )}
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     )
 }

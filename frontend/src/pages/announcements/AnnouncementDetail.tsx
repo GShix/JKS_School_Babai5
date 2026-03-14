@@ -24,7 +24,7 @@ export default function AnnouncementDetail() {
       setLoading(true);
       setError(null);
       const response = await announcementService.getById(announcementId);
-      
+
       if (response.data) {
         setAnnouncement(response.data);
       } else {
@@ -80,8 +80,8 @@ export default function AnnouncementDetail() {
           <div className="bg-red-50 border border-red-200 rounded p-6 text-center max-w-2xl mx-auto">
             <h2 className="text-xl font-bold text-red-700 mb-3">Announcement Not Found</h2>
             <p className="text-red-600 mb-4">{error || 'The announcement you are looking for does not exist.'}</p>
-            <Link 
-              to="/announcements" 
+            <Link
+              to="/announcements"
               className="inline-flex items-center gap-2 px-4 py-2 bg-[#035CB0] text-white rounded hover:bg-blue-700"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -100,17 +100,17 @@ export default function AnnouncementDetail() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       {/* Hero Banner */}
-      <div className="w-full h-50 bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity:0.9}}>
+      <div className="w-full h-50 bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{ backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.9 }}>
         <h1 className="text-4xl sm:text-5xl font-medium text-white">{announcement.title}</h1>
       </div>
 
       {/* Content */}
       <main className="container mx-auto px-4 sm:px-8 py-6">
         <div className="mb-4">
-          <Link 
-            to="/announcements" 
+          <Link
+            to="/announcements"
             className="inline-flex items-center gap-1 text-[#035CB0] hover:underline text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -131,12 +131,11 @@ export default function AnnouncementDetail() {
               </>
             )}
             <span className="text-gray-400">•</span>
-            <span className={`px-2 py-1 text-xs font-semibold rounded ${
-              announcement.priority === 'urgent' ? 'bg-red-100 text-red-700' :
+            <span className={`px-2 py-1 text-xs font-semibold rounded ${announcement.priority === 'urgent' ? 'bg-red-100 text-red-700' :
               announcement.priority === 'high' ? 'bg-orange-100 text-orange-700' :
-              announcement.priority === 'low' ? 'bg-gray-100 text-gray-700' :
-              'bg-blue-100 text-blue-700'
-            }`}>
+                announcement.priority === 'low' ? 'bg-gray-100 text-gray-700' :
+                  'bg-blue-100 text-blue-700'
+              }`}>
               {(announcement.priority || 'medium').toUpperCase()}
             </span>
             {announcement.isPinned && <span className="text-orange-500">📌 PINNED</span>}

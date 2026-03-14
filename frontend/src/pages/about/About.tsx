@@ -4,7 +4,6 @@ import Header from "../../layouts/Header"
 import { contentService } from "../../api"
 import type { SchoolProfile } from "../../api/types"
 import { getErrorMessage } from "../../utils/errorHandler"
-
 const About = () => {
   const [profile, setProfile] = useState<SchoolProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,15 +34,15 @@ const About = () => {
 
   return (
     <div className="about-page">
-      <Header/>
+      <Header />
       <main className="min-h-screen">
-        <div 
-          className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12" 
+        <div
+          className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12"
           style={{
-            backgroundImage: `url(${profile?.heroImage || defaultHeroImage})`, 
-            backgroundSize: 'cover', 
-            color: 'yellow', 
-            backgroundPosition: 'center', 
+            backgroundImage: `url(${profile?.heroImage || defaultHeroImage})`,
+            backgroundSize: 'cover',
+            color: 'yellow',
+            backgroundPosition: 'center',
             opacity: 0.9
           }}
         >
@@ -62,7 +61,7 @@ const About = () => {
             {error}
           </div>
         )}
-        
+
         <div className="short-about w-full mx-auto px-6 py-10 sm:px-8 lg:px-12 flex max-sm:flex-col gap-8">
           <div className="md:w-1/2">
             <h2 className="text-3xl font-semibold mb-4">Our Story</h2>
@@ -76,7 +75,7 @@ const About = () => {
         </div>
         <div className="detailed-about w-full bg-gray-100 px-6 py-10 sm:px-8 lg:px-12">
           <h2 className="text-3xl font-semibold mb-6">What We Do</h2>
-          <p className="text-lg text-gray-700 mb-4">  
+          <p className="text-lg text-gray-700 mb-4">
             {loading ? 'Loading...' : (profile?.aboutUsDescription || "We are committed to providing high-quality services that meet the needs of our clients. Our team works tirelessly to ensure customer satisfaction and deliver exceptional results.")}
           </p>
         </div>
@@ -88,19 +87,19 @@ const About = () => {
             </p>
           </div>
           <div className="md:w-1/2">
-            <iframe 
+            <iframe
               src={profile?.mapUrl || defaultMapUrl}
-              width="600" 
-              height="320" 
-              allowFullScreen={true} 
-              loading="lazy" 
+              width="600"
+              height="320"
+              allowFullScreen={true}
+              loading="lazy"
               className="border-0 w-full rounded-md"
               referrerPolicy="no-referrer-when-downgrade">
             </iframe>
           </div>
         </div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   )
 }

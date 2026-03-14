@@ -5,7 +5,6 @@ import Header from "../../layouts/Header"
 import { teacherService } from '../../api';
 import type { Teacher } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
-
 // Hierarchy definition — order matters for display
 const POSITION_HIERARCHY = [
   { key: 'Principal', label: 'Principal', highlighted: true },
