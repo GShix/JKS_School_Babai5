@@ -178,7 +178,7 @@ const Header = () => {
                 <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 sm:px-11">
                     <div className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                         <Link to="/" className="flex max-sm:flex-col items-center gap-4 text-center">
-                            <img className="h-24" src="/img/jkss_logo.png" alt="" srcSet="" />
+                            <img className="h-20 sm:h-24 w-auto object-contain" src="/img/jkss_logo.png" alt="JKSS logo" />
                             <div className="schoolname">
                                 <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">
                                     {schoolProfile?.schoolNameNepali?.split(' ')[0 - 1] || 'श्री जनकल्याण'}
@@ -215,7 +215,9 @@ const Header = () => {
                     className={`navigations bg-[#035CB0] flex gap-4 text-base bg-trnsparent max-sm:hidden px-11 items-center transition-all duration-500 ease-in-out ${isSticky ? 'fixed top-0 left-0 right-0 z-50 shadow-lg py-2' : 'relative top-0 left-0 right-0 z-50'}`}
                 >
                     {isSticky && (
-                        <img className="h-16 mr-4 transition-all duration-500 ease-out" src="/img/jkss_logo.png" alt="Logo" />
+                        // <div className="logo h-16 mr-4 transition-all duration-500 ease-out">
+                        <img className="h-12 sm:h-14 w-auto object-contain mr-4 transition-all duration-500 ease-out" src="/img/jkss_logo_white.png" alt="Logo" />
+                        // </div>
                     )}
                     <ul className="flex items-center justify-between text-white gap-8">
                         {navLinks.map((link, index) => (
