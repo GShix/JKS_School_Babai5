@@ -117,7 +117,7 @@ const JKSSTeachers = () => {
           <h1 className="text-5xl font-medium text-center my-8 text-white">JKSS Teachers</h1>
         </div>
 
-        <div className="teachers-content w-full mx-auto px-4 py-4 sm:px-6 md:px-10 lg:px-16 max-w-7xl">
+        <div className="teachers-content w-full mx-auto px-4 py-4 sm:px-6 md:px-10 lg:px-12 max-w-7xl">
           {/* Position filter bar */}
           <div className="bg-white rounded-lg shadow-sm p-3 mb-6">
             <div className="overflow-x-auto pb-2">

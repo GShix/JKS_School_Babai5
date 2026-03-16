@@ -166,7 +166,7 @@ const Downloads = () => {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 sm:px-6 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 py-8 max-w-7xl">
         {/* Category Filter Pills */}
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-wrap gap-3 justify-center">

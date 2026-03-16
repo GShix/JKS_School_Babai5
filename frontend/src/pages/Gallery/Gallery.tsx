@@ -207,7 +207,7 @@ const Gallery = () => {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 sm:px-6 py-10">
+      <main className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-12 py-10">
         {/* Filters & Search */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
