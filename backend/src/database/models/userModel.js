@@ -21,7 +21,7 @@ const userModel = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 'user',
       validate: {
-        isIn: [['user', 'admin']],
+        isIn: [['user', 'admin',]],
       },
     },
   });

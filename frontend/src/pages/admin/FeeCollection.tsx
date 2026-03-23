@@ -18,7 +18,7 @@ interface Student {
   section: string;
   phone: string;
   email: string;
-  iemisId?: string;
+  emisId?: string;
   // Payment status info
   paymentStatus?: {
     totalBalance: number;
@@ -192,15 +192,15 @@ const FeeCollection: React.FC = () => {
 
         // Prioritize IEMIS ID search, then name and roll number
         students = students.filter((student: Student) =>
-          (student.iemisId && student.iemisId.toLowerCase().includes(query)) ||
+          (student.emisId && student.emisId.toLowerCase().includes(query)) ||
           student.fullName.toLowerCase().includes(query) ||
           student.rollNumber.toLowerCase().includes(query)
         );
 
         // Sort: exact IEMIS match first
         students.sort((a: Student, b: Student) => {
-          const aIemisMatch = a.iemisId?.toLowerCase() === query;
-          const bIemisMatch = b.iemisId?.toLowerCase() === query;
+          const aIemisMatch = a.emisId?.toLowerCase() === query;
+          const bIemisMatch = b.emisId?.toLowerCase() === query;
           if (aIemisMatch && !bIemisMatch) return -1;
           if (!aIemisMatch && bIemisMatch) return 1;
           return 0;
@@ -500,7 +500,7 @@ const FeeCollection: React.FC = () => {
           class: selectedStudent.class,
           section: selectedStudent.section,
           rollNumber: selectedStudent.rollNumber,
-          iemisId: selectedStudent.iemisId || '',
+          emisId: selectedStudent.emisId || '',
         },
         feeItems: [{
           categoryName: selectedAllocation.feeStructure.name,
@@ -600,7 +600,7 @@ const FeeCollection: React.FC = () => {
 
       const payloadData = {
         studentId: selectedStudent.id,
-        iemisId: selectedStudent.iemisId,
+        emisId: selectedStudent.emisId,
         feeItems: customFees.map((f) => ({
           feeCategoryId: f.categoryId,
           amount: f.amount,
@@ -633,7 +633,7 @@ const FeeCollection: React.FC = () => {
           class: selectedStudent.class,
           section: selectedStudent.section,
           rollNumber: selectedStudent.rollNumber,
-          iemisId: selectedStudent.iemisId || '',
+          emisId: selectedStudent.emisId || '',
         },
         feeItems: customFees.map(f => ({
           categoryName: f.categoryName,
@@ -750,7 +750,7 @@ const FeeCollection: React.FC = () => {
         selectedStudent?.fullName || '',
         selectedStudent ? `${selectedStudent.class}-${selectedStudent.section}` : '',
         selectedStudent?.rollNumber || '',
-        selectedStudent?.iemisId || '',
+        selectedStudent?.emisId || '',
         allocation.feeStructure.name,
         allocation.purpose || 'tuition',
         allocation.totalAmount.toFixed(2),
@@ -1163,9 +1163,9 @@ const FeeCollection: React.FC = () => {
                             {student.fullName}
                           </p>
                           <div className="flex items-center gap-2 flex-wrap mt-1">
-                            {student.iemisId && (
+                            {student.emisId && (
                               <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-medium">
-                                IEMIS: {student.iemisId}
+                                IEMIS: {student.emisId}
                               </span>
                             )}
                             <span className="text-xs text-gray-600">
@@ -1313,10 +1313,10 @@ const FeeCollection: React.FC = () => {
               <p className="text-xs text-gray-600 mb-1">Full Name</p>
               <p className="font-bold text-gray-900">{selectedStudent.fullName}</p>
             </div>
-            {selectedStudent.iemisId && (
+            {selectedStudent.emisId && (
               <div className="bg-white p-3 rounded-lg border border-blue-200">
                 <p className="text-xs text-gray-600 mb-1">IEMIS ID</p>
-                <p className="font-bold text-blue-600">{selectedStudent.iemisId}</p>
+                <p className="font-bold text-blue-600">{selectedStudent.emisId}</p>
               </div>
             )}
             <div className="bg-white p-3 rounded-lg border border-gray-200">
@@ -1852,7 +1852,7 @@ const FeeCollection: React.FC = () => {
                   onClick={() => {
                     // Set dynamic filename
                     const originalTitle = document.title;
-                    const studentIEMIS = receiptData?.student?.iemisId || 'STUDENT';
+                    const studentIEMIS = receiptData?.student?.emisId || 'STUDENT';
                     const receiptNo = receiptData?.receiptNumber || 'RECEIPT';
                     document.title = `Receipt_${studentIEMIS}_${receiptNo}`;
 

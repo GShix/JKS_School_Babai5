@@ -13,7 +13,7 @@ const MessageFromPrincipal = () => {
       try {
         setLoading(true);
         const response = await messageService.getAll(true); // Get only active messages
-        
+
         if (response.data && response.data.length > 0) {
           // Get the first message (highest priority based on display order)
           setMessage(response.data[0]);
@@ -41,16 +41,16 @@ const MessageFromPrincipal = () => {
     return null; // Don't show anything if there's an error or no message
   }
 
-  const photoUrl = message.photo 
+  const photoUrl = message.photo
     ? (message.photo.startsWith('http') ? message.photo : `${SERVER_URL}${message.photo}`)
     : '/img/headmaster-2.jpg'; // Fallback to default image
 
   return (
     <div className='max-sm:flex-col sm:flex px-4 sm:px-11 gap-4 w-full py-10 bg-gray0 mt-6 border-t border-gray-100'>
       <div className="photo sm:w-2/3">
-        <img 
-          className='w-full h-[500px] rounded-md object-cover' 
-          src={photoUrl} 
+        <img
+          className='w-full h-[500px] rounded-md object-cover'
+          src={photoUrl}
           alt={message.personName}
           loading="lazy"
           decoding="async"

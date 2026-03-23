@@ -264,7 +264,7 @@ exports.getAllFeeTransactions = async (req, res) => {
         {
           model: students,
           as: 'student', // Direct student relation for flexible collections
-          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'iemisId'],
+          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'emisId'],
         },
         {
           model: admins,
@@ -494,7 +494,7 @@ exports.cancelFeeTransaction = async (req, res) => {
     // Reverse the payment in allocation
     const allocation = transaction.feeAllocation;
     const transactionAmount = parseFloat(transaction.amount);
-    
+
     allocation.paidAmount = parseFloat(allocation.paidAmount) - transactionAmount;
     allocation.balance = parseFloat(allocation.balance) + transactionAmount;
 
@@ -617,7 +617,7 @@ exports.collectFlexibleFeePayment = async (req, res) => {
   try {
     const {
       studentId,
-      iemisId,
+      emisId,
       feeItems, // Array of { feeCategoryId, amount }
       totalAmount,
       paidAmount,
@@ -714,7 +714,7 @@ exports.collectFlexibleFeePayment = async (req, res) => {
         transaction,
         student: {
           id: student.id,
-          iemisId: student.iemisId,
+          emisId: student.emisId,
           fullName: student.fullName,
           rollNumber: student.rollNumber,
           class: student.class,

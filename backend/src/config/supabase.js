@@ -98,11 +98,6 @@ const uploadToSupabase = async (fileBuffer, fileName, bucket = 'staff-images', m
   }
 };
 
-/**
- * Delete file from Supabase Storage
- * @param {string} filePath - File path in storage
- * @param {string} bucket - Storage bucket name
- */
 const deleteFromSupabase = async (filePath, bucket = 'staff-images') => {
   try {
     // Check if Supabase is configured

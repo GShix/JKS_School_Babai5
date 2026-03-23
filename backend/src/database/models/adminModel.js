@@ -21,7 +21,7 @@ const adminModel = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 'admin',
       validate: {
-        isIn: [['admin', 'superAdmin']],
+        isIn: [['admin', 'superAdmin', 'accountant', 'operator', 'coordinator', 'teacher', 'staff']],
       },
     },
     phone: {

@@ -29,7 +29,7 @@ interface FeeTransaction {
       rollNumber: string;
       class: string;
       section: string;
-      iemisId?: string;
+      emisId?: string;
     };
     feeStructure: {
       name: string;
@@ -41,7 +41,7 @@ interface FeeTransaction {
     rollNumber: string;
     class: string;
     section: string;
-    iemisId?: string;
+    emisId?: string;
   };
   collector?: {
     fullName: string;
@@ -149,7 +149,7 @@ const FeeTransactions: React.FC = () => {
           class: student.class,
           section: student.section,
           rollNumber: student.rollNumber,
-          iemisId: student.iemisId || '',
+          emisId: student.emisId || '',
         },
         feeItems: transaction.feeAllocation?.feeStructure ? [
           {
@@ -427,13 +427,13 @@ const FeeTransactions: React.FC = () => {
                   onClick={() => {
                     // Set dynamic filename
                     const originalTitle = document.title;
-                    const studentIEMIS = receiptData?.student?.iemisId || 'STUDENT';
+                    const studentIEMIS = receiptData?.student?.emisId || 'STUDENT';
                     const receiptNo = receiptData?.receiptNumber || 'RECEIPT';
                     document.title = `Receipt_${studentIEMIS}_${receiptNo}`;
-                    
+
                     // Print
                     window.print();
-                    
+
                     // Restore original title after print dialog
                     setTimeout(() => {
                       document.title = originalTitle;

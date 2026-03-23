@@ -15,7 +15,7 @@ interface ReceiptData {
     class: string;
     section: string;
     rollNumber: string;
-    iemisId?: string;
+    emisId?: string;
   };
   feeItems: FeeItem[];
   totalAmount: number;
@@ -50,11 +50,11 @@ export const FeeReceipt: React.FC<FeeReceiptProps> = ({ schoolProfile, receiptDa
 
   const numberToWords = (num: number): string => {
     if (num === 0) return 'zero only';
-    
+
     const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
     const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
     const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
-    
+
     const convertLessThanThousand = (n: number): string => {
       if (n === 0) return '';
       if (n < 10) return ones[n];
@@ -62,12 +62,12 @@ export const FeeReceipt: React.FC<FeeReceiptProps> = ({ schoolProfile, receiptDa
       if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
       return ones[Math.floor(n / 100)] + ' hundred' + (n % 100 !== 0 ? ' ' + convertLessThanThousand(n % 100) : '');
     };
-    
+
     const integer = Math.floor(num);
     const decimal = Math.round((num - integer) * 100);
-    
+
     let result = '';
-    
+
     if (integer >= 10000000) {
       const crores = Math.floor(integer / 10000000);
       const remainder = integer % 10000000;
@@ -105,12 +105,12 @@ export const FeeReceipt: React.FC<FeeReceiptProps> = ({ schoolProfile, receiptDa
     } else {
       result = convertLessThanThousand(integer);
     }
-    
+
     // Add decimal part
     if (decimal > 0) {
       result += ' and ' + decimal + ' paisa';
     }
-    
+
     return result.trim() + ' only.';
   };
 
@@ -122,9 +122,9 @@ export const FeeReceipt: React.FC<FeeReceiptProps> = ({ schoolProfile, receiptDa
           {/* School Logo */}
           <div className="shrink-0">
             {schoolProfile?.logoUrl ? (
-              <img 
-                src={schoolProfile.logoUrl} 
-                alt="School Logo" 
+              <img
+                src={schoolProfile.logoUrl}
+                alt="School Logo"
                 className="w-16 h-16 object-contain"
               />
             ) : (
@@ -225,7 +225,7 @@ export const FeeReceipt: React.FC<FeeReceiptProps> = ({ schoolProfile, receiptDa
               <td className="py-1.5 px-3 text-right">{formatCurrency(item.amount)}</td>
             </tr>
           ))}
-          
+
           {/* Empty rows for spacing */}
           {[...Array(Math.max(0, 5 - receiptData.feeItems.length))].map((_, i) => (
             <tr key={`empty-${i}`} className="border-b border-gray-300">

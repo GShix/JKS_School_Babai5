@@ -93,6 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'admins', label: 'Admins', icon: Shield, roles: ['superAdmin'] },
     { id: 'students', label: 'Students', icon: GraduationCap },
+    { id: 'classes', label: 'Classes', icon: LayoutDashboard },
     {
       id: 'staff-menu',
       label: 'Teacher | Staff',
@@ -103,7 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       ]
     },
     // { id: 'attendance', label: 'Attendance', icon: ClipboardCheck },
-    { id: 'grades', label: 'Grades', icon: FileText },
+    // { id: 'grades', label: 'Grades', icon: FileText },
     {
       id: 'fee-management',
       label: 'Fee Management',
@@ -212,8 +213,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     }
                   }}
                   className={`w-full flex items-center justify-between gap-3 px-2 py-2 rounded-lg transition-all text-sm ${isActive
-                      ? 'bg-white text-blue-900 shadow-lg'
-                      : 'hover:bg-blue-800 text-white'
+                    ? 'bg-white text-blue-900 shadow-lg'
+                    : 'hover:bg-blue-800 text-white'
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -237,8 +238,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                           key={subItem.id}
                           onClick={() => handleNavigation(subItem.id)}
                           className={`w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all ${isSubActive
-                              ? 'bg-white text-blue-900 shadow'
-                              : 'hover:bg-blue-800 text-blue-100'
+                            ? 'bg-white text-blue-900 shadow'
+                            : 'hover:bg-blue-800 text-blue-100'
                             }`}
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-current"></span>

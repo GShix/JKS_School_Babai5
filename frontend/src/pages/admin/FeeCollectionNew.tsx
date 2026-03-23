@@ -12,7 +12,7 @@ import type { SchoolProfile } from '../../api/types';
 
 interface Student {
   id: number;
-  iemisId: string;
+  emisId: string;
   fullName: string;
   rollNumber: string;
   class: string;
@@ -139,7 +139,7 @@ const FeeCollectionNew: React.FC = () => {
       // Extract all fee items from allocations that have pending balance
       const pendingAllocations = allocations.filter((a: FeeAllocation) => a.balance > 0);
       const feeItems: AllocatedFeeItem[] = [];
-      
+
       pendingAllocations.forEach((allocation: FeeAllocation) => {
         if (allocation.feeStructure?.items) {
           allocation.feeStructure.items.forEach((item: AllocatedFeeItem) => {
@@ -153,7 +153,7 @@ const FeeCollectionNew: React.FC = () => {
       });
 
       setAvailableFeeItems(feeItems);
-      
+
       // Auto-populate fee items if allocations exist
       if (feeItems.length > 0) {
         const autoFees = feeItems.map(item => ({
@@ -186,10 +186,10 @@ const FeeCollectionNew: React.FC = () => {
 
       const students = response.data.data || [];
       const query = searchQuery.toLowerCase();
-      
+
       const found = students.find(
         (s: Student) =>
-          s.iemisId?.toLowerCase() === query ||
+          s.emisId?.toLowerCase() === query ||
           s.fullName?.toLowerCase().includes(query) ||
           s.rollNumber?.toLowerCase() === query
       );
@@ -227,7 +227,7 @@ const FeeCollectionNew: React.FC = () => {
       const category = categories.find((c) => c.id === categoryId);
       updated[index].categoryId = categoryId;
       updated[index].categoryName = category?.name || '';
-      
+
       // Auto-fill amount from allocated fee if exists
       const allocatedItem = availableFeeItems.find(
         (item) => item.feeCategoryId === categoryId
@@ -285,7 +285,7 @@ const FeeCollectionNew: React.FC = () => {
 
       const payloadData = {
         studentId: selectedStudent.id,
-        iemisId: selectedStudent.iemisId,
+        emisId: selectedStudent.emisId,
         feeItems: selectedFees.map((f) => ({
           feeCategoryId: f.categoryId,
           amount: f.amount,
@@ -319,7 +319,7 @@ const FeeCollectionNew: React.FC = () => {
           class: selectedStudent.class,
           section: selectedStudent.section,
           rollNumber: selectedStudent.rollNumber,
-          iemisId: selectedStudent.iemisId,
+          emisId: selectedStudent.emisId,
         },
         feeItems: selectedFees.map(f => ({
           categoryName: f.categoryName,
@@ -383,8 +383,8 @@ const FeeCollectionNew: React.FC = () => {
               onKeyDown={(e) => e.key === 'Enter' && handleSearchStudent()}
               disabled={loading}
             />
-            <Button 
-              onClick={handleSearchStudent} 
+            <Button
+              onClick={handleSearchStudent}
               icon={<Search className="w-5 h-5" />}
               disabled={loading}
             >
@@ -401,7 +401,7 @@ const FeeCollectionNew: React.FC = () => {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="text-gray-600">IEMIS ID:</span>
-                  <span className="ml-2 font-semibold">{selectedStudent.iemisId}</span>
+                  <span className="ml-2 font-semibold">{selectedStudent.emisId}</span>
                 </div>
                 <div>
                   <span className="text-gray-600">Name:</span>
@@ -418,7 +418,7 @@ const FeeCollectionNew: React.FC = () => {
                   </span>
                 </div>
               </div>
-              
+
               {/* Fee Allocation Summary */}
               {allocatedFees.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-blue-300">
@@ -459,7 +459,7 @@ const FeeCollectionNew: React.FC = () => {
             {availableFeeItems.length > 0 && selectedFees.length === 0 && (
               <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-800">
-                  💡 <strong>Tip:</strong> Fee categories have been auto-loaded from allocated fee structure. 
+                  💡 <strong>Tip:</strong> Fee categories have been auto-loaded from allocated fee structure.
                   Remove any categories you don't want to collect now.
                 </p>
               </div>
@@ -669,7 +669,7 @@ const FeeCollectionNew: React.FC = () => {
             {/* Student Info */}
             <div className="border-b pb-3">
               <p className="font-semibold text-gray-900">{selectedStudent.fullName}</p>
-              <p className="text-gray-600">IEMIS: {selectedStudent.iemisId}</p>
+              <p className="text-gray-600">IEMIS: {selectedStudent.emisId}</p>
               <p className="text-gray-600">
                 Class: {selectedStudent.class}-{selectedStudent.section}
               </p>
@@ -733,13 +733,13 @@ const FeeCollectionNew: React.FC = () => {
                   onClick={() => {
                     // Set dynamic filename
                     const originalTitle = document.title;
-                    const studentIEMIS = receiptData?.student?.iemisId || 'STUDENT';
+                    const studentIEMIS = receiptData?.student?.emisId || 'STUDENT';
                     const receiptNo = receiptData?.receiptNumber || 'RECEIPT';
                     document.title = `Receipt_${studentIEMIS}_${receiptNo}`;
-                    
+
                     // Print
                     window.print();
-                    
+
                     // Restore original title after print dialog
                     setTimeout(() => {
                       document.title = originalTitle;

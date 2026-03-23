@@ -6,31 +6,30 @@ exports.createStudent = async (req, res) => {
   try {
     const {
       // Basic Information
-      nationalIdNumber,
+      emisId,
       firstName,
       middleName,
       lastName,
-      iemisId,
       email,
       phone,
       contactNumber,
       dateOfBirth,
       gender,
       isForeignStudent,
-      
+
       // Permanent Address
       permanentProvince,
       permanentDistrict,
       permanentMunicipality,
       permanentWard,
-      
+
       // Temporary Address
       temporaryProvince,
       temporaryDistrict,
       temporaryMunicipality,
       temporaryWard,
       sameAsPermAddress,
-      
+
       // Family Information
       fatherName,
       motherName,
@@ -38,7 +37,7 @@ exports.createStudent = async (req, res) => {
       guardianPhone,
       guardianContactNo,
       guardianEmail,
-      
+
       // Academic Information
       class: studentClass,
       section,
@@ -49,32 +48,32 @@ exports.createStudent = async (req, res) => {
       previousGrade,
       previousPercentage,
       subject,
-      
+
       // Personal Details
       caste,
       motherTongue,
       disabilityType,
       bloodGroup,
-      
+
       // School Information
       schoolingSource,
       scholarship,
-      
+
       // Status and Other
       status,
       profileImage,
       photo,
       medicalInfo,
       notes,
-      
+
       // Legacy field
       address,
     } = req.body;
 
     // Validate required fields
     if (!firstName || !lastName || !studentClass) {
-      return res.status(400).json({ 
-        message: 'First name, last name, and class are required' 
+      return res.status(400).json({
+        message: 'First name, last name, and class are required'
       });
     }
 
@@ -99,37 +98,37 @@ exports.createStudent = async (req, res) => {
     }
 
     const newStudent = await students.create({
-      nationalIdNumber,
+      emisId,
       firstName,
       middleName,
       lastName,
       fullName,
-      iemisId,
+      emisId,
       email,
       phone,
       contactNumber,
       dateOfBirth,
       gender,
       isForeignStudent: isForeignStudent || false,
-      
+
       permanentProvince,
       permanentDistrict,
       permanentMunicipality,
       permanentWard,
-      
+
       temporaryProvince,
       temporaryDistrict,
       temporaryMunicipality,
       temporaryWard,
       sameAsPermAddress: sameAsPermAddress || false,
-      
+
       fatherName,
       motherName,
       guardianName,
       guardianPhone,
       guardianContactNo,
       guardianEmail,
-      
+
       class: studentClass,
       section,
       rollNumber,
@@ -139,15 +138,15 @@ exports.createStudent = async (req, res) => {
       previousGrade,
       previousPercentage,
       subject,
-      
+
       caste,
       motherTongue,
       disabilityType,
       bloodGroup,
-      
+
       schoolingSource,
       scholarship,
-      
+
       status: status || 'active',
       profileImage,
       photo: photoUrl || photo, // Use uploaded photo URL or provided photo URL
@@ -204,7 +203,7 @@ exports.fetchStudents = async (req, res) => {
       where: whereClause,
       order: [['createdAt', 'DESC']],
     });
-    
+
     res.json({
       message: 'Students fetched successfully',
       data: allStudents,
@@ -253,31 +252,30 @@ exports.updateStudent = async (req, res) => {
 
     const {
       // Basic Information
-      nationalIdNumber,
+      emisId,
       firstName,
       middleName,
       lastName,
-      iemisId,
       email,
       phone,
       contactNumber,
       dateOfBirth,
       gender,
       isForeignStudent,
-      
+
       // Permanent Address
       permanentProvince,
       permanentDistrict,
       permanentMunicipality,
       permanentWard,
-      
+
       // Temporary Address
       temporaryProvince,
       temporaryDistrict,
       temporaryMunicipality,
       temporaryWard,
       sameAsPermAddress,
-      
+
       // Family Information
       fatherName,
       motherName,
@@ -285,7 +283,7 @@ exports.updateStudent = async (req, res) => {
       guardianPhone,
       guardianContactNo,
       guardianEmail,
-      
+
       // Academic Information
       class: studentClass,
       section,
@@ -296,24 +294,24 @@ exports.updateStudent = async (req, res) => {
       previousGrade,
       previousPercentage,
       subject,
-      
+
       // Personal Details
       caste,
       motherTongue,
       disabilityType,
       bloodGroup,
-      
+
       // School Information
       schoolingSource,
       scholarship,
-      
+
       // Status and Other
       status,
       profileImage,
       photo,
       medicalInfo,
       notes,
-      
+
       // Legacy field
       address,
     } = req.body;
@@ -322,8 +320,8 @@ exports.updateStudent = async (req, res) => {
     let fullName = student.fullName;
     if (firstName || lastName) {
       fullName = [
-        firstName || student.firstName, 
-        middleName, 
+        firstName || student.firstName,
+        middleName,
         lastName || student.lastName
       ].filter(Boolean).join(' ');
     }
@@ -336,7 +334,7 @@ exports.updateStudent = async (req, res) => {
         if (student.photo) {
           await deleteFromSupabase(student.photo, 'student-images');
         }
-        
+
         // Upload new photo
         const uploadResult = await uploadToSupabase(
           req.file.buffer,
@@ -353,37 +351,36 @@ exports.updateStudent = async (req, res) => {
     }
 
     await student.update({
-      nationalIdNumber,
       firstName,
       middleName,
       lastName,
       fullName,
-      iemisId,
+      emisId,
       email,
       phone,
       contactNumber,
       dateOfBirth,
       gender,
       isForeignStudent,
-      
+
       permanentProvince,
       permanentDistrict,
       permanentMunicipality,
       permanentWard,
-      
+
       temporaryProvince,
       temporaryDistrict,
       temporaryMunicipality,
       temporaryWard,
       sameAsPermAddress,
-      
+
       fatherName,
       motherName,
       guardianName,
       guardianPhone,
       guardianContactNo,
       guardianEmail,
-      
+
       class: studentClass,
       section,
       rollNumber,
@@ -393,15 +390,15 @@ exports.updateStudent = async (req, res) => {
       previousGrade,
       previousPercentage,
       subject,
-      
+
       caste,
       motherTongue,
       disabilityType,
       bloodGroup,
-      
+
       schoolingSource,
       scholarship,
-      
+
       status,
       profileImage,
       photo: photoUrl,

@@ -6,11 +6,11 @@
 -- Existing students will have NULL values for new fields
 
 -- Basic Information Fields
-ALTER TABLE students ADD COLUMN IF NOT EXISTS "nationalIdNumber" VARCHAR(255);
+ALTER TABLE students ADD COLUMN IF NOT EXISTS "emisId" VARCHAR(255);
 ALTER TABLE students ADD COLUMN IF NOT EXISTS "firstName" VARCHAR(255);
 ALTER TABLE students ADD COLUMN IF NOT EXISTS "middleName" VARCHAR(255);
 ALTER TABLE students ADD COLUMN IF NOT EXISTS "lastName" VARCHAR(255);
-ALTER TABLE students ADD COLUMN IF NOT EXISTS "iemisId" VARCHAR(255) UNIQUE;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS "emisId" VARCHAR(255) UNIQUE;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS "contactNumber" VARCHAR(255);
 ALTER TABLE students ADD COLUMN IF NOT EXISTS "isForeignStudent" BOOLEAN DEFAULT FALSE;
 
@@ -56,7 +56,7 @@ ALTER TABLE students ADD COLUMN IF NOT EXISTS "photo" TEXT;
 -- WHERE "firstName" IS NOT NULL AND "lastName" IS NOT NULL;
 
 -- Create index on frequently queried fields for better performance
-CREATE INDEX IF NOT EXISTS idx_students_iemis_id ON students("iemisId");
+CREATE INDEX IF NOT EXISTS idx_students_iemis_id ON students("emisId");
 CREATE INDEX IF NOT EXISTS idx_students_class ON students("class");
 CREATE INDEX IF NOT EXISTS idx_students_status ON students("status");
 CREATE INDEX IF NOT EXISTS idx_students_province ON students("permanentProvince");
@@ -71,4 +71,4 @@ COMMENT ON COLUMN students."permanentMunicipality" IS 'Permanent address local b
 COMMENT ON COLUMN students."permanentWard" IS 'Permanent address ward number';
 COMMENT ON COLUMN students."sameAsPermAddress" IS 'True if temporary address is same as permanent address';
 COMMENT ON COLUMN students."photo" IS 'Student photo URL from Supabase storage';
-COMMENT ON COLUMN students."iemisId" IS 'Individual Education Management Information System ID';
+COMMENT ON COLUMN students."emisId" IS 'Individual Education Management Information System ID';

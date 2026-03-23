@@ -1,7 +1,7 @@
 const studentModel = (sequelize, DataTypes) => {
   const Student = sequelize.define('student', {
     // Basic Information
-    nationalIdNumber: {
+    emisId: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -20,11 +20,6 @@ const studentModel = (sequelize, DataTypes) => {
     fullName: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    iemisId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      // unique: true, // Temporarily disabled for schema sync, can be re-enabled after initial sync
     },
     email: {
       type: DataTypes.STRING,
@@ -63,7 +58,7 @@ const studentModel = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: false,
     },
-    
+
     // Permanent Address (Not required for foreign students)
     permanentProvince: {
       type: DataTypes.STRING,
@@ -81,7 +76,7 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    
+
     // Temporary/Current Address (Required for all students)
     temporaryProvince: {
       type: DataTypes.STRING,
@@ -104,13 +99,13 @@ const studentModel = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: false,
     },
-    
+
     // Legacy address field (kept for backward compatibility)
     address: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    
+
     // Family Information
     fatherName: {
       type: DataTypes.STRING,
@@ -139,7 +134,7 @@ const studentModel = (sequelize, DataTypes) => {
         isEmail: true,
       },
     },
-    
+
     // Academic Information
     class: {
       type: DataTypes.STRING,
@@ -178,7 +173,7 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    
+
     // Personal Details
     caste: {
       type: DataTypes.STRING,
@@ -196,7 +191,7 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    
+
     // School Information
     schoolingSource: {
       type: DataTypes.STRING,
@@ -206,7 +201,7 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    
+
     // Status and Media
     status: {
       type: DataTypes.STRING,
@@ -225,7 +220,7 @@ const studentModel = (sequelize, DataTypes) => {
       allowNull: true,
       comment: 'Student photo URL from file upload',
     },
-    
+
     // Additional Information
     medicalInfo: {
       type: DataTypes.TEXT,

@@ -2,6 +2,7 @@
 
 const bcrypt = require('bcryptjs');
 const { admins, sequelize } = require('../src/database/connection');
+require('dotenv').config();
 
 const createAdmin = async () => {
   try {
@@ -48,6 +49,20 @@ const createAdmin = async () => {
         role: 'admin',
         status: 'active',
         phone: '9876543213'
+      },
+      {
+        fullName: 'Accountant',
+        email: 'accountant@jkss.com',
+        password: 'accountant123',
+        role: 'accountant',
+        status: 'active',
+      },
+      {
+        fullName: 'Class Teacher',
+        email: 'teacher1@jkss.com',
+        password: 'classteacher123',
+        role: 'teacher',
+        status: 'active',
       }
     ];
 
@@ -60,7 +75,7 @@ const createAdmin = async () => {
     for (const adminData of adminUsers) {
       // Check if admin already exists
       const existingAdmin = await admins.findOne({ where: { email: adminData.email } });
-      
+
       if (existingAdmin) {
         console.log(`⚠️  Admin already exists: ${adminData.email} (${existingAdmin.fullName})`);
         existingCount++;
@@ -110,7 +125,7 @@ const createAdmin = async () => {
       console.log('\n=================================');
       console.log('⚠️  Please change passwords after first login!\n');
     }
-    
+
     process.exit(0);
   } catch (error) {
     console.error('❌ Error creating admin users:', error);

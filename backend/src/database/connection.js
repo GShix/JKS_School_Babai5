@@ -42,8 +42,9 @@ db.programs = require('./models/programModel')(sequelize, DataTypes);
 db.activities = require('./models/activityModel')(sequelize, DataTypes);
 db.admins = require('./models/adminModel')(sequelize, DataTypes);
 db.students = require('./models/studentModel')(sequelize, DataTypes);
-db.staff = require('./models/staffModel')(sequelize, DataTypes);
+db.classes = require('./models/classModel')(sequelize, DataTypes);
 db.teacher = require('./models/teacherModel')(sequelize, DataTypes);
+db.staff = require('./models/staffModel')(sequelize, DataTypes);
 db.attendance = require('./models/attendanceModel')(sequelize, DataTypes);
 db.grades = require('./models/gradeModel')(sequelize, DataTypes);
 db.fees = require('./models/feeModel')(sequelize, DataTypes);
@@ -156,6 +157,7 @@ if (process.env.NODE_ENV === 'development') {
       await db.feeStructureItems.sync();
       await db.feeAllocations.sync();
       await db.feeTransactions.sync();
+      await db.admins.sync({ alter: true }); // Alter admin table to add new roles
       console.log('✅ Fee management tables created successfully');
     } catch (err) {
       console.error('❌ Fee management tables sync error:', err.message);
@@ -191,6 +193,7 @@ exports.admins = db.admins;
 exports.students = db.students;
 exports.staff = db.staff;
 exports.teacher = db.teacher;
+exports.classes = db.classes;
 exports.attendance = db.attendance;
 exports.grades = db.grades;
 exports.fees = db.fees;

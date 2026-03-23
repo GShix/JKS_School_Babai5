@@ -24,7 +24,7 @@ interface Student {
   class: string;
   section: string;
   rollNumber: string;
-  iemisId: string;
+  emisId: string;
   status: string;
   guardianName: string;
   guardianPhone: string;
@@ -37,7 +37,7 @@ const Students: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [formData, setFormData] = useState({
-    nationalIdNumber: '',
+    emisId: '',
     firstName: '',
     middleName: '',
     lastName: '',
@@ -76,13 +76,13 @@ const Students: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // State for cascading dropdown options
-  const [permanentDistrictOptions, setPermanentDistrictOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select District' }]);
-  const [permanentLocalBodyOptions, setPermanentLocalBodyOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Local Body' }]);
-  const [permanentWardOptions, setPermanentWardOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Ward' }]);
-  
-  const [temporaryDistrictOptions, setTemporaryDistrictOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select District' }]);
-  const [temporaryLocalBodyOptions, setTemporaryLocalBodyOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Local Body' }]);
-  const [temporaryWardOptions, setTemporaryWardOptions] = useState<{value: string; label: string}[]>([{ value: '', label: 'Select Ward' }]);
+  const [permanentDistrictOptions, setPermanentDistrictOptions] = useState<{ value: string; label: string }[]>([{ value: '', label: 'Select District' }]);
+  const [permanentLocalBodyOptions, setPermanentLocalBodyOptions] = useState<{ value: string; label: string }[]>([{ value: '', label: 'Select Local Body' }]);
+  const [permanentWardOptions, setPermanentWardOptions] = useState<{ value: string; label: string }[]>([{ value: '', label: 'Select Ward' }]);
+
+  const [temporaryDistrictOptions, setTemporaryDistrictOptions] = useState<{ value: string; label: string }[]>([{ value: '', label: 'Select District' }]);
+  const [temporaryLocalBodyOptions, setTemporaryLocalBodyOptions] = useState<{ value: string; label: string }[]>([{ value: '', label: 'Select Local Body' }]);
+  const [temporaryWardOptions, setTemporaryWardOptions] = useState<{ value: string; label: string }[]>([{ value: '', label: 'Select Ward' }]);
 
   useEffect(() => {
     fetchStudents();
@@ -163,46 +163,46 @@ const Students: React.FC = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      
+
       // Create FormData for multipart/form-data with image upload
       const submitData = new FormData();
-      
+
       // Append all form fields
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           submitData.append(key, value.toString());
         }
       });
-      
+
       // Append image file if selected
       if (selectedImage) {
         submitData.append('photo', selectedImage);
       }
-      
+
       if (editingStudent) {
         await axios.put(
           `${API_BASE_URL}/students/${editingStudent.id}/update`,
           submitData,
-          { 
-            headers: { 
+          {
+            headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'multipart/form-data'
-            } 
+            }
           }
         );
       } else {
         await axios.post(
           `${API_BASE_URL}/students/create`,
           submitData,
-          { 
-            headers: { 
+          {
+            headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'multipart/form-data'
-            } 
+            }
           }
         );
       }
-      
+
       setShowModal(false);
       setEditingStudent(null);
       resetForm();
@@ -217,7 +217,7 @@ const Students: React.FC = () => {
   const handleDelete = async (id: number) => {
     const result = await showDeleteConfirm('this student');
     if (!result.isConfirmed) return;
-    
+
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       await axios.delete(`${API_BASE_URL}/students/${id}/delete`, {
@@ -234,7 +234,7 @@ const Students: React.FC = () => {
   const handleEdit = (student: Student) => {
     setEditingStudent(student);
     setFormData({
-      nationalIdNumber: '',
+      emisId: '',
       firstName: student.fullName?.split(' ')[0] || '',
       middleName: '',
       lastName: student.fullName?.split(' ').slice(1).join(' ') || '',
@@ -271,7 +271,7 @@ const Students: React.FC = () => {
 
   const resetForm = () => {
     setFormData({
-      nationalIdNumber: '',
+      emisId: '',
       firstName: '',
       middleName: '',
       lastName: '',
@@ -315,15 +315,15 @@ const Students: React.FC = () => {
         showError('File size must be less than 2MB.');
         return;
       }
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         showError('Please select an image file.');
         return;
       }
-      
+
       setSelectedImage(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -422,7 +422,7 @@ const Students: React.FC = () => {
   };
 
   const columns = [
-    { key: 'iemisId', label: 'IEMIS ID' },
+    { key: 'emisId', label: 'EMIS ID' },
     { key: 'rollNumber', label: 'Roll No.' },
     { key: 'fullName', label: 'Name' },
     { key: 'class', label: 'Class' },
@@ -527,14 +527,14 @@ const Students: React.FC = () => {
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed"
               />
             </div>
-            
+
             <FormInput
               label="National ID Number"
-              value={formData.nationalIdNumber}
-              onChange={(e) => setFormData({ ...formData, nationalIdNumber: e.target.value })}
+              value={formData.emisId}
+              onChange={(e) => setFormData({ ...formData, emisId: e.target.value })}
               placeholder="National Identity Number"
             />
-            
+
             <FormInput
               label="First Name"
               required
@@ -542,14 +542,14 @@ const Students: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
               placeholder="First Name"
             />
-            
+
             <FormInput
               label="Middle Name"
               value={formData.middleName}
               onChange={(e) => setFormData({ ...formData, middleName: e.target.value })}
               placeholder="Middle Name"
             />
-            
+
             <FormInput
               label="Last Name"
               required
@@ -579,7 +579,7 @@ const Students: React.FC = () => {
                 ))}
               </div>
             </div>
-            
+
             <Select
               label="Class"
               required
@@ -599,7 +599,7 @@ const Students: React.FC = () => {
                 { value: '10', label: 'Class 10' }
               ]}
             />
-            
+
             <Select
               label="Admit Year"
               required
@@ -613,7 +613,7 @@ const Students: React.FC = () => {
                 { value: '2078', label: '2078' }
               ]}
             />
-            
+
             <FormInput
               label="Date of birth"
               type="date"
@@ -621,7 +621,7 @@ const Students: React.FC = () => {
               value={formData.dateOfBirth}
               onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
             />
-            
+
             <div className="flex items-end pb-2">
               <label className="flex items-center text-sm">
                 <input
@@ -656,54 +656,54 @@ const Students: React.FC = () => {
                 <h3 className="text-sm font-semibold text-gray-700 mb-4">Permanent Address</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-            <Select
-              label="Permanent Province"
-              required
-              value={formData.permanentProvince}
-              onChange={(e) => handlePermanentProvinceChange(e.target.value)}
-              options={getProvinceOptions()}
-            />
-            
-            <Select
-              label="Permanent District"
-              required
-              value={formData.permanentDistrict}
-              onChange={(e) => handlePermanentDistrictChange(e.target.value)}
-              options={permanentDistrictOptions}
-              disabled={!formData.permanentProvince}
-            />
-            
-            <Select
-              label="Permanent Local Body"
-              required
-              value={formData.permanentMunicipality}
-              onChange={(e) => handlePermanentMunicipalityChange(e.target.value)}
-              options={permanentLocalBodyOptions}
-              disabled={!formData.permanentDistrict}
-            />
-            
-            <Select
-              label="Permanent Ward"
-              required
-              value={formData.permanentWard}
-              onChange={(e) => setFormData({ ...formData, permanentWard: e.target.value })}
-              options={permanentWardOptions}
-              disabled={!formData.permanentMunicipality}
-            />
-          </div>
+                <Select
+                  label="Permanent Province"
+                  required
+                  value={formData.permanentProvince}
+                  onChange={(e) => handlePermanentProvinceChange(e.target.value)}
+                  options={getProvinceOptions()}
+                />
 
-          {/* Same Address Checkbox */}
-          <div>
-            <label className="flex items-center text-sm">
-              <input
-                type="checkbox"
-                checked={formData.sameAsPermAddress}
-                onChange={(e) => handleSameAddressChange(e.target.checked)}
-                className="mr-2"
-              />
-              Has Temporary address same as Permanent Address ?
-            </label>
-          </div>
+                <Select
+                  label="Permanent District"
+                  required
+                  value={formData.permanentDistrict}
+                  onChange={(e) => handlePermanentDistrictChange(e.target.value)}
+                  options={permanentDistrictOptions}
+                  disabled={!formData.permanentProvince}
+                />
+
+                <Select
+                  label="Permanent Local Body"
+                  required
+                  value={formData.permanentMunicipality}
+                  onChange={(e) => handlePermanentMunicipalityChange(e.target.value)}
+                  options={permanentLocalBodyOptions}
+                  disabled={!formData.permanentDistrict}
+                />
+
+                <Select
+                  label="Permanent Ward"
+                  required
+                  value={formData.permanentWard}
+                  onChange={(e) => setFormData({ ...formData, permanentWard: e.target.value })}
+                  options={permanentWardOptions}
+                  disabled={!formData.permanentMunicipality}
+                />
+              </div>
+
+              {/* Same Address Checkbox */}
+              <div>
+                <label className="flex items-center text-sm">
+                  <input
+                    type="checkbox"
+                    checked={formData.sameAsPermAddress}
+                    onChange={(e) => handleSameAddressChange(e.target.checked)}
+                    className="mr-2"
+                  />
+                  Has Temporary address same as Permanent Address ?
+                </label>
+              </div>
             </>
           )}
 
@@ -722,7 +722,7 @@ const Students: React.FC = () => {
               disabled={!formData.isForeignStudent && formData.sameAsPermAddress}
               options={getProvinceOptions()}
             />
-            
+
             <Select
               label={formData.isForeignStudent ? 'District' : 'Temporary District'}
               required
@@ -731,7 +731,7 @@ const Students: React.FC = () => {
               disabled={(!formData.isForeignStudent && formData.sameAsPermAddress) || !formData.temporaryProvince}
               options={temporaryDistrictOptions}
             />
-            
+
             <Select
               label={formData.isForeignStudent ? 'Local Body' : 'Temporary Local Body'}
               required
@@ -740,7 +740,7 @@ const Students: React.FC = () => {
               disabled={(!formData.isForeignStudent && formData.sameAsPermAddress) || !formData.temporaryDistrict}
               options={temporaryLocalBodyOptions}
             />
-            
+
             <Select
               label={formData.isForeignStudent ? 'Ward' : 'Temporary Ward'}
               required
@@ -769,7 +769,7 @@ const Students: React.FC = () => {
                 { value: 'Other', label: 'Other' }
               ]}
             />
-            
+
             <Select
               label="Mother Tongue"
               required
@@ -786,7 +786,7 @@ const Students: React.FC = () => {
                 { value: 'Other', label: 'Other' }
               ]}
             />
-            
+
             <Select
               label="Disability Type"
               required
@@ -802,7 +802,7 @@ const Students: React.FC = () => {
                 { value: 'Other', label: 'Other' }
               ]}
             />
-            
+
             <Select
               label="Schooling Source"
               value={formData.schoolingSource}
@@ -829,7 +829,7 @@ const Students: React.FC = () => {
                 { value: 'Partial', label: 'Partial Scholarship' }
               ]}
             />
-            
+
             <Select
               label="Subject"
               value={formData.subject}
@@ -841,7 +841,7 @@ const Students: React.FC = () => {
                 { value: 'Humanities', label: 'Humanities' }
               ]}
             />
-            
+
             <FormInput
               label="Contact Number"
               required
@@ -849,7 +849,7 @@ const Students: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
               placeholder="Contact Number"
             />
-            
+
             <FormInput
               label="Father's Name"
               value={formData.fatherName}
@@ -866,7 +866,7 @@ const Students: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, motherName: e.target.value })}
               placeholder="Mother Name"
             />
-            
+
             <FormInput
               label="Guardian's Name"
               required
@@ -874,7 +874,7 @@ const Students: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, guardianName: e.target.value })}
               placeholder="Guardian Name"
             />
-            
+
             <FormInput
               label="Guardian Contact No."
               required
@@ -882,7 +882,7 @@ const Students: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, guardianContactNo: e.target.value })}
               placeholder="Guardian Contact No."
             />
-            
+
             <FormInput
               label="Admission Date"
               type="date"
@@ -911,9 +911,9 @@ const Students: React.FC = () => {
               Only image files (not more than 2MB) are allowed.
             </p>
             {imagePreview && (
-              <img 
-                src={imagePreview} 
-                alt="Preview" 
+              <img
+                src={imagePreview}
+                alt="Preview"
                 className="mt-2 w-24 h-24 rounded object-cover border-2 border-gray-200"
               />
             )}

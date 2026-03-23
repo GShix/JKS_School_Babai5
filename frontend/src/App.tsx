@@ -28,6 +28,7 @@ import StudentLogin from './pages/auth/StudentLogin'
 import AdminLayout from './layouts/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
 import AdminStudents from './pages/admin/Students'
+import AdminClasses from './pages/admin/Classes'
 import AdminTeachers from './pages/admin/Teachers'
 import AdminStaff from './pages/admin/Staff'
 import AdminAnnouncements from './pages/admin/Announcements'
@@ -84,6 +85,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='students' element={<AdminStudents />} />
+            <Route path='classes' element={<AdminClasses />} />
             <Route path='teachers' element={<AdminTeachers />} />
             <Route path='grades' element={<Grades />} />
             <Route path='staff' element={<AdminStaff />} />
