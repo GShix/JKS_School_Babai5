@@ -6,7 +6,7 @@ import {
   GraduationCap,
   // ClipboardCheck,
   // FileText,
-  DollarSign,
+  // DollarSign,
   // Calendar,
   // BookOpen,
   // CalendarX,
@@ -105,17 +105,17 @@ const Sidebar: React.FC<SidebarProps> = ({
     },
     // { id: 'attendance', label: 'Attendance', icon: ClipboardCheck },
     // { id: 'grades', label: 'Grades', icon: FileText },
-    {
-      id: 'fee-management',
-      label: 'Fee Management',
-      icon: DollarSign,
-      subItems: [
-        { id: 'fee-structures', label: 'Fee Structures' },
-        { id: 'smart-allocation', label: 'Smart Allocation' },
-        { id: 'fee-collection', label: 'Fee Collection' },
-        { id: 'fee-transactions', label: 'Transactions' }
-      ]
-    },
+    // {
+    //   id: 'fee-management',
+    //   label: 'Fee Management',
+    //   icon: DollarSign,
+    //   subItems: [
+    //     { id: 'fee-structures', label: 'Fee Structures' },
+    //     { id: 'smart-allocation', label: 'Smart Allocation' },
+    //     { id: 'fee-collection', label: 'Fee Collection' },
+    //     { id: 'fee-transactions', label: 'Transactions' }
+    //   ]
+    // },
     // { id: 'timetable', label: 'Timetable', icon: Calendar },
     // { id: 'assignments', label: 'Assignments', icon: BookOpen },
     // { id: 'leaves', label: 'Leaves', icon: CalendarX },

@@ -1,4 +1,4 @@
-// Load environment variables (Vercel provides them automatically in production)
+
 require('dotenv').config();
 
 const express = require('express');
@@ -36,14 +36,11 @@ app.use(express.json());
 app.use(cors({
   origin: [
     'https://jkssp5padampur.vercel.app',
-    'http://localhost:5173', // Allow local dev as well
+    'http://localhost:5173',
   ],
-  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  // allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: false // Set to true if you need to send cookies
+  credentials: true
 }));
 
-// Serve static files (uploaded files)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Authentication routes

@@ -1,9 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-// Ensure db_string exists
 if (!process.env.db_string) {
-  console.error('❌ ERROR: db_string environment variable is not set!');
-  throw new Error('Database connection string is required. Please set db_string in environment variables.');
+  console.error('db_string is not set!');
+  throw new Error('Database connection string is required.');
 }
 
 const sequelize = new Sequelize(process.env.db_string, {
@@ -27,10 +26,10 @@ const sequelize = new Sequelize(process.env.db_string, {
 // Only authenticate, don't wait for it
 sequelize.authenticate()
   .then(() => {
-    console.log('✅ Database connection established successfully.');
+    console.log('Database connection established successfully.');
   })
   .catch(err => {
-    console.error('❌ Unable to connect to the database:', err.message);
+    console.error('Unable to connect to the database:', err.message);
   });
 
 const db = {};
@@ -61,14 +60,14 @@ db.leaves = require('./models/leaveModel')(sequelize, DataTypes);
 db.announcements = require('./models/announcementModel')(sequelize, DataTypes);
 db.contents = require('./models/contentModel')(sequelize, DataTypes);
 db.gallery = require('./models/galleryModel')(sequelize, DataTypes);
-db.downloads = require('./models/downloadModel')(sequelize, DataTypes); db.heroSlides = require('./models/heroSlideModel')(sequelize, DataTypes);
+db.downloads = require('./models/downloadModel')(sequelize, DataTypes);
+db.heroSlides = require('./models/heroSlideModel')(sequelize, DataTypes);
 db.schoolProfile = require('./models/schoolProfileModel')(sequelize, DataTypes);
 db.schoolMessages = require('./models/schoolMessageModel')(sequelize, DataTypes);
 db.contacts = require('./models/contactModel')(sequelize, DataTypes);
 db.careerPositions = require('./models/careerPositionModel')(sequelize, DataTypes);
 db.jobApplications = require('./models/jobApplicationModel')(sequelize, DataTypes);
 
-// Define Relationships for Fee Management System
 // FeeStructure has many FeeStructureItems
 db.feeStructures.hasMany(db.feeStructureItems, {
   foreignKey: 'feeStructureId',
@@ -141,16 +140,10 @@ db.feeTransactions.belongsTo(db.admins, {
   as: 'collector',
 });
 
-// DO NOT run sync() in production/serverless - it's slow and can crash functions
-// Tables should already exist in production database
-// For development: only sync NEW fee management tables (without alter on existing tables)
 if (process.env.NODE_ENV === 'development') {
-  // Sync existing tables without alteration
   sequelize.sync({ alter: false }).then(async () => {
     console.log('✅ Database connected');
 
-    // Now sync ONLY the new fee management tables with force: false
-    // This will create them if they don't exist, but won't modify if they do
     try {
       await db.feeCategories.sync();
       await db.feeStructures.sync();
@@ -163,7 +156,6 @@ if (process.env.NODE_ENV === 'development') {
       console.error('❌ Fee management tables sync error:', err.message);
     }
 
-    // Sync teacher table with alter to add new columns (e.g. position)
     try {
       await db.teacher.sync({ alter: true });
       console.log('✅ Teacher table schema updated');
@@ -175,8 +167,6 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// For production/Vercel deployment, sync with alter on first deploy to add columns
-// After columns are added, change this back to false or remove
 if (process.env.NODE_ENV === 'production' && process.env.SYNC_DB === 'true') {
   sequelize.sync({ alter: true }).then(() => {
     console.log('✅ Production database schema updated');

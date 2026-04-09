@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { admins } = require('../database/connection');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 const signToken = (admin) =>
@@ -15,7 +15,7 @@ const toSafeAdmin = (admin) => ({
   role: admin.role,
   phone: admin.phone,
   profileImage: admin.profileImage,
-  status: admin.status,
+  status: admins.status,
 });
 
 // Admin Registration (only superAdmin can create new admins)
@@ -42,16 +42,16 @@ exports.registerAdmin = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin = await admins.create({ 
-      fullName, 
-      email, 
-      password: hashedPassword, 
+    const newAdmin = await admins.create({
+      fullName,
+      email,
+      password: hashedPassword,
       role,
       phone,
       profileImage,
       status: 'active'
     });
-    
+
     const token = signToken(newAdmin);
 
     return res.status(201).json({

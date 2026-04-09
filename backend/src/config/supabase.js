@@ -1,15 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// Supabase configuration
-// Use SERVICE_ROLE_KEY for backend operations to bypass Row Level Security
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 let supabase = null;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.warn('⚠️  Supabase credentials not configured. Image upload will not work.');
-  console.warn('⚠️  Add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to your .env file to enable image uploads.');
+  console.warn('Supabase credentials not configured');
 } else {
   try {
     supabase = createClient(supabaseUrl, supabaseKey, {
@@ -18,17 +15,16 @@ if (!supabaseUrl || !supabaseKey) {
         persistSession: false
       }
     });
-    console.log('✅ Supabase client initialized successfully (using Service Role Key)');
+    console.log('Supabase client created successfully.');
   } catch (error) {
-    console.error('❌ Error creating Supabase client:', error.message);
+    console.error('Supabase connection error: ', error.message);
   }
 }
 
 const uploadToSupabase = async (fileBuffer, fileName, bucket = 'staff-images', mimeType = null) => {
   try {
-    // Check if Supabase is configured
     if (!supabase) {
-      throw new Error('Supabase is not configured. Please add SUPABASE_URL and SUPABASE_ANON_KEY to your .env file.');
+      throw new Error('Supabase is not configured.');
     }
 
     const timestamp = Date.now();
@@ -39,7 +35,7 @@ const uploadToSupabase = async (fileBuffer, fileName, bucket = 'staff-images', m
     if (!mimeType) {
       const ext = fileName.toLowerCase().split('.').pop();
       const mimeTypes = {
-        'jpg': 'image/jpeg',
+        'jpg': 'image/jpg',
         'jpeg': 'image/jpeg',
         'png': 'image/png',
         'gif': 'image/gif',
@@ -102,7 +98,7 @@ const deleteFromSupabase = async (filePath, bucket = 'staff-images') => {
   try {
     // Check if Supabase is configured
     if (!supabase) {
-      console.warn('Supabase is not configured. Skipping image deletion.');
+      console.warn('Supabase is not configured.');
       return;
     }
 
