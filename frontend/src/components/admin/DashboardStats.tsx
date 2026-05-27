@@ -28,12 +28,12 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      
+
       // Fetch students count
       const studentsRes = await axios.get(`${API_BASE_URL}/students`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       // Fetch teachers count  
       const teachersRes = await axios.get(`${API_BASE_URL}/teachers`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -77,34 +77,34 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
           value={stats.totalStudents}
           icon={GraduationCap}
           color="bg-blue-500"
-          trend={{ value: '+12% this month', isPositive: true }}
+          // trend={{ value: '+12% this month', isPositive: true }}
           onClick={() => onStatClick?.('students')}
         />
-        
+
         <StatCard
           title="Total Teachers"
           value={stats.totalTeachers}
           icon={Users}
           color="bg-purple-500"
-          trend={{ value: '+3 new teachers', isPositive: true }}
+          // trend={{ value: '+3 new teachers', isPositive: true }}
           onClick={() => onStatClick?.('teachers')}
         />
-        
+
         <StatCard
           title="Today's Attendance"
           value={stats.totalAttendanceToday}
           icon={ClipboardCheck}
           color="bg-green-500"
-          trend={{ value: '85% average', isPositive: true }}
+          // trend={{ value: '85% average', isPositive: true }}
           onClick={() => onStatClick?.('attendance')}
         />
-        
+
         <StatCard
           title="Pending Fees"
           value={`रु${stats.pendingFees}`}
           icon={DollarSign}
           color="bg-red-500"
-          trend={{ value: '-5% from last month', isPositive: true }}
+          // trend={{ value: '-5% from last month', isPositive: true }}
           onClick={() => onStatClick?.('fees')}
         />
       </div>
@@ -117,7 +117,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
           color="bg-indigo-500"
           onClick={() => onStatClick?.('assignments')}
         />
-        
+
         <StatCard
           title="Total Grades"
           value={stats.totalGrades}
@@ -125,7 +125,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
           color="bg-yellow-500"
           onClick={() => onStatClick?.('grades')}
         />
-        
+
         <StatCard
           title="Upcoming Events"
           value={stats.upcomingEvents}
@@ -133,7 +133,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
           color="bg-pink-500"
           onClick={() => onStatClick?.('events')}
         />
-        
+
         <StatCard
           title="Pending Leaves"
           value={stats.pendingLeaves}

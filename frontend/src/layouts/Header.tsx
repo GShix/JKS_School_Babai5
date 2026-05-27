@@ -263,7 +263,7 @@ const Header = () => {
                     </Link>
                 </div>
                 {clickMenu ? (
-                    <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-69 z-50 text-base sm:hidden px-4 py-3 mx-2">
+                    <div className="small-nav-link bg-[#035CB0] flex flex-col gap-4 absolute left-0 right-0 top-65 z-50 text-base sm:hidden px-6 py-3">
                         <ul>
                             {navLinks.map((link, index) => (
                                 <li key={index} className="mb-3 font-sans">
