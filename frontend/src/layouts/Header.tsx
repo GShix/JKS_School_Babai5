@@ -64,18 +64,6 @@ const Header = () => {
     // which small-nav (mobile) submenu is open; null = none
     const [openSmallIndex, setOpenSmallIndex] = useState<number | null>(null);
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("isAdmin");
-        localStorage.removeItem("userRole");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("isAdmin");
-        setIsAdmin(false);
-        setClickMenu(false);
-        navigate("/");
-    };
     const menuRef = useRef<HTMLDivElement | null>(null); // Reference to the nav menu
 
     useEffect(() => {
