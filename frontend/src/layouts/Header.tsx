@@ -1,11 +1,10 @@
 import { Bell } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { schoolProfileService } from "../api";
 import type { SchoolProfile } from "../api";
 
 const Header = () => {
-    const navigate = useNavigate();
     const [clickMenu, setClickMenu] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
