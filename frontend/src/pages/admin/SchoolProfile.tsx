@@ -15,7 +15,7 @@ interface SchoolProfile {
   vision: string;
   address: string;
   phone: string;
-  fax?: string;
+  // fax?: string;
   email: string;
   website: string;
   facebookUrl?: string;
@@ -31,7 +31,6 @@ interface SchoolProfile {
   panNumber?: string;
   registrationNumber?: string;
   affiliation?: string;
-  taxPercentage?: number;
 }
 
 const SchoolProfile = () => {
@@ -44,7 +43,7 @@ const SchoolProfile = () => {
     vision: '',
     address: '',
     phone: '',
-    fax: '',
+    // fax: '',
     email: '',
     website: '',
     facebookUrl: '',
@@ -60,9 +59,8 @@ const SchoolProfile = () => {
     panNumber: '',
     registrationNumber: '',
     affiliation: '',
-    taxPercentage: 0
   });
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
@@ -80,7 +78,7 @@ const SchoolProfile = () => {
       const response = await axios.get(`${API_BASE_URL}/school-profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.data.success && response.data.data) {
         const data = response.data.data;
         setProfile({
@@ -92,7 +90,7 @@ const SchoolProfile = () => {
           vision: data.introduction || '',
           address: data.address || '',
           phone: data.phone || '',
-          fax: data.fax || '',
+          // // fax: data.fax || '',
           email: data.email || '',
           website: data.website || '',
           facebookUrl: data.facebookUrl || '',
@@ -108,7 +106,6 @@ const SchoolProfile = () => {
           panNumber: data.panNumber || '',
           registrationNumber: data.registrationNumber || '',
           affiliation: data.affiliation || '',
-          taxPercentage: data.taxPercentage || 0
         });
         // Set logo preview from existing URL
         if (data.logoUrl) {
@@ -130,15 +127,15 @@ const SchoolProfile = () => {
         showWarning('File size too large', 'File size must be less than 5MB.');
         return;
       }
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         showWarning('Invalid file type', 'Please select an image file.');
         return;
       }
-      
+
       setSelectedLogo(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -158,15 +155,15 @@ const SchoolProfile = () => {
     try {
       setSaving(true);
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      
+
       // Create FormData for multipart/form-data (to support file upload)
       const formData = new FormData();
-      
+
       // Append all profile fields
       formData.append('schoolName', profile.schoolName);
       if (profile.schoolNameNepali) formData.append('schoolNameNepali', profile.schoolNameNepali);
       formData.append('phone', profile.phone);
-      if (profile.fax) formData.append('fax', profile.fax);
+      // // // if (profile.fax) formData.append('fax', profile.fax);
       formData.append('email', profile.email);
       formData.append('address', profile.address);
       if (profile.schoolNameNepali) formData.append('addressNepali', profile.schoolNameNepali);
@@ -182,26 +179,25 @@ const SchoolProfile = () => {
       if (profile.panNumber) formData.append('panNumber', profile.panNumber);
       if (profile.registrationNumber) formData.append('registrationNumber', profile.registrationNumber);
       if (profile.affiliation) formData.append('affiliation', profile.affiliation);
-      formData.append('taxPercentage', profile.taxPercentage?.toString() || '0');
-      
+
       // Append logo file if selected, otherwise keep existing logoUrl
       if (selectedLogo) {
         formData.append('logo', selectedLogo);
       } else if (profile.logoUrl) {
         formData.append('logoUrl', profile.logoUrl);
       }
-      
+
       const response = await axios.put(
         `${API_BASE_URL}/school-profile`,
         formData,
-        { 
-          headers: { 
+        {
+          headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
-          } 
+          }
         }
       );
-      
+
       if (response.data.success) {
         showSuccess('School profile has been updated successfully!');
         // Refresh data to get updated logo URL
@@ -243,7 +239,7 @@ const SchoolProfile = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="space-y-6">
             <div className="h-6 w-48 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded mb-4"></div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="space-y-2">
@@ -323,62 +319,62 @@ const SchoolProfile = () => {
         {activeTab === 'basic' && (
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic School Information</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormInput
                 label="School Name (English)"
                 value={profile.schoolName}
                 onChange={(e) => setProfile({ ...profile, schoolName: e.target.value })}
               />
-              
+
               <FormInput
                 label="School Name (Nepali)"
                 value={profile.schoolNameNepali || ''}
                 onChange={(e) => setProfile({ ...profile, schoolNameNepali: e.target.value })}
                 placeholder="जनकल्याण माध्यमिक विद्यालय"
               />
-              
+
               <FormInput
                 label="Established Year"
                 value={profile.establishedYear || profile.established}
                 onChange={(e) => setProfile({ ...profile, establishedYear: e.target.value })}
                 placeholder="2020"
               />
-              
+
               <FormInput
                 label="Phone"
                 value={profile.phone}
                 onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
               />
-              
-              <FormInput
+
+              {/* <FormInput
                 label="Fax"
                 value={profile.fax || ''}
                 onChange={(e) => setProfile({ ...profile, fax: e.target.value })}
                 placeholder="057-527263"
-              />
-              
+              /> */}
+
               <FormInput
                 label="Email"
                 type="email"
                 value={profile.email}
                 onChange={(e) => setProfile({ ...profile, email: e.target.value })}
               />
-              
+
               <FormInput
                 label="Website"
                 value={profile.website}
                 onChange={(e) => setProfile({ ...profile, website: e.target.value })}
                 placeholder="https://example.com"
               />
-              
+
               <FormInput
                 label="Facebook URL"
                 value={profile.facebookUrl}
                 onChange={(e) => setProfile({ ...profile, facebookUrl: e.target.value })}
                 placeholder="https://facebook.com/yourschool"
               />
-              
+
               {/* Logo Upload Section */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -387,9 +383,9 @@ const SchoolProfile = () => {
                 <div className="flex items-center gap-4">
                   {logoPreview && (
                     <div className="relative">
-                      <img 
-                        src={logoPreview} 
-                        alt="School Logo" 
+                      <img
+                        src={logoPreview}
+                        alt="School Logo"
                         className="w-24 h-24 object-contain border-2 border-gray-200 rounded-lg bg-white p-2"
                       />
                       <button
@@ -420,39 +416,29 @@ const SchoolProfile = () => {
                   </div>
                 </div>
               </div>
-              
+
               <FormInput
                 label="PAN Number"
                 value={profile.panNumber || ''}
                 onChange={(e) => setProfile({ ...profile, panNumber: e.target.value })}
                 placeholder="301480818"
               />
-              
+
               <FormInput
                 label="Registration Number"
                 value={profile.registrationNumber || ''}
                 onChange={(e) => setProfile({ ...profile, registrationNumber: e.target.value })}
                 placeholder="345/65"
               />
-              
+
               <FormInput
                 label="Affiliation"
                 value={profile.affiliation || ''}
                 onChange={(e) => setProfile({ ...profile, affiliation: e.target.value })}
                 placeholder="Ministry of Education, Government of Nepal"
               />
-              
-              <FormInput
-                label="Tax Percentage (%)"
-                type="number"
-                value={profile.taxPercentage?.toString() || '0'}
-                onChange={(e) => setProfile({ ...profile, taxPercentage: parseFloat(e.target.value) || 0 })}
-                placeholder="0.00"
-                step="0.01"
-                min="0"
-                max="100"
-              />
-              
+
+
               <div className="md:col-span-2">
                 <FormInput
                   label="Address"
@@ -461,7 +447,7 @@ const SchoolProfile = () => {
                   placeholder="Full address of the school"
                 />
               </div>
-              
+
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   School Introduction
@@ -481,7 +467,7 @@ const SchoolProfile = () => {
         {activeTab === 'vision' && (
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Vision & Mission</h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -495,7 +481,7 @@ const SchoolProfile = () => {
                   placeholder="Our vision is to be..."
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   School Mission
@@ -515,7 +501,7 @@ const SchoolProfile = () => {
         {activeTab === 'location' && (
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Location Details</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormInput
                 label="Province"
@@ -523,35 +509,35 @@ const SchoolProfile = () => {
                 onChange={(e) => setProfile({ ...profile, province: e.target.value })}
                 placeholder="Lumbini Province"
               />
-              
+
               <FormInput
                 label="District"
                 value={profile.district}
                 onChange={(e) => setProfile({ ...profile, district: e.target.value })}
                 placeholder="Dang"
               />
-              
+
               <FormInput
                 label="Municipality"
                 value={profile.municipality}
                 onChange={(e) => setProfile({ ...profile, municipality: e.target.value })}
                 placeholder="Babai Municipality"
               />
-              
+
               <FormInput
                 label="Ward Number"
                 value={profile.ward}
                 onChange={(e) => setProfile({ ...profile, ward: e.target.value })}
                 placeholder="1"
               />
-              
+
               <FormInput
                 label="Affiliation Number"
                 value={profile.affiliationNumber}
                 onChange={(e) => setProfile({ ...profile, affiliationNumber: e.target.value })}
                 placeholder="Enter affiliation number"
               />
-              
+
               <FormInput
                 label="School Code"
                 value={profile.schoolCode}

@@ -25,7 +25,7 @@ const Teachers: React.FC = () => {
 
   // Filter states
   const [filterGender, setFilterGender] = useState('');
-  const [filterTeacherLevel, setFilterTeacherLevel] = useState('');
+  const [filterDepartment, setFilterDepartment] = useState('');
   const [formData, setFormData] = useState({
     // Basic Information
     firstName: '',
@@ -109,8 +109,8 @@ const Teachers: React.FC = () => {
     }
 
     // Apply teacher level filter (assuming qualification field)
-    if (filterTeacherLevel) {
-      filtered = filtered.filter(teacher => teacher.qualification?.toLowerCase().includes(filterTeacherLevel.toLowerCase()));
+    if (filterDepartment) {
+      filtered = filtered.filter(teacher => teacher.qualification?.toLowerCase().includes(filterDepartment.toLowerCase()));
     }
 
     setFilteredTeachers(filtered);
@@ -119,7 +119,7 @@ const Teachers: React.FC = () => {
 
   const handleResetFilters = () => {
     setFilterGender('');
-    setFilterTeacherLevel('');
+    setFilterDepartment('');
     setFilteredTeachers(teachers);
   };
 
@@ -661,17 +661,18 @@ const Teachers: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Teacher Level</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
             <Select
-              value={filterTeacherLevel}
-              onChange={(e) => setFilterTeacherLevel(e.target.value)}
+              value={filterDepartment}
+              onChange={(e) => setFilterDepartment(e.target.value)}
               options={[
-                { value: '', label: 'Select Teacher Level' },
-                { value: 'bachelor', label: 'Bachelor' },
-                { value: 'master', label: 'Master' },
-                { value: 'phd', label: 'PhD' },
-                { value: 'diploma', label: 'Diploma' },
-                { value: 'certificate', label: 'Certificate' }
+                { value: '', label: 'All' },
+                { value: 'english', label: 'English' },
+                { value: 'maths', label: 'Maths' },
+                { value: 'science', label: 'Science' },
+                { value: 'social-studies', label: 'Social Studies' },
+                { value: 'economics', label: 'Economics' },
+                { value: 'computer', label: 'Computer' }
               ]}
             />
           </div>
@@ -684,7 +685,7 @@ const Teachers: React.FC = () => {
             >
               Load
             </Button>
-            {(filterGender || filterTeacherLevel) && (
+            {(filterGender || filterDepartment) && (
               <Button
                 variant="outline"
                 onClick={handleResetFilters}

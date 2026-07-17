@@ -75,7 +75,7 @@ const AccountSettings: React.FC = () => {
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setLoading(true);
       await axios.put(
@@ -88,7 +88,7 @@ const AccountSettings: React.FC = () => {
       const updatedUser = { ...adminData, ...profileForm };
       localStorage.setItem('user', JSON.stringify(updatedUser));
       sessionStorage.setItem('user', JSON.stringify(updatedUser));
-      
+
       setAdminData(updatedUser);
       showSuccess('Profile has been updated successfully!');
     } catch (error) {
@@ -101,7 +101,7 @@ const AccountSettings: React.FC = () => {
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       showWarning('Passwords do not match', 'Please ensure both new password fields are identical.');
       return;
@@ -145,7 +145,7 @@ const AccountSettings: React.FC = () => {
         notificationSettings,
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
-      
+
       showSuccess('Notification preferences have been updated!');
     } catch (error) {
       console.error('Error updating notifications:', error);
@@ -171,7 +171,7 @@ const AccountSettings: React.FC = () => {
         </div>
 
         {/* Admin Info Card */}
-        <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white mb-6">
+        <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-5 text-white mb-6">
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-3xl font-bold">
               {adminData.fullName?.charAt(0) || 'A'}
@@ -187,36 +187,33 @@ const AccountSettings: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex max-sm:text-sm gap-4 border-b mb-6">
+        <div className="flex max-sm:text-sm gap-1 sm:gap-4 border-b mb-6">
           <button
             onClick={() => setActiveSection('profile')}
-            className={`flex items-center gap-2 px-4 py-2 font-medium transition ${
-              activeSection === 'profile'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`flex items-center gap-2 px-2 py-2 font-medium transition ${activeSection === 'profile'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             <User className="w-4 h-4" />
             Profile
           </button>
           <button
             onClick={() => setActiveSection('password')}
-            className={`flex items-center gap-2 px-4 py-2 font-medium transition ${
-              activeSection === 'password'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`flex items-center gap-2 px-2 py-2 font-medium transition ${activeSection === 'password'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             <Lock className="w-4 h-4" />
             Password
           </button>
           <button
             onClick={() => setActiveSection('notifications')}
-            className={`flex items-center gap-2 px-4 py-2 font-medium transition ${
-              activeSection === 'notifications'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`flex items-center gap-2 px-2 py-2 font-medium transition ${activeSection === 'notifications'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             <Bell className="w-4 h-4" />
             Notifications
@@ -325,7 +322,7 @@ const AccountSettings: React.FC = () => {
         {activeSection === 'notifications' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Notification Preferences</h3>
-            
+
             <div className="space-y-3">
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div>

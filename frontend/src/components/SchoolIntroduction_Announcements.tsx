@@ -16,13 +16,13 @@ const SchoolIntroduction_Announcements = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            
+
             // Fetch school profile
             const profileResponse = await schoolProfileService.get();
             if (profileResponse.data) {
                 setSchoolProfile(profileResponse.data);
             }
-            
+
             // Fetch recent announcements (limit to 3)
             const announcementsResponse = await announcementService.getAll();
             if (announcementsResponse.data) {
@@ -78,12 +78,12 @@ const SchoolIntroduction_Announcements = () => {
                 {announcements.length > 0 ? (
                     <ul className='list-none p-5 flex flex-col gap-3'>
                         {announcements.map((announcement) => (
-                            <li key={announcement.id} className='cursor-pointer hover:text-yellow-600 font-medium'>
+                            <Link key={announcement.id} to={`/announcements/${announcement.id}`} className='cursor-pointer hover:text-yellow-600 font-medium'>
                                 <h1 className="border-l-4 border-[#035CB0] pl-2 py-1">{announcement.title}</h1>
                                 <span className='text-gray-500 ml-3 font-normal text-sm'>
                                     {formatDate(announcement.startDate || announcement.createdAt || new Date().toISOString())}
                                 </span>
-                            </li>
+                            </Link>
                         ))}
                     </ul>
                 ) : (
@@ -92,8 +92,8 @@ const SchoolIntroduction_Announcements = () => {
                     </div>
                 )}
                 <div className="px-5 pb-4">
-                    <Link 
-                        to="/announcements" 
+                    <Link
+                        to="/announcements"
                         className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                     >
                         View all announcements →

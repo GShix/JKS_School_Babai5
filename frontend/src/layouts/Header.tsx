@@ -63,7 +63,6 @@ const Header = () => {
     ]
     // which small-nav (mobile) submenu is open; null = none
     const [openSmallIndex, setOpenSmallIndex] = useState<number | null>(null);
-    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -74,7 +73,6 @@ const Header = () => {
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("isAdmin");
         setIsAdmin(false);
-        setShowLogoutConfirm(false);
         setClickMenu(false);
         navigate("/");
     };
@@ -190,18 +188,20 @@ const Header = () => {
                         </Link>
                     </div>
                     <div className="two flex  items-center gap-2.5 w-2/2 justify-between">
-                        <div className="nav-location hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
+                        <Link
+                            to={"https://www.google.com/maps/place/Janakalyan+H.S.S.+Padampur/@28.1879517,82.1354621,17z/data=!3m1!4b1!4m6!3m5!1s0x39981ddb63b5812f:0x459611dac3a9d5cc!8m2!3d28.1879517!4d82.1354621!16s%2Fg%2F11h596y6vy?hl=en&entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D"} target="_blank"
+                            className="nav-location hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
                             <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>
                             {schoolProfile?.address || 'बबई-५, पदमपुर, दाङ'}
-                        </div>
+                        </Link>
                         <div className="nav-cta hidden sm:flex gap-5 items-center text-sm">
                             {isAdmin ? (
                                 <>
-                                    <Link to="/admin/dashboard" className="py-2.5 px-5 bg-[#035CB0] rounded-md text-white hover:text-yellow-400  text-nowrap font-['Poppins']"><i className="ri-dashboard-line mr-1"></i> DASHBOARD</Link>
-                                    <button
-                                        onClick={() => setShowLogoutConfirm(true)}
-                                        className="py-2.5 px-5 bg-red-600 rounded-md hover:bg-red-700 text-white hover:text-yellow-400 cursor-pointer text-nowrap font-['Poppins']"><i className="ri-logout-circle-r-line mr-1"></i> LOGOUT
-                                    </button>
+                                    <Link to="/admin/dashboard" className="py-2.5 px-4 bg-[#035CB0] rounded-md text-white hover:text-yellow-400  text-nowrap font-['Poppins']"><i className="ri-dashboard-line mr-1"></i> DASHBOARD</Link>
+                                    <Link
+                                        to="/admin/settings"
+                                        className="py-2.5 px-4 bg-red-600 rounded-md hover:bg-red-700 text-white hover:text-yellow-400 cursor-pointer text-nowrap font-['Poppins']"><i className="ri-user-line mr-1"></i>
+                                    </Link>
                                 </>
                             ) : (
                                 <Link to="/admin/login" className="py-2.5 px-5 bg-[#035CB0] rounded-md hover:bg-[#035CB0] hover:border hover:border-[#035CB0] hover:text-yellow-400 text-nowrap font-['Poppins']"><i className="fas fa-user mr-1 text-white"></i> LOG IN</Link>
@@ -322,13 +322,12 @@ const Header = () => {
                                         <i className="ri-dashboard-line mr-1"></i>
                                         DASHBOARD
                                     </Link>
-                                    <button
+                                    <Link
+                                        to="/admin/settings"
                                         className="py-2.5 rounded-md px-5 bg-red-600 text-yellow-400 font-semibold hover:bg-red-700 hover:border hover:border-white hover:text-yellow-400"
-                                        onClick={() => setShowLogoutConfirm(true)}
                                     >
-                                        <i className="ri-logout-circle-r-line mr-1"></i>
-                                        LOGOUT
-                                    </button>
+                                        <i className="ri-user-line mr-1"></i>
+                                    </Link>
                                 </>
                             ) : (
                                 <Link
@@ -344,28 +343,6 @@ const Header = () => {
                     </div>
                 ) : ""}
             </nav>
-            {/* Shared logout confirmation dialog */}
-            {showLogoutConfirm && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-40">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
-                        <div className="mb-4 text-lg font-semibold text-gray-800">Are you sure you want to logout?</div>
-                        <div className="flex justify-center gap-4 mt-4">
-                            <button
-                                className="px-4 py-2 rounded bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                onClick={() => setShowLogoutConfirm(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
-                                onClick={handleLogout}
-                            >
-                                Logout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
             {/* <div className="header-low"> */}
             {/* <div className="large-nav-link bg-[#035CB0] max-sm:hidden flex justify-between font-normal border-r border-r-1 mx-10 py-5 px-20">
             <ul className="flex items-center gap-20 text-[#fff]">
