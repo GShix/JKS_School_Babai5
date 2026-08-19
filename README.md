@@ -1,1 +1,1 @@
-# Shree Janakalyan Secondary School, Babai-5, Padampur, Dang
+# Shree Janakalyan Basic School, Babai-1, Bhangabari, Dang

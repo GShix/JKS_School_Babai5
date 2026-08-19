@@ -9,7 +9,9 @@ const adminAuthRoute = require('./routes/adminAuthRoute');
 const studentAuthRoute = require('./routes/studentAuthRoute');
 const studentRoute = require('./routes/studentRoute');
 const staffRoute = require('./routes/staffRoute');
+const academicYearRoute = require('./routes/academicYearRoute');
 const teacherRoute = require('./routes/teacherRoute');
+const subjectRoute = require('./routes/subjectRoute');
 const classRoute = require('./routes/classRoute');
 const attendanceRoute = require('./routes/attendanceRoute');
 const gradeRoute = require('./routes/gradeRoute');
@@ -35,7 +37,7 @@ app.use(express.json());
 
 app.use(cors({
   origin: [
-    'https://jkssp5padampur.vercel.app',
+    'https://jkbsp5bhangabari.vercel.app',
     'http://localhost:5173',
   ],
   credentials: true
@@ -54,6 +56,8 @@ app.use("/api/", adminBlogRoute);
 app.use("/api/", studentRoute);
 app.use("/api/", staffRoute);
 app.use("/api/", teacherRoute);
+app.use("/api/", academicYearRoute);
+app.use("/api/", subjectRoute);
 app.use("/api/", classRoute);
 app.use("/api/", attendanceRoute);
 app.use("/api/", gradeRoute);

@@ -83,7 +83,7 @@ const About = () => {
           <div className="md:w-1/2">
             <h2 className="text-3xl font-semibold mb-4">Location on Google Map</h2>
             <p className="text-lg text-gray-700 mb-6">
-              {profile?.address || "Babai Rural Municipality-5, Padampur, Dang"}
+              {profile?.address || "Babai Rural Municipality-1, Bhangabari, Dang"}
             </p>
           </div>
           <div className="md:w-1/2">

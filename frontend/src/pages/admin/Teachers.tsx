@@ -6,13 +6,34 @@ import DataTable from '../../components/shared/DataTable';
 import Modal from '../../components/shared/Modal';
 import FormInput from '../../components/shared/FormInput';
 import Select from '../../components/shared/Select';
-import { teacherService } from '../../api';
-import type { Teacher } from '../../api';
+import { schoolProfileService, teacherService } from '../../api';
+import type { SchoolProfile, Teacher } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { showSuccess, showError, showWarning, showDeleteConfirm } from '../../utils/sweetAlert';
 import * as XLSX from 'xlsx';
 
 const Teachers: React.FC = () => {
+  const [schoolProfile, setSchoolProfile] = useState<SchoolProfile | null>(null);
+  useEffect(() => {
+
+    // Fetch school profile
+    const fetchSchoolProfile = async () => {
+      try {
+        const response = await schoolProfileService.get();
+        if (response.data) {
+          setSchoolProfile(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching school profile:', error);
+        // Use fallback data
+        setSchoolProfile({});
+      }
+    };
+
+    fetchSchoolProfile();
+  }, []);
+
+
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [filteredTeachers, setFilteredTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
@@ -640,7 +661,7 @@ const Teachers: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Select School*</label>
             <input
               type="text"
-              value="JKSS, Padampur"
+              value={`${schoolProfile?.schoolName || 'School Name'}`}
               disabled
               className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed"
             />

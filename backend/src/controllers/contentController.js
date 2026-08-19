@@ -7,7 +7,7 @@ exports.getContentBySection = async (req, res) => {
     const { language = 'en' } = req.query;
 
     const content = await contents.findAll({
-      where: { 
+      where: {
         section,
         language,
         status: 'active'
@@ -27,7 +27,7 @@ exports.getContentBySection = async (req, res) => {
       } else {
         contentObject[item.key] = item.value;
       }
-      
+
       // Include metadata if available
       if (item.metadata) {
         contentObject[`${item.key}_metadata`] = item.metadata;
@@ -57,7 +57,7 @@ exports.getSchoolProfile = async (req, res) => {
     const { language = 'en' } = req.query;
 
     const content = await contents.findAll({
-      where: { 
+      where: {
         section: 'school_profile',
         language,
         status: 'active'
@@ -146,7 +146,7 @@ exports.updateSchoolProfile = async (req, res) => {
 exports.getAllContent = async (req, res) => {
   try {
     const { section, category, language, status } = req.query;
-    
+
     const where = {};
     if (section) where.section = section;
     if (category) where.category = category;
@@ -339,18 +339,18 @@ exports.initializeDefaultContent = async (req, res) => {
       // School Profile - Nepali
       { section: 'school_profile', key: 'schoolNameNepali', value: 'श्री जनकल्याण', language: 'ne', valueType: 'text' },
       { section: 'school_profile', key: 'schoolTypeNepali', value: 'माध्यमिक विद्यालय:', language: 'ne', valueType: 'text' },
-      
+
       // School Profile - English
       { section: 'school_profile', key: 'schoolName', value: 'Janakalyan Higher Secondary School', language: 'en', valueType: 'text' },
       { section: 'school_profile', key: 'established', value: '2045 B.S.', language: 'en', valueType: 'text' },
-      { section: 'school_profile', key: 'address', value: 'Babai Rural Municipality-5, Padampur, Dang', language: 'en', valueType: 'text' },
+      { section: 'school_profile', key: 'address', value: 'Babai Rural Municipality-5, Bhangabari, Dang', language: 'en', valueType: 'text' },
       { section: 'school_profile', key: 'phone', value: '+977-82-XXXXXX', language: 'en', valueType: 'text' },
       { section: 'school_profile', key: 'email', value: 'info@jkschool.edu.np', language: 'en', valueType: 'text' },
       { section: 'school_profile', key: 'principalName', value: 'Principal Name', language: 'en', valueType: 'text' },
       { section: 'school_profile', key: 'principalMessage', value: 'Welcome to Janakalyan Higher Secondary School...', language: 'en', valueType: 'text' },
       { section: 'school_profile', key: 'mission', value: 'To provide quality education and develop well-rounded individuals.', language: 'en', valueType: 'text' },
       { section: 'school_profile', key: 'vision', value: 'To be a leading educational institution in Nepal.', language: 'en', valueType: 'text' },
-      
+
       // Hero Section
       { section: 'hero', key: 'title', value: 'Welcome to Janakalyan School', language: 'en', valueType: 'text' },
       { section: 'hero', key: 'subtitle', value: 'Excellence in Education Since 2045 B.S.', language: 'en', valueType: 'text' },

@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <!-- Home -->
    <url>
-      <loc>https://jkssp5padampur.vercel.app/</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>daily</changefreq>
       <priority>1.0</priority>
@@ -10,19 +10,19 @@
 
    <!-- About Section -->
    <url>
-      <loc>https://jkssp5padampur.vercel.app/about/jkss</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/about/intro</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/about/teachers</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/about/teachers</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/about/staffs</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/about/staffs</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
@@ -30,37 +30,37 @@
 
    <!-- Academic Programs -->
    <url>
-      <loc>https://jkssp5padampur.vercel.app/academic-programs</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/academic-programs</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.9</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/academic-programs/education</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/academic-programs/education</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/academic-programs/agriculture</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/academic-programs/agriculture</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/academic-programs/management</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/academic-programs/management</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/academic-programs/secondary-level</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/academic-programs/secondary-level</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.7</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/academic-programs/basic-level</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/academic-programs/basic-level</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.7</priority>
@@ -68,43 +68,43 @@
 
    <!-- Main Pages -->
    <url>
-      <loc>https://jkssp5padampur.vercel.app/admission</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/admission</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.9</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/results</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/results</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/announcements</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/announcements</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>daily</changefreq>
       <priority>0.9</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/blogs</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/blogs</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/gallery</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/gallery</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.7</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/downloads</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/downloads</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>
    </url>
    <url>
-      <loc>https://jkssp5padampur.vercel.app/career</loc>
+      <loc>https://jkbsp5bhangabari.vercel.app/career</loc>
       <lastmod>2026-03-14</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>

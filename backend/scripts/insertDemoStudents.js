@@ -381,7 +381,7 @@ async function insertDemoStudents() {
       try {
         const student = await students.create(studentData);
         successCount++;
-        console.log(`✅ Created: ${student.fullName} (${student.class}, ${student.isForeignStudent ? 'Foreign' : 'Nepali'})`);
+        console.log(`✅ Created: ${student.fullName} (${student.currentClass}, ${student.isForeignStudent ? 'Foreign' : 'Nepali'})`);
       } catch (error) {
         errorCount++;
         console.error(`❌ Error creating ${studentData.fullName}:`, error.message);

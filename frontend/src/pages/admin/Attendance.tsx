@@ -12,7 +12,7 @@ interface Student {
   id: number;
   fullName: string;
   rollNumber: string;
-  class: string;
+  currentClass: string;
   section: string;
 }
 
@@ -76,7 +76,7 @@ const Attendance: React.FC = () => {
         params
       });
       setAttendanceRecords(response.data.data || []);
-      
+
       // Initialize bulk attendance with existing records
       const bulk: { [key: number]: string } = {};
       response.data.data.forEach((record: AttendanceRecord) => {
@@ -114,7 +114,7 @@ const Attendance: React.FC = () => {
         remarks: ''
       }));
 
-      await axios.post(`${API_BASE_URL}/attendance/bulk`, 
+      await axios.post(`${API_BASE_URL}/attendance/bulk`,
         { attendance: attendanceData },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -146,19 +146,19 @@ const Attendance: React.FC = () => {
     const rows = attendanceRecords.map(record => [
       record.student?.fullName || '',
       record.student?.rollNumber || '',
-      record.student?.class || '',
+      record.student?.currentClass || '',
       record.student?.section || '',
       selectedDate,
       record.status.toUpperCase(),
       record.student?.rollNumber || '' // IEMIS student code
     ]);
-    
+
     return [headers, ...rows].map(row => row.join(',')).join('\n');
   };
 
   const getFilteredStudents = () => {
     return students.filter(student => {
-      if (selectedClass && student.class !== selectedClass) return false;
+      if (selectedClass && student.currentClass !== selectedClass) return false;
       if (selectedSection && student.section !== selectedSection) return false;
       return true;
     });
@@ -167,11 +167,11 @@ const Attendance: React.FC = () => {
   const columns = [
     { key: 'rollNumber', label: 'Roll No', render: (_value: any, record: AttendanceRecord) => record.student?.rollNumber || '-' },
     { key: 'name', label: 'Student Name', render: (_value: any, record: AttendanceRecord) => record.student?.fullName || '-' },
-    { key: 'class', label: 'Class', render: (_value: any, record: AttendanceRecord) => record.student?.class || '-' },
+    { key: 'class', label: 'Class', render: (_value: any, record: AttendanceRecord) => record.student?.currentClass || '-' },
     { key: 'section', label: 'Section', render: (_value: any, record: AttendanceRecord) => record.student?.section || 'A' },
-    { 
-      key: 'status', 
-      label: 'Status', 
+    {
+      key: 'status',
+      label: 'Status',
       render: (_value: any, record: AttendanceRecord) => {
         const variants: { [key: string]: any } = {
           present: 'success',
@@ -217,23 +217,23 @@ const Attendance: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">\n        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">\n          <div>\n            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">\n              <Calendar className="w-7 h-7 text-blue-600" />\n              Attendance Management\n            </h2>\n            <p className="text-sm text-gray-600 mt-1">Mark and track student attendance (IEMIS Compliant)</p>\n          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              onClick={() => setMarkingMode(!markingMode)}
-              variant={markingMode ? 'secondary' : 'primary'}
-              icon={<Clock />}
-            >
-              {markingMode ? 'View Records' : 'Mark Attendance'}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={() => setMarkingMode(!markingMode)}
+            variant={markingMode ? 'secondary' : 'primary'}
+            icon={<Clock />}
+          >
+            {markingMode ? 'View Records' : 'Mark Attendance'}
+          </Button>
+          {!markingMode && attendanceRecords.length > 0 && (
+            <Button onClick={exportAttendance} variant="success" icon={<Download />}>
+              Export IEMIS Report
             </Button>
-            {!markingMode && attendanceRecords.length > 0 && (
-              <Button onClick={exportAttendance} variant="success" icon={<Download />}>
-                Export IEMIS Report
-              </Button>
-            )}
-          </div>
+          )}
         </div>
+      </div>
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -277,7 +277,7 @@ const Attendance: React.FC = () => {
                 Mark All Present
               </Button>
             </div>
-            
+
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {getFilteredStudents().map(student => (
                 <div key={student.id} className="flex items-center justify-between bg-white p-3 rounded-lg">
@@ -290,14 +290,13 @@ const Attendance: React.FC = () => {
                       <button
                         key={status}
                         onClick={() => handleBulkAttendanceChange(student.id, status)}
-                        className={`px-3 py-1 rounded-lg text-sm font-medium transition ${
-                          bulkAttendance[student.id] === status
+                        className={`px-3 py-1 rounded-lg text-sm font-medium transition ${bulkAttendance[student.id] === status
                             ? status === 'present' ? 'bg-green-500 text-white' :
                               status === 'absent' ? 'bg-red-500 text-white' :
-                              status === 'late' ? 'bg-yellow-500 text-white' :
-                              'bg-blue-500 text-white'
+                                status === 'late' ? 'bg-yellow-500 text-white' :
+                                  'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
+                          }`}
                       >
                         {status === 'present' && <CheckCircle className="w-4 h-4 inline mr-1" />}
                         {status === 'absent' && <XCircle className="w-4 h-4 inline mr-1" />}

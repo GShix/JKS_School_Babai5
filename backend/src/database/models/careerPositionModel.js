@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     location: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      defaultValue: 'Padampur, Dang'
+      defaultValue: 'Bhangabari, Dang'
     },
     description: {
       type: DataTypes.TEXT,

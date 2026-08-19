@@ -6,7 +6,7 @@ import { staffService } from '../../api';
 import type { Staff } from '../../api';
 import { getErrorMessage } from '../../utils/errorHandler';
 
-const JKSSStaffs = () => {
+const Staffs = () => {
   const [staff, setStaff] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +20,7 @@ const JKSSStaffs = () => {
       setLoading(true);
       const response = await staffService.getAll();
       // Only show active non-teaching staff
-      const activeStaff = response.data?.filter((member: Staff) => 
+      const activeStaff = response.data?.filter((member: Staff) =>
         member.status === 'active' && member.position !== 'Teacher'
       ) || [];
       setStaff(activeStaff);
@@ -62,11 +62,11 @@ const JKSSStaffs = () => {
   }
 
   return (
-    <div className="JKSSStaffs-page min-h-screen bg-[#F7F7F7]">
+    <div className="Staffs-page min-h-screen bg-[#F7F7F7]">
       <Header />
       <main className="min-h-screen">
         <div className="staffs-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12" style={{ backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity: 0.9 }}>
-          <h1 className="text-5xl font-medium text-center my-8 text-white">JKSS Staffs</h1>
+          <h1 className="text-5xl font-medium text-center my-8 text-white">JKBS Staffs</h1>
         </div>
 
         <div className="staff-content w-full mx-auto px-4 py-8 sm:px-6 md:px-10 lg:px-16 max-w-7xl">
@@ -102,11 +102,10 @@ const JKSSStaffs = () => {
                   </div>
 
                   {/* Staff Grid */}
-                  <div className={`grid gap-6 ${
-                    group.single
-                      ? 'grid-cols-1 max-w-sm mx-auto'
-                      : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
-                  }`}>
+                  <div className={`grid gap-6 ${group.single
+                    ? 'grid-cols-1 max-w-sm mx-auto'
+                    : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                    }`}>
                     {group.members.map((member: Staff) => (
                       <TeamCard
                         key={member.id}
@@ -137,4 +136,4 @@ const JKSSStaffs = () => {
   )
 }
 
-export default JKSSStaffs
+export default Staffs;

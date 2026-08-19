@@ -12,8 +12,8 @@ interface SEOProps {
 const SEO = ({ title, description, keywords, image, url, type = 'website' }: SEOProps) => {
     const siteTitle = "Janakalyan Secondary School";
     // Ensure this points to your actual deployed domain
-    const siteUrl = "https://jkssp5padampur.vercel.app";
-    const defaultImage = `${siteUrl}/img/jkss_logo.png`;
+    const siteUrl = "https://jkbsp5bhangabari.vercel.app";
+    const defaultImage = `${siteUrl}/img/school_logo.png`;
 
     const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
     const metaImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : defaultImage;
@@ -23,7 +23,7 @@ const SEO = ({ title, description, keywords, image, url, type = 'website' }: SEO
             {/* Standard Meta Tags */}
             <title>{`${title} | ${siteTitle}`}</title>
             <meta name="description" content={description} />
-            <meta name="keywords" content={keywords || "school, education, janakalyan secondary school, babai, padampur, dang, nepal, education stream, agriculture stream, management stream, best school in dang"} />
+            <meta name="keywords" content={keywords || "school, education, janakalyan basic school, babai, bhangabari, dang, nepal, education stream, agriculture stream, management stream, best school in dang"} />
 
             {/* Open Graph / Facebook */}
             <meta property="og:type" content={type} />
@@ -47,19 +47,19 @@ const SEO = ({ title, description, keywords, image, url, type = 'website' }: SEO
                 {
                     "@context": "https://schema.org",
                     "@type": "School",
-                    "name": "Janakalyan Secondary School",
+                    "name": "Janakalyan Basic Secondary School",
                     "image": "${metaImage}",
                     "@id": "${siteUrl}",
                     "url": "${siteUrl}",
-                    "telephone": "+9779844929502",
+                    "telephone": "+9779760815000",
                     "address": {
                         "@type": "PostalAddress",
-                        "streetAddress": "Babai-5, Padampur",
+                        "streetAddress": "Babai-1, Bhangabari",
                         "addressLocality": "Dang",
                         "addressCountry": "NP"
                     },
                     "sameAs": [
-                        "https://www.facebook.com/janakalyana.ma.bi.padamapura.dana"
+                        "https://www.facebook.com/profile.php?id=100080435797269"
                     ]
                 }
             `}

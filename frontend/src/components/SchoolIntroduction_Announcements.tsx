@@ -31,15 +31,7 @@ const SchoolIntroduction_Announcements = () => {
         } catch (error) {
             console.error('Error fetching data:', error);
             // Use fallback data if API fails
-            setSchoolProfile({
-                id: 1,
-                schoolName: 'JKSS School',
-                schoolNameNepali: 'श्री जनकल्याण माध्यमिक विद्यालय',
-                phone: '+977 9844929502',
-                email: 'jksschoolp5@gmail.com',
-                address: 'Padampur, Dang',
-                introduction: 'Welcome to our school! We are dedicated to providing a high-quality education to our students. Our experienced faculty and innovative curriculum ensure that every child reaches their full potential. We offer a wide range of extracurricular activities to foster creativity and personal growth. Our state-of-the-art facilities and supportive community create a nurturing environment for learning. Join us in shaping the future of our students and empowering them to become leaders in their communities.'
-            });
+            setSchoolProfile({});
         } finally {
             setLoading(false);
         }
@@ -67,7 +59,7 @@ const SchoolIntroduction_Announcements = () => {
                 <p className='text-gray-700 text-lg leading-7 text-justify'>
                     {schoolProfile?.introduction || 'Welcome to our school!'}
                 </p>
-                <Link to="/about/jkss">
+                <Link to="/about/intro">
                     <button className='py-2.5 px-5 bg-[#035CB0] text-white rounded-md mt-4 hover:text-yellow-400 cursor-pointer text-nowrap'>
                         Read More
                     </button>

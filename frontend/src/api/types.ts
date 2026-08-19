@@ -56,7 +56,7 @@ export interface Student {
   dateOfBirth?: string;
   gender?: Gender;
   address?: string;
-  class?: string;
+  currentClass?: string;
   section?: string;
   rollNumber?: string;
   admissionDate?: string;
@@ -370,11 +370,11 @@ export interface UploadResponse {
 // School Profile
 export interface SchoolProfile {
   id?: number;
+  iemisCode?: string;
   schoolName?: string;
   schoolNameNepali?: string;
   schoolTypeNepali?: string;
   phone?: string;
-  fax?: string;
   email?: string;
   address?: string;
   addressNepali?: string;
@@ -387,7 +387,7 @@ export interface SchoolProfile {
   aboutUsDescription?: string;
   heroImage?: string;
   mapUrl?: string;
-  establishedYear?: string;
+  established?: string;
   principalName?: string;
   principalMessage?: string;
   vision?: string;
@@ -395,6 +395,7 @@ export interface SchoolProfile {
   website?: string;
   facebookUrl?: string;
   logoUrl?: string;
+  schoolCode?: string;
   panNumber?: string;
   registrationNumber?: string;
   affiliation?: string;

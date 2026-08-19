@@ -11,7 +11,7 @@ async function setupSchoolProfile() {
 
     // Check if school profile exists
     const existingProfile = await schoolProfile.findOne();
-    
+
     if (!existingProfile) {
       // Create default school profile
       await schoolProfile.create({
@@ -26,7 +26,7 @@ async function setupSchoolProfile() {
         municipality: 'Babai',
         ward: '1',
         introduction: 'Welcome to Janakalyan Secondary School',
-        establishedYear: 2020,
+        established: 2020,
         principalName: 'Principal Name',
         website: 'https://jkschool.edu.np',
         facebookUrl: 'https://facebook.com/jkschool'
@@ -38,7 +38,7 @@ async function setupSchoolProfile() {
 
     // Check if messages exist
     const existingMessages = await schoolMessages.findAll();
-    
+
     if (existingMessages.length === 0) {
       // Create default messages
       await schoolMessages.bulkCreate([
@@ -67,7 +67,7 @@ async function setupSchoolProfile() {
     console.log('   - school_profile');
     console.log('   - school_messages');
     console.log('\n🎉 You can now manage school profile from Admin Dashboard → Messages!');
-    
+
     process.exit(0);
   } catch (error) {
     console.error('\n❌ Error setting up school profile:', error);

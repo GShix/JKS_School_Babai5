@@ -10,6 +10,7 @@ const Login = () => {
   const [remember, setRemember] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -52,9 +53,9 @@ const Login = () => {
 
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4 bg-gray-50">
-      <div className="max-w-sm w-full text-gray-600 space-y-5 bg-white p-6 rounded-lg shadow">
-        <div className="text-center pb-4">
-          <img src="/img/jkss_logo.png" width={150} className="mx-auto" />
+      <div className="max-w-sm w-full text-gray-600 space-y-3 bg-white p-6 rounded-lg shadow">
+        <div className="text-center pb-2">
+          <img src="/img/school_logo.png" width={150} className="mx-auto" />
           <div className="mt-4">
             <h3 className="text-[#035CB0] text-2xl font-bold sm:text-3xl">Admin Portal</h3>
             <p className="text-sm text-gray-500">Sign in to your admin account</p>
@@ -63,7 +64,7 @@ const Login = () => {
 
         {error && <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="font-medium"> Email </label>
             <input
@@ -75,14 +76,32 @@ const Login = () => {
             />
           </div>
           <div>
-            <label className="font-medium"> Password </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-2 px-3 py-2 text-gray-700 bg-white outline-none border focus:border-[#035CB0] shadow-sm rounded-lg"
-            />
+            <label className="font-medium">Password</label>
+
+            <div className="relative mt-2">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 pr-10 text-gray-700 bg-white outline-none border focus:border-[#035CB0] shadow-sm rounded-lg"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#035CB0] transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <i
+                  className={
+                    showPassword
+                      ? "ri-eye-off-line text-lg"
+                      : "ri-eye-line text-lg"
+                  }
+                ></i>
+              </button>
+            </div>
           </div>
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-x-2 cursor-pointer">
@@ -113,7 +132,7 @@ const Login = () => {
             </button>
           </div>
         </form>
-        
+
         <div className="text-center pt-4 border-t">
           <p className="text-sm text-gray-600">
             Are you a student?{' '}

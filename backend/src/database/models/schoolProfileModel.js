@@ -41,9 +41,9 @@ module.exports = (sequelize, DataTypes) => {
     introduction: {
       type: DataTypes.TEXT
     },
-    establishedYear: {
+    established: {
       type: DataTypes.STRING(10),
-      field: 'established_year'
+      field: 'established'
     },
     principalName: {
       type: DataTypes.STRING(255),
@@ -71,8 +71,9 @@ module.exports = (sequelize, DataTypes) => {
     affiliation: {
       type: DataTypes.STRING(255)
     },
-    fax: {
-      type: DataTypes.STRING(20)
+    schoolCode: {
+      type: DataTypes.STRING(20),
+      field: 'school_code'
     },
     taxPercentage: {
       type: DataTypes.DECIMAL(5, 2),

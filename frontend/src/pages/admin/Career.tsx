@@ -20,7 +20,7 @@ const Career = () => {
   const [selectedPosition, setSelectedPosition] = useState<CareerPosition | null>(null);
   const [editingJob, setEditingJob] = useState<CareerPosition | null>(null);
   const [noticeFile, setNoticeFile] = useState<File | null>(null);
-  
+
   const getStatCardClasses = (color: string) => {
     const classes = {
       blue: 'bg-blue-50 border border-blue-200',
@@ -50,12 +50,12 @@ const Career = () => {
     };
     return classes[color as keyof typeof classes] || classes.gray;
   };
-  
+
   const [formData, setFormData] = useState({
     title: '',
     department: '',
     type: 'Full-time',
-    location: 'Padampur, Dang',
+    location: 'Bhangabari, Dang',
     description: '',
     requirements: '',
     responsibilities: '',
@@ -116,7 +116,7 @@ const Career = () => {
       formDataToSend.append('vacancies', formData.vacancies.toString());
       if (formData.applicationDeadline) formDataToSend.append('applicationDeadline', formData.applicationDeadline);
       formDataToSend.append('status', formData.status);
-      
+
       if (noticeFile) {
         formDataToSend.append('noticeFile', noticeFile);
       }
@@ -128,7 +128,7 @@ const Career = () => {
         await careerService.createPosition(formDataToSend);
         showSuccess('Job position created successfully');
       }
-      
+
       setShowModal(false);
       resetForm();
       fetchJobs();
@@ -160,7 +160,7 @@ const Career = () => {
   const handleDelete = async (id: number) => {
     const result = await showDeleteConfirm('this job posting');
     if (!result.isConfirmed) return;
-    
+
     try {
       await careerService.deletePosition(id);
       showSuccess('Job position deleted successfully');
@@ -207,7 +207,7 @@ const Career = () => {
   const deleteApplication = async (id: number) => {
     const result = await showDeleteConfirm('this application');
     if (!result.isConfirmed) return;
-    
+
     try {
       await careerService.deleteApplication(id);
       showSuccess('Application deleted successfully');
@@ -223,7 +223,7 @@ const Career = () => {
       title: '',
       department: '',
       type: 'Full-time',
-      location: 'Padampur, Dang',
+      location: 'Bhangabari, Dang',
       description: '',
       requirements: '',
       responsibilities: '',
@@ -273,8 +273,8 @@ const Career = () => {
   const columns = [
     { key: 'title', label: 'Job Title' },
     { key: 'department', label: 'Department' },
-    { 
-      key: 'type', 
+    {
+      key: 'type',
       label: 'Type',
       render: (value: string, _row: any) => (
         <Badge variant={getJobTypeBadgeVariant(value)}>
@@ -283,13 +283,13 @@ const Career = () => {
       )
     },
     { key: 'vacancies', label: 'Vacancies' },
-    { 
-      key: 'applicationDeadline', 
+    {
+      key: 'applicationDeadline',
       label: 'Deadline',
       render: (value: string, _row: any) => value ? new Date(value).toLocaleDateString() : 'N/A'
     },
-    { 
-      key: 'id', 
+    {
+      key: 'id',
       label: 'Applications',
       render: (_: any, row: CareerPosition) => (
         <button
@@ -335,29 +335,29 @@ const Career = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { 
-            label: 'Active Positions', 
-            value: jobs.filter(j => j.status === 'active').length, 
-            icon: Briefcase, 
-            color: 'green' 
+          {
+            label: 'Active Positions',
+            value: jobs.filter(j => j.status === 'active').length,
+            icon: Briefcase,
+            color: 'green'
           },
-          { 
-            label: 'Total Vacancies', 
-            value: jobs.reduce((sum, j) => sum + (j.status === 'active' ? j.vacancies : 0), 0), 
-            icon: Users, 
-            color: 'blue' 
+          {
+            label: 'Total Vacancies',
+            value: jobs.reduce((sum, j) => sum + (j.status === 'active' ? j.vacancies : 0), 0),
+            icon: Users,
+            color: 'blue'
           },
-          { 
-            label: 'Applications', 
-            value: applications.length, 
-            icon: Eye, 
-            color: 'yellow' 
+          {
+            label: 'Applications',
+            value: applications.length,
+            icon: Eye,
+            color: 'yellow'
           },
-          { 
-            label: 'Closed', 
-            value: jobs.filter(j => j.status === 'closed').length, 
-            icon: Calendar, 
-            color: 'gray' 
+          {
+            label: 'Closed',
+            value: jobs.filter(j => j.status === 'closed').length,
+            icon: Calendar,
+            color: 'gray'
           }
         ].map((stat) => (
           <div
@@ -501,7 +501,7 @@ const Career = () => {
             label="Location"
             value={formData.location}
             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-            placeholder="e.g., Padampur, Dang"
+            placeholder="e.g., Bhangabari, Dang"
           />
 
           <FormInput

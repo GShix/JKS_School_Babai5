@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { contactService } from '../api/services';
+import { useEffect, useState } from 'react';
+import { contactService, schoolProfileService } from '../api/services';
+import type { SchoolProfile } from '../api';
 
 interface FormData {
   name: string;
@@ -11,6 +12,28 @@ interface FormData {
 }
 
 const ContactUs = () => {
+  const [schoolProfile, setSchoolProfile] = useState<SchoolProfile | null>(null);
+
+  useEffect(() => {
+    // Fetch school profile
+    const fetchSchoolProfile = async () => {
+      try {
+        const response = await schoolProfileService.get();
+        if (response.data) {
+          setSchoolProfile(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching school profile:', error);
+        // Use fallback data
+        setSchoolProfile({});
+      }
+    };
+
+    fetchSchoolProfile();
+
+  }, []);
+  const schoolName = schoolProfile?.schoolName?.trim().split(/\s+/) || []
+
   const [formData, setFormData] = useState<FormData>({
     name: '',
     phone: '',
@@ -55,7 +78,7 @@ const ContactUs = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -72,7 +95,7 @@ const ContactUs = () => {
         isStudent: formData.isStudent,
         className: formData.isStudent ? formData.className : undefined,
       });
-      
+
       if (response.data) {
         setSubmitMessage({
           type: 'success',
@@ -127,22 +150,21 @@ const ContactUs = () => {
           </h2>
         </div>
         <div className="mb-6 w-full flex justify-center">
-          <h1 className="text-2xl sm:text-4xl text-[#035CB0] font-bold">Janakalyan Contact Form</h1>
+          <h1 className="text-2xl sm:text-4xl text-[#035CB0] font-bold">{schoolName.slice(1, 2).join(' ') || 'Our School'} Contact Form</h1>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Form */}
           <div className="bg-white rounded-lg shadow-xl p-8">
-              <p className="text-gray-600 mb-5">
-                Get in touch with Shree Janakalyan Secondary School to start your journey towards
-                success. Fill out the form below, and we'll be in contact shortly
-              </p>
+            <p className="text-gray-600 mb-5">
+              Get in touch with {`${schoolName.join(' ') || "Our School"}`} to start your journey towards
+              success. Fill out the form below, and we'll be in contact shortly
+            </p>
             {submitMessage && (
               <div
-                className={`mb-6 p-4 rounded-lg ${
-                  submitMessage.type === 'success'
-                    ? 'bg-green-100 text-green-800 border border-green-200'
-                    : 'bg-red-100 text-red-800 border border-red-200'
-                }`}
+                className={`mb-6 p-4 rounded-lg ${submitMessage.type === 'success'
+                  ? 'bg-green-100 text-green-800 border border-green-200'
+                  : 'bg-red-100 text-red-800 border border-red-200'
+                  }`}
               >
                 {submitMessage.text}
               </div>
@@ -158,9 +180,8 @@ const ContactUs = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your Name"
-                    className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${
-                      errors.name ? 'border-red-500' : 'border-gray-200'
-                    }`}
+                    className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${errors.name ? 'border-red-500' : 'border-gray-200'
+                      }`}
                   />
                   {errors.name && (
                     <p className="mt-1 text-sm text-red-600">{errors.name}</p>
@@ -175,9 +196,8 @@ const ContactUs = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Your Number"
-                    className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${
-                      errors.phone ? 'border-red-500' : 'border-gray-200'
-                    }`}
+                    className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${errors.phone ? 'border-red-500' : 'border-gray-200'
+                      }`}
                   />
                   {errors.phone && (
                     <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
@@ -193,9 +213,8 @@ const ContactUs = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Your E-mail (Optional)"
-                  className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${
-                    errors.email ? 'border-red-500' : 'border-gray-200'
-                  }`}
+                  className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${errors.email ? 'border-red-500' : 'border-gray-200'
+                    }`}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -226,9 +245,8 @@ const ContactUs = () => {
                     value={formData.className}
                     onChange={handleChange}
                     placeholder="Enter your class (e.g., Class 10)"
-                    className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${
-                      errors.className ? 'border-red-500' : 'border-gray-200'
-                    }`}
+                    className={`w-full px-4 py-2 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition ${errors.className ? 'border-red-500' : 'border-gray-200'
+                      }`}
                   />
                   {errors.className && (
                     <p className="mt-1 text-sm text-red-600">{errors.className}</p>

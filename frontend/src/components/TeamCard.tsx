@@ -13,7 +13,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ fullName, position, profileImage, h
       }`}>
       <div className="img overflow-hidden">
         <img
-          src={profileImage || '/img/jkss_logo.png'}
+          src={profileImage || '/img/school_logo.png'}
           alt={fullName}
           className={`w-full object-cover transition-transform duration-300 hover:scale-105 ${highlighted ? 'h-52' : 'h-48'
             }`}
@@ -21,7 +21,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ fullName, position, profileImage, h
           decoding="async"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = '/img/jkss_logo.png';
+            target.src = '/img/school_logo.png';
           }}
         />
       </div>

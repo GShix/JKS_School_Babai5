@@ -16,7 +16,7 @@ interface FeeRecord {
   student?: {
     fullName: string;
     rollNumber: string;
-    class: string;
+    currentClass: string;
     section: string;
   };
   feeType: string;
@@ -104,7 +104,7 @@ const Fees: React.FC = () => {
         );
         showSuccess('New fee record has been added successfully!');
       }
-      
+
       setModalOpen(false);
       resetForm();
       fetchFees();
@@ -131,7 +131,7 @@ const Fees: React.FC = () => {
         },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
-      
+
       showSuccess('Payment has been recorded successfully!');
       setPaymentModalOpen(false);
       setPaymentAmount('');
@@ -202,11 +202,11 @@ const Fees: React.FC = () => {
   };
 
   const generateFeesReport = () => {
-    const headers = ['Student Name', 'Roll No', 'Class', 'Fee Type', 'Amount', 'Paid', 'Balance', 'Status', 'Due Date', 'Academic Year'];
+    const headers = ['Student Name', 'Roll No', 'Current Class', 'Fee Type', 'Amount', 'Paid', 'Balance', 'Status', 'Due Date', 'Academic Year'];
     const rows = fees.map(fee => [
       fee.student?.fullName || '',
       fee.student?.rollNumber || '',
-      fee.student?.class || '',
+      fee.student?.currentClass || '',
       fee.feeType,
       fee.amount,
       fee.paidAmount,
@@ -215,25 +215,27 @@ const Fees: React.FC = () => {
       fee.dueDate,
       fee.academicYear
     ]);
-    
+
     return [headers, ...rows].map(row => row.join(',')).join('\n');
   };
 
   const columns = [
-    { key: 'student', label: 'Student', render: (_value: any, fee: FeeRecord) => (
-      <div>
-        <p className="font-medium">{fee.student?.fullName || 'N/A'}</p>
-        <p className="text-sm text-gray-600">Roll: {fee.student?.rollNumber}</p>
-      </div>
-    )},
-    { key: 'class', label: 'Class', render: (_value: any, fee: FeeRecord) => `${fee.student?.class} ${fee.student?.section || ''}` },
+    {
+      key: 'student', label: 'Student', render: (_value: any, fee: FeeRecord) => (
+        <div>
+          <p className="font-medium">{fee.student?.fullName || 'N/A'}</p>
+          <p className="text-sm text-gray-600">Roll: {fee.student?.rollNumber}</p>
+        </div>
+      )
+    },
+    { key: 'currentClass', label: 'Current Class', render: (_value: any, fee: FeeRecord) => `${fee.student?.currentClass} ${fee.student?.section || ''}` },
     { key: 'feeType', label: 'Fee Type' },
     { key: 'amount', label: 'Amount', render: (_value: any, fee: FeeRecord) => `NPR ${fee.amount.toLocaleString()}` },
     { key: 'paid', label: 'Paid', render: (_value: any, fee: FeeRecord) => `NPR ${fee.paidAmount.toLocaleString()}` },
     { key: 'balance', label: 'Balance', render: (_value: any, fee: FeeRecord) => `NPR ${(fee.amount - fee.paidAmount).toLocaleString()}` },
-    { 
-      key: 'status', 
-      label: 'Status', 
+    {
+      key: 'status',
+      label: 'Status',
       render: (_value: any, fee: FeeRecord) => {
         const variants: { [key: string]: any } = {
           paid: 'success',

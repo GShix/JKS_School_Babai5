@@ -15,7 +15,7 @@ interface Student {
   emisId: string;
   fullName: string;
   rollNumber: string;
-  class: string;
+  currentClass: string;
   section: string;
   phone: string;
   email: string;
@@ -171,10 +171,10 @@ const FeeCollectionNew: React.FC = () => {
     }
   };
 
-  // Search student by IEMIS ID or name
+  // Search student by IIEMIS Code or name
   const handleSearchStudent = async () => {
     if (!searchQuery.trim()) {
-      showError('Please enter IEMIS ID or student name');
+      showError('Please enter IIEMIS Code or student name');
       return;
     }
 
@@ -316,7 +316,7 @@ const FeeCollectionNew: React.FC = () => {
         date: paymentData.paymentDate,
         student: {
           fullName: selectedStudent.fullName,
-          class: selectedStudent.class,
+          currentClass: selectedStudent.currentClass,
           section: selectedStudent.section,
           rollNumber: selectedStudent.rollNumber,
           emisId: selectedStudent.emisId,
@@ -379,7 +379,7 @@ const FeeCollectionNew: React.FC = () => {
             <FormInput
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Enter IEMIS ID, name, or roll number"
+              placeholder="Enter IIEMIS Code, name, or roll number"
               onKeyDown={(e) => e.key === 'Enter' && handleSearchStudent()}
               disabled={loading}
             />
@@ -400,7 +400,7 @@ const FeeCollectionNew: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <span className="text-gray-600">IEMIS ID:</span>
+                  <span className="text-gray-600">IIEMIS Code:</span>
                   <span className="ml-2 font-semibold">{selectedStudent.emisId}</span>
                 </div>
                 <div>
@@ -414,7 +414,7 @@ const FeeCollectionNew: React.FC = () => {
                 <div>
                   <span className="text-gray-600">Class:</span>
                   <span className="ml-2 font-semibold">
-                    {selectedStudent.class}-{selectedStudent.section}
+                    {selectedStudent.currentClass}-{selectedStudent.section}
                   </span>
                 </div>
               </div>
@@ -671,7 +671,7 @@ const FeeCollectionNew: React.FC = () => {
               <p className="font-semibold text-gray-900">{selectedStudent.fullName}</p>
               <p className="text-gray-600">IEMIS: {selectedStudent.emisId}</p>
               <p className="text-gray-600">
-                Class: {selectedStudent.class}-{selectedStudent.section}
+                Class: {selectedStudent.currentClass}-{selectedStudent.section}
               </p>
             </div>
 

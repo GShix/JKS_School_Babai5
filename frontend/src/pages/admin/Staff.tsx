@@ -17,7 +17,7 @@ const StaffPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffType | null>(null);
-  
+
   // Filter states
   const [filterGender, setFilterGender] = useState('');
   const [filterPosition, setFilterPosition] = useState('');
@@ -64,17 +64,17 @@ const StaffPage: React.FC = () => {
 
   const handleLoadFilters = () => {
     let filtered = [...staff];
-    
+
     // Apply gender filter
     if (filterGender) {
       filtered = filtered.filter(member => member.gender?.toLowerCase() === filterGender.toLowerCase());
     }
-    
+
     // Apply position filter
     if (filterPosition) {
       filtered = filtered.filter(member => member.position?.toLowerCase().includes(filterPosition.toLowerCase()));
     }
-    
+
     setFilteredStaff(filtered);
   };
 
@@ -89,25 +89,25 @@ const StaffPage: React.FC = () => {
     try {
       // Create FormData for multipart/form-data
       const submitData = new FormData();
-      
+
       // Append all form fields
       Object.entries(formData).forEach(([key, value]) => {
         if (value) {
           submitData.append(key, value);
         }
       });
-      
+
       // Append image file if selected
       if (selectedImage) {
         submitData.append('profileImage', selectedImage);
       }
-      
+
       if (editingStaff) {
         await staffService.update(editingStaff.id, submitData);
       } else {
         await staffService.create(submitData);
       }
-      
+
       setShowModal(false);
       setEditingStaff(null);
       resetForm();
@@ -122,7 +122,7 @@ const StaffPage: React.FC = () => {
   const handleDelete = async (id: number) => {
     const result = await showDeleteConfirm('this staff member');
     if (!result.isConfirmed) return;
-    
+
     try {
       await staffService.delete(id);
       fetchStaff();
@@ -191,15 +191,15 @@ const StaffPage: React.FC = () => {
         showWarning('File size too large', 'File size must be less than 5MB.');
         return;
       }
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         showWarning('Invalid file type', 'Please select an image file.');
         return;
       }
-      
+
       setSelectedImage(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -214,8 +214,8 @@ const StaffPage: React.FC = () => {
       key: 'profileImage',
       label: 'Photo',
       render: (_value: string, row: StaffType) => (
-        <img 
-          src={row.profileImage || '/img/default-avatar.svg'} 
+        <img
+          src={row.profileImage || '/img/default-avatar.svg'}
           alt={row.fullName}
           className="w-10 h-10 rounded-full object-cover border border-gray-200"
           onError={(e) => {
@@ -261,12 +261,12 @@ const StaffPage: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Select School*</label>
             <input
               type="text"
-              value="JKSS, Padampur"
+              value="JKBS, Bhangabari"
               disabled
               className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
             <Select
@@ -280,7 +280,7 @@ const StaffPage: React.FC = () => {
               ]}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Position</label>
             <Select
@@ -297,7 +297,7 @@ const StaffPage: React.FC = () => {
               ]}
             />
           </div>
-          
+
           <div className="flex gap-2">
             <Button
               variant="primary"
@@ -400,9 +400,9 @@ const StaffPage: React.FC = () => {
             </label>
             <div className="flex items-center gap-4">
               {imagePreview && (
-                <img 
-                  src={imagePreview} 
-                  alt="Preview" 
+                <img
+                  src={imagePreview}
+                  alt="Preview"
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
                 />
               )}
@@ -432,7 +432,7 @@ const StaffPage: React.FC = () => {
             value={formData.fullName}
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
           />
-          
+
           <FormInput
             label="Email"
             type="email"
@@ -440,20 +440,20 @@ const StaffPage: React.FC = () => {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
-          
+
           <FormInput
             label="Phone"
             required
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
           />
-          
+
           <FormInput
             label="Employee ID"
             value={formData.employeeId}
             onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
           />
-          
+
           <Select
             label="Position"
             required
@@ -474,7 +474,7 @@ const StaffPage: React.FC = () => {
               { value: 'Other', label: 'Other' }
             ]}
           />
-          
+
           <Select
             label="Department"
             required
@@ -494,14 +494,14 @@ const StaffPage: React.FC = () => {
               { value: 'Support', label: 'Support' }
             ]}
           />
-          
+
           <FormInput
             label="Date of Birth"
             type="date"
             value={formData.dateOfBirth}
             onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
           />
-          
+
           <Select
             label="Gender"
             value={formData.gender}
@@ -512,34 +512,34 @@ const StaffPage: React.FC = () => {
               { value: 'Other', label: 'Other' }
             ]}
           />
-          
+
           <FormInput
             label="Joining Date"
             type="date"
             value={formData.joiningDate}
             onChange={(e) => setFormData({ ...formData, joiningDate: e.target.value })}
           />
-          
+
           <FormInput
             label="Qualification"
             value={formData.qualification}
             onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
           />
-          
+
           <FormInput
             label="Experience (years)"
             value={formData.experience}
             onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
             placeholder="5 years"
           />
-          
+
           <FormInput
             label="Salary"
             type="number"
             value={formData.salary}
             onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
           />
-          
+
           <Select
             label="Blood Group"
             value={formData.bloodGroup}
@@ -555,7 +555,7 @@ const StaffPage: React.FC = () => {
               { value: 'O-', label: 'O-' }
             ]}
           />
-          
+
           <Select
             label="Status"
             required
@@ -568,7 +568,7 @@ const StaffPage: React.FC = () => {
               { value: 'terminated', label: 'Terminated' }
             ]}
           />
-          
+
           <div className="md:col-span-2">
             <FormInput
               label="Subjects (comma separated)"
@@ -577,7 +577,7 @@ const StaffPage: React.FC = () => {
               placeholder="Mathematics, Physics, Chemistry"
             />
           </div>
-          
+
           <div className="md:col-span-2">
             <FormInput
               label="Address"

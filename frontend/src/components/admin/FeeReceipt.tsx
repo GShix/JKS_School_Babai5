@@ -12,7 +12,7 @@ interface ReceiptData {
   date: string;
   student: {
     fullName: string;
-    class: string;
+    currentClass: string;
     section: string;
     rollNumber: string;
     emisId?: string;
@@ -149,8 +149,7 @@ export const FeeReceipt: React.FC<FeeReceiptProps> = ({ schoolProfile, receiptDa
               {schoolProfile?.district && `, ${schoolProfile.district}`} */}
             </p>
             <p className="text-xs text-gray-600">
-              Tel/Fax: {schoolProfile?.phone || 'N/A'}
-              {schoolProfile?.fax && ` / ${schoolProfile.fax}`}
+              Tel: {schoolProfile?.phone || 'N/A'}
             </p>
             <p className="text-xs text-gray-600">
               Email: {schoolProfile?.email || 'N/A'}
@@ -192,7 +191,7 @@ export const FeeReceipt: React.FC<FeeReceiptProps> = ({ schoolProfile, receiptDa
             <span className="font-semibold">Name:</span> <span className="uppercase">{receiptData.student.fullName}</span>
           </div>
           <div>
-            <span className="font-semibold">Class:</span> <span className="uppercase">{receiptData.student.class}</span>
+            <span className="font-semibold">Class:</span> <span className="uppercase">{receiptData.student.currentClass}</span>
           </div>
           <div>
             <span className="font-semibold">Roll No:</span> {receiptData.student.rollNumber}

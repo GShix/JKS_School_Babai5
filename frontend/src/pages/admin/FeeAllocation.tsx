@@ -6,6 +6,11 @@ import FormInput from '../../components/shared/FormInput';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/config';
 import { showSuccess, showError } from '../../utils/sweetAlert';
+// interface ClassItem {
+//   id: string | number;
+//   name: string;
+//   status?: string;
+// }
 
 interface FeeStructure {
   id: number;
@@ -21,7 +26,7 @@ interface Student {
   id: number;
   fullName: string;
   rollNumber: string;
-  class: string;
+  currentClass: string;
   section: string;
 }
 
@@ -37,7 +42,8 @@ const FeeAllocation: React.FC = () => {
   const [structures, setStructures] = useState<FeeStructure[]>([]);
   const [selectedStructure, setSelectedStructure] = useState<number | ''>('');
   const [allocationType, setAllocationType] = useState<'class' | 'individual'>('class');
-  const [classValue, setClassValue] = useState('');
+  const [className, setClassName] = useState('');
+  // const [classes, setClasses] = useState<ClassItem[]>([]);
   const [section, setSection] = useState('');
   const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
@@ -52,16 +58,39 @@ const FeeAllocation: React.FC = () => {
   const [allocatedResults, setAllocatedResults] = useState<AllocationResult[]>([]);
 
   const getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token');
+  // const fetchClasses = async () => {
+  //   try {
+  //     const response = await axios.get(`${API_BASE_URL}/classes`, {
+  //       headers: {
+  //         Authorization: `Bearer ${getToken()}`,
+  //       },
+  //     });
 
+  //     const classData = response.data?.data || [];
+
+  //     setClasses(
+  //       classData.filter(
+  //         (classItem: ClassItem) =>
+  //           !classItem.status ||
+  //           classItem.status.toLowerCase() === 'active'
+  //       )
+  //     );
+  //   } catch (error) {
+  //     console.error('Error fetching classes:', error);
+  //     showError('Failed to load classes');
+  //     setClasses([]);
+  //   }
+  // };
   useEffect(() => {
+    // fetchClasses();
     fetchFeeStructures();
   }, []);
 
   useEffect(() => {
-    if (allocationType === 'class' && classValue) {
+    if (allocationType === 'class' && className) {
       fetchStudentsByClass();
     }
-  }, [classValue, section, allocationType]);
+  }, [className, section, allocationType]);
 
   // Fetch active fee structures
   const fetchFeeStructures = async () => {
@@ -82,31 +111,61 @@ const FeeAllocation: React.FC = () => {
 
   // Fetch students by class
   const fetchStudentsByClass = async () => {
+    if (!className) {
+      setStudents([]);
+      setSelectedStudents([]);
+      return;
+    }
+
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/students/class/${classValue}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      
-      let fetchedStudents = response.data.data || [];
-      
-      // Filter by section if provided
-      if (section) {
+      setSelectedStudents([]);
+
+      const response = await axios.get(
+        `${API_BASE_URL}/students`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+          params: {
+            currentClass: className,
+          },
+        }
+      );
+
+      let fetchedStudents: Student[] =
+        response.data?.data || [];
+
+      // Defensive filtering
+      fetchedStudents = fetchedStudents.filter(
+        (student) =>
+          String(student.currentClass) ===
+          String(className)
+      );
+
+      // Filter section if selected
+      if (section.trim()) {
         fetchedStudents = fetchedStudents.filter(
-          (s: Student) => s.section?.toUpperCase() === section.toUpperCase()
+          (student) =>
+            student.section?.toUpperCase() ===
+            section.trim().toUpperCase()
         );
       }
-      
+
       setStudents(fetchedStudents);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching students:', error);
-      showError('Error fetching students for this class');
+
+      showError(
+        error.response?.data?.message ||
+        'Error fetching students for this class'
+      );
+
       setStudents([]);
     } finally {
       setLoading(false);
     }
   };
-
   // Search students for individual allocation
   const handleSearchStudents = async () => {
     if (!searchQuery.trim()) {
@@ -118,16 +177,16 @@ const FeeAllocation: React.FC = () => {
       const response = await axios.get(`${API_BASE_URL}/students`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
-      
+
       const allStudents = response.data.data || [];
       const query = searchQuery.toLowerCase();
-      
+
       // Search by name or roll number
-      const filtered = allStudents.filter((s: Student) => 
-        s.fullName?.toLowerCase().includes(query) || 
+      const filtered = allStudents.filter((s: Student) =>
+        s.fullName?.toLowerCase().includes(query) ||
         s.rollNumber?.toLowerCase().includes(query)
       );
-      
+
       setSearchResults(filtered.slice(0, 10)); // Limit to 10 results
     } catch (error) {
       console.error('Error searching students:', error);
@@ -170,7 +229,7 @@ const FeeAllocation: React.FC = () => {
       let response;
 
       if (allocationType === 'class') {
-        if (!classValue) {
+        if (!className) {
           showError('Please select a class');
           return;
         }
@@ -178,7 +237,7 @@ const FeeAllocation: React.FC = () => {
         response = await axios.post(
           `${API_BASE_URL}/fee-management/allocations/class`,
           {
-            class: classValue,
+            class: className,
             section: section || undefined,
             feeStructureId: selectedStructure,
             discount: discountAmount,
@@ -214,14 +273,14 @@ const FeeAllocation: React.FC = () => {
 
       const { successful, failed, allocations } = response.data.data;
       setAllocatedResults(allocations || []);
-      
+
       showSuccess(
         `Successfully allocated to ${successful} student(s)${failed > 0 ? `. ${failed} failed.` : ''}`
       );
 
       // Reset form
       setSelectedStructure('');
-      setClassValue('');
+      setClassName('');
       setSection('');
       setSelectedStudents([]);
       setStudents([]);
@@ -238,8 +297,8 @@ const FeeAllocation: React.FC = () => {
   };
 
   const selectedStructureDetails = structures.find(s => s.id === selectedStructure);
-  const displayedStudents = allocationType === 'class' 
-    ? students 
+  const displayedStudents = allocationType === 'class'
+    ? students
     : students.filter(s => selectedStudents.includes(s.id));
 
   return (
@@ -285,8 +344,8 @@ const FeeAllocation: React.FC = () => {
             {selectedStructureDetails && (
               <div className="mt-2 p-3 bg-blue-50 rounded border border-blue-200">
                 <p className="text-sm text-blue-900">
-                  <strong>Academic Year:</strong> {selectedStructureDetails.academicYear} | 
-                  <strong> Amount:</strong> NPR {selectedStructureDetails.totalAmount.toLocaleString()} | 
+                  <strong>Academic Year:</strong> {selectedStructureDetails.academicYear} |
+                  <strong> Amount:</strong> NPR {selectedStructureDetails.totalAmount.toLocaleString()} |
                   <strong> Due Date:</strong> {new Date(selectedStructureDetails.dueDate).toLocaleDateString()}
                 </p>
               </div>
@@ -323,21 +382,30 @@ const FeeAllocation: React.FC = () => {
           </div>
 
           {/* Class Selection (for class allocation) */}
-          {allocationType === 'class' && (
+          {/* {allocationType === 'class' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Class *
                 </label>
                 <Select
-                  value={classValue}
-                  onChange={(e) => setClassValue(e.target.value)}
+                  value={className}
+                  onChange={(e) => {
+                    setClassName(e.target.value);
+                    setSelectedStudents([]);
+                    setStudents([]);
+                  }}
                   options={[
-                    { value: '', label: 'Select Class' },
-                    ...[...Array(12)].map((_, i) => ({
-                      value: (i + 1).toString(),
-                      label: `Class ${i + 1}`
-                    }))
+                    {
+                      value: '',
+                      label: 'Select Class',
+                    },
+                    ...classes.map((classItem) => ({
+                      // IMPORTANT:
+                      // currentClass stores values like "1", "LKG", "Nursery"
+                      value: String(classItem.name),
+                      label: classItem.name,
+                    })),
                   ]}
                   required
                 />
@@ -353,7 +421,7 @@ const FeeAllocation: React.FC = () => {
                 />
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Student Search (for individual allocation) */}
           {allocationType === 'individual' && (
@@ -384,7 +452,7 @@ const FeeAllocation: React.FC = () => {
                     >
                       <p className="font-medium">{student.fullName}</p>
                       <p className="text-sm text-gray-600">
-                        {student.rollNumber} | Class {student.class}-{student.section}
+                        {student.rollNumber} | Class {student.currentClass}-{student.section}
                       </p>
                     </button>
                   ))}
@@ -496,10 +564,10 @@ const FeeAllocation: React.FC = () => {
                     <td className="px-4 py-3 text-sm">{student.rollNumber}</td>
                     <td className="px-4 py-3 text-sm font-medium">{student.fullName}</td>
                     <td className="px-4 py-3 text-sm">
-                      {student.class}-{student.section}
+                      {student.currentClass}-{student.section}
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      NPR {selectedStructureDetails 
+                      NPR {selectedStructureDetails
                         ? (selectedStructureDetails.totalAmount - parseFloat(discount || '0')).toLocaleString()
                         : '-'}
                     </td>

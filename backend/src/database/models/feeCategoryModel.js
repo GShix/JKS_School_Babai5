@@ -1,9 +1,3 @@
-/**
- * Fee Category Model
- * 
- * Defines categories of fees (e.g., Tuition Fee, Transport, Uniform, Library, Lab, Sports)
- */
-
 const feeCategoryModel = (sequelize, DataTypes) => {
   const FeeCategory = sequelize.define('feeCategory', {
     id: {

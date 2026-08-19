@@ -18,7 +18,7 @@ export default function Career() {
   const [resume, setResume] = React.useState<File | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
   const [success, setSuccess] = React.useState<string | null>(null);
-  const [errors, setErrors] = React.useState<Record<string,string>>({});
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   // Fetch active positions on mount
   React.useEffect(() => {
@@ -46,7 +46,7 @@ export default function Career() {
   }
 
   const validate = () => {
-    const e: Record<string,string> = {};
+    const e: Record<string, string> = {};
     if (!name.trim()) e.name = 'Name is required';
     if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) e.email = 'Valid email is required';
     if (!phone.trim() || phone.trim().length < 7) e.phone = 'Valid phone is required';
@@ -59,7 +59,7 @@ export default function Career() {
     const v = validate();
     setErrors(v);
     if (Object.keys(v).length > 0) return;
-    
+
     if (!selected) return;
 
     setSubmitting(true);
@@ -79,21 +79,21 @@ export default function Career() {
       }
 
       const response = await careerService.submitApplication(formData);
-      
+
       if (response.message) {
         setSuccess(response.message);
       } else {
         setSuccess('Application submitted successfully. We will contact you if you are shortlisted.');
       }
-      
+
       resetForm();
-      
+
       // Close modal after 2 seconds
       setTimeout(() => {
         setSelected(null);
         setSuccess(null);
       }, 2000);
-      
+
     } catch (error: any) {
       console.error('Error submitting application:', error);
       setErrors({ submit: error.response?.data?.message || 'Failed to submit application. Please try again.' });
@@ -105,7 +105,7 @@ export default function Career() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity:0.9}}>
+      <div className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start max-sm:justify-center px-12" style={{ backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity: 0.9 }}>
         <h1 className="text-5xl font-medium text-center my-8 text-white">Career</h1>
       </div>
       {/* Intro modal shown on first open (can skip permanently) */}
@@ -203,7 +203,7 @@ export default function Career() {
 
               <div className="mt-4">
                 <h5 className="font-semibold">Contact HR</h5>
-                <div className="text-sm text-gray-600">Email: jksschoolp5@gmail.com</div>
+                <div className="text-sm text-gray-600">Email: jankalyanbasicscl2056@gmail.com</div>
                 <div className="text-sm text-gray-600">Phone: +977 9844929502</div>
               </div>
             </aside>
@@ -224,7 +224,7 @@ export default function Career() {
                   <button onClick={() => { setSelected(viewing); setViewing(null); }} className="px-3 py-1 bg-[#035CB0] text-white rounded hover:bg-blue-700">Apply</button>
                 </div>
               </div>
-              
+
               <div className="mt-4">
                 <h4 className="font-semibold mb-2">Description</h4>
                 <div className="text-gray-700 whitespace-pre-line">{viewing.description}</div>
@@ -331,7 +331,7 @@ export default function Career() {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium">Cover Letter (Optional)</label>
-                  <textarea value={cover} onChange={e => setCover(e.target.value)} className="w-full border rounded px-3 py-2 h-28" placeholder="Tell us why you're a good fit for this position..."/>
+                  <textarea value={cover} onChange={e => setCover(e.target.value)} className="w-full border rounded px-3 py-2 h-28" placeholder="Tell us why you're a good fit for this position..." />
                 </div>
 
                 <div className="md:col-span-2">

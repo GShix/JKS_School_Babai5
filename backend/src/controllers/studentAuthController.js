@@ -13,7 +13,7 @@ const toSafeStudent = (student) => ({
   fullName: student.fullName,
   email: student.email,
   phone: student.phone,
-  class: student.class,
+  currentClass: student.currentClass,
   section: student.section,
   rollNumber: student.rollNumber,
   profileImage: student.profileImage,
@@ -152,8 +152,8 @@ exports.setStudentPassword = async (req, res) => {
     const { email, rollNumber, dateOfBirth, newPassword } = req.body;
 
     if ((!email && !rollNumber) || !dateOfBirth || !newPassword) {
-      return res.status(400).json({ 
-        message: 'Email/Roll Number, date of birth, and new password are required' 
+      return res.status(400).json({
+        message: 'Email/Roll Number, date of birth, and new password are required'
       });
     }
 
@@ -219,9 +219,9 @@ exports.resetStudentPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await student.update({ password: hashedPassword });
 
-    return res.json({ 
+    return res.json({
       message: 'Password reset successfully',
-      tempPassword: newPassword 
+      tempPassword: newPassword
     });
   } catch (error) {
     return res.status(500).json({ message: 'Could not reset password', error: error.message });

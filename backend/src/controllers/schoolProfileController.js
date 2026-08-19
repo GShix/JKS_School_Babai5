@@ -7,14 +7,14 @@ const getSchoolProfile = async (req, res) => {
     const profile = await schoolProfile.findOne({
       order: [['id', 'DESC']]
     });
-    
+
     if (!profile) {
       return res.status(404).json({
         success: false,
         message: 'School profile not found'
       });
     }
-    
+
     res.json({
       success: true,
       data: profile
@@ -36,7 +36,7 @@ const updateSchoolProfile = async (req, res) => {
       schoolName,
       schoolNameNepali,
       phone,
-      fax,
+      schoolCode,
       email,
       address,
       addressNepali,
@@ -45,7 +45,7 @@ const updateSchoolProfile = async (req, res) => {
       municipality,
       ward,
       introduction,
-      establishedYear,
+      established,
       principalName,
       website,
       facebookUrl,
@@ -68,7 +68,7 @@ const updateSchoolProfile = async (req, res) => {
           req.file.mimetype
         );
         finalLogoUrl = uploadResult.url;
-        
+
         // Delete old logo if exists and is different
         const existingProfile = await schoolProfile.findOne();
         if (existingProfile?.logoUrl && existingProfile.logoUrl !== finalLogoUrl) {
@@ -92,7 +92,7 @@ const updateSchoolProfile = async (req, res) => {
       schoolName,
       schoolNameNepali,
       phone,
-      fax,
+      schoolCode,
       email,
       address,
       addressNepali,
@@ -101,7 +101,7 @@ const updateSchoolProfile = async (req, res) => {
       municipality,
       ward,
       introduction,
-      establishedYear,
+      established,
       principalName,
       website,
       facebookUrl,
@@ -114,11 +114,11 @@ const updateSchoolProfile = async (req, res) => {
 
     // Check if profile exists
     const existingProfile = await schoolProfile.findOne();
-    
+
     if (!existingProfile) {
       // Create new profile
       const newProfile = await schoolProfile.create(profileData);
-      
+
       return res.json({
         success: true,
         message: 'School profile created successfully',
@@ -127,7 +127,7 @@ const updateSchoolProfile = async (req, res) => {
     } else {
       // Update existing profile
       await existingProfile.update(profileData);
-      
+
       res.json({
         success: true,
         message: 'School profile updated successfully',

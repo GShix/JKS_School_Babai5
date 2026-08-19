@@ -9,6 +9,7 @@ const Header = () => {
     const [isSticky, setIsSticky] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const [schoolProfile, setSchoolProfile] = useState<SchoolProfile | null>(null);
+    const schoolNameNepaliWords = schoolProfile?.schoolNameNepali?.trim().split(/\s+/) || [];
     const navRef = useRef<HTMLDivElement | null>(null);
     const navLinks = [
         {
@@ -20,9 +21,9 @@ const Header = () => {
             icon: "ri-arrow-drop-down-line ml-1",
             href: "#",
             subNav: [
-                { title: "About JKSS", href: "/about/jkss" },
-                { title: "JKSS Teachers", href: "/about/teachers" },
-                { title: "JKSS Staffs", href: "/about/staffs" },
+                { title: "About School", href: "/about/intro" },
+                { title: "Teachers", href: "/about/teachers" },
+                { title: "Staffs", href: "/about/staffs" },
             ]
         },
         {
@@ -64,7 +65,7 @@ const Header = () => {
     const [openSmallIndex, setOpenSmallIndex] = useState<number | null>(null);
 
     const menuRef = useRef<HTMLDivElement | null>(null); // Reference to the nav menu
-
+    console.log(schoolProfile?.schoolNameNepali)
     useEffect(() => {
         // Check if user is admin
         const adminFlag = localStorage.getItem("isAdmin") || sessionStorage.getItem("isAdmin");
@@ -80,17 +81,7 @@ const Header = () => {
             } catch (error) {
                 console.error('Error fetching school profile:', error);
                 // Use fallback data
-                setSchoolProfile({
-                    id: 1,
-                    schoolName: 'JKSS School',
-                    schoolNameNepali: 'श्री जनकल्याण माध्यमिक विद्यालय',
-                    phone: '+977 9844929502',
-                    email: 'jksschoolp5@gmail.com',
-                    address: 'बबई-५, पदमपुर, दाङ',
-                    addressNepali: 'बबई-५, पदमपुर, दाङ',
-                    introduction: '',
-                    facebookUrl: 'https://www.facebook.com/janakalyana.ma.bi.padamapura.dana'
-                });
+                setSchoolProfile({});
             }
         };
 
@@ -126,15 +117,15 @@ const Header = () => {
             <div className="header-top bg-[#035CB0] text-white flex justify-between items-center w-full gap-5 max-sm:text-2xl py-2.5 px-3 sm:px-11 text-[15px]">
                 <ul className="header-top-list flex items-center gap-3 sm:gap-5 justify-center font-['poppins'] max-sm:text-sm">
                     <li className="border-r-2 max-sm:pr-3 sm:pr-6 hover:text-yellow-400">
-                        <a href={`tel:${schoolProfile?.phone || '+9779844929502'}`} className=" transition-all duration-500 ease-in-out">
+                        <a href={`tel:${schoolProfile?.phone || '+977980000000'}`} className=" transition-all duration-500 ease-in-out">
                             <i className="ri-phone-fill mr-2"></i>
-                            <span className="max-sm:text-xs text-nowrap">{schoolProfile?.phone || '+977 9844929502'}</span>
+                            <span className="max-sm:text-xs text-nowrap">{schoolProfile?.phone || '+977 9800000000'}</span>
                         </a>
                     </li>
                     <li className=" hover:text-yellow-400">
-                        <a href={`mailto:${schoolProfile?.email || 'jksschoolp5@gmail.com'}`}>
+                        <a href={`mailto:${schoolProfile?.email || 'school gmail'}`}>
                             <i className="ri-mail-send-line mr-2"></i>
-                            <span className="max-sm:text-xs info-text ">{schoolProfile?.email || 'jksschoolp5@gmail.com'}</span>
+                            <span className="max-sm:text-xs info-text ">{schoolProfile?.email || 'School G-mail'}</span>
                         </a>
                     </li>
                 </ul>
@@ -152,7 +143,7 @@ const Header = () => {
                         </li>
                     </ul>
                     <ul className="header-top-social">
-                        <li><Link to={schoolProfile?.facebookUrl || "https://www.facebook.com/janakalyana.ma.bi.padamapura.dana"} target="_blank"><i className="ri-facebook-fill hover:text-yellow-400"></i></Link></li>
+                        <li><Link to={schoolProfile?.facebookUrl || "Facebook Url"} target="_blank"><i className="ri-facebook-fill hover:text-yellow-400"></i></Link></li>
                     </ul>
                 </div>
             </div>
@@ -163,23 +154,23 @@ const Header = () => {
                 <div className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 sm:px-11">
                     <div className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                         <Link to="/" className="flex max-sm:flex-col items-center gap-4 text-center">
-                            <img className="h-20 sm:h-24 w-auto object-contain" src="/img/jkss_logo.png" alt="JKSS logo" />
-                            <div className="schoolname">
+                            <img className="h-20 sm:h-24 w-auto object-contain" src={`${schoolProfile?.logoUrl}`} alt="School logo" />
+                            <div className="schoolname sm:text-start">
                                 <h1 className="text-[#035CB0] font-bold text-4xl text-nowrap">
-                                    {schoolProfile?.schoolNameNepali?.split(' ')[0 - 1] || 'श्री जनकल्याण'}
+                                    {schoolNameNepaliWords.slice(0, 2).join(' ') || 'School'}
                                 </h1>
-                                <h2 className="text-red-500 font-bold text-xl text-nowrap sm:text-start">
-                                    {schoolProfile?.schoolNameNepali?.split(' ').slice(2).join(' ') || 'माध्यमिक विद्यालय'}
+                                <h2 className="text-red-500 font-bold text-xl text-nowrap">
+                                    {schoolNameNepaliWords.slice(2).join(' ') || 'Secondary School'}
                                 </h2>
                             </div>
                         </Link>
                     </div>
                     <div className="two flex  items-center gap-2.5 w-2/2 justify-between">
                         <Link
-                            to={"https://www.google.com/maps/place/Janakalyan+H.S.S.+Padampur/@28.1879517,82.1354621,17z/data=!3m1!4b1!4m6!3m5!1s0x39981ddb63b5812f:0x459611dac3a9d5cc!8m2!3d28.1879517!4d82.1354621!16s%2Fg%2F11h596y6vy?hl=en&entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D"} target="_blank"
+                            to={`${schoolProfile?.mapUrl}`} target="_blank"
                             className="nav-location hidden sm:flex gap-4 items-center text-base text-gray-950 md:ml-60">
                             <i className="ri-road-map-line hover:text-yellow-400 text-nowrap"></i>
-                            {schoolProfile?.address || 'बबई-५, पदमपुर, दाङ'}
+                            {schoolProfile?.address || 'Loading..'}
                         </Link>
                         <div className="nav-cta hidden sm:flex gap-5 items-center text-sm">
                             {isAdmin ? (
@@ -203,7 +194,7 @@ const Header = () => {
                 >
                     {isSticky && (
                         // <div className="logo h-16 mr-4 transition-all duration-500 ease-out">
-                        <img className="h-12 sm:h-14 w-auto object-contain mr-4 transition-all duration-500 ease-out" src="/img/jkss_logo_white.png" alt="Logo" />
+                        <img className="h-12 sm:h-14 w-auto object-contain mr-4 transition-all duration-500 ease-out" src="/img/school_logo.png" alt="Logo" />
                         // </div>
                     )}
                     <ul className="flex items-center justify-between text-white gap-8">

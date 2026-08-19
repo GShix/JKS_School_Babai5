@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import axios from 'axios';
+
 import DataTable from '../../components/shared/DataTable';
 import Button from '../../components/shared/Button';
 import Modal from '../../components/shared/Modal';
 import FormInput from '../../components/shared/FormInput';
 import Select from '../../components/shared/Select';
+
 import { API_BASE_URL } from '../../api/config';
-import { showError, showSuccess, showDeleteConfirm } from '../../utils/sweetAlert';
-import type { ClassItem } from '../../types';
+import {
+    showError,
+    showSuccess,
+    showDeleteConfirm,
+} from '../../utils/sweetAlert';
 
 interface AcademicYear {
     id: number;
@@ -17,24 +22,32 @@ interface AcademicYear {
     isCurrent?: boolean;
 }
 
-type ExtendedClassItem = ClassItem & {
+interface SubjectItem {
+    id: number | string;
+    subjectName: string;
+    subjectCode: string;
+    subjectType?: string;
+    description?: string;
+    isOptional?: boolean;
+    isActive?: boolean;
     academicYearId?: number;
     academicYear?: AcademicYear;
-};
+}
 
-const Classes: React.FC = () => {
-    const [classes, setClasses] = useState<ExtendedClassItem[]>([]);
+const Subjects: React.FC = () => {
+    const [subjects, setSubjects] = useState<SubjectItem[]>([]);
     const [currentYear, setCurrentYear] = useState<AcademicYear | null>(null);
     const [loading, setLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
-    const [editingClass, setEditingClass] = useState<ExtendedClassItem | null>(null);
+    const [editingSubject, setEditingSubject] = useState<SubjectItem | null>(null);
+
     const [formData, setFormData] = useState({
-        name: '',
-        medium: '',
-        section: '',
-        department: '',
+        subjectName: '',
+        subjectCode: '',
+        subjectType: 'THEORY',
+        description: '',
         status: 'active',
-        totalStudents: '' as string | number,
+        isOptional: 'false',
     });
 
     const token =
@@ -42,11 +55,7 @@ const Classes: React.FC = () => {
             ? localStorage.getItem('token') || sessionStorage.getItem('token')
             : null;
 
-    const authHeaders = token
-        ? {
-            Authorization: `Bearer ${token}`,
-        }
-        : {};
+    const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
     const fetchCurrentAcademicYear = async () => {
         try {
@@ -61,16 +70,16 @@ const Classes: React.FC = () => {
         }
     };
 
-    const fetchClasses = async () => {
+    const fetchSubjects = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${API_BASE_URL}/classes`, {
+            const res = await axios.get(`${API_BASE_URL}/subjects`, {
                 headers: authHeaders,
             });
-            setClasses(res.data.data || []);
+            setSubjects(res.data.data || []);
         } catch (error) {
-            console.error('Error fetching classes:', error);
-            showError('Failed to load classes');
+            console.error('Error fetching subjects:', error);
+            showError('Failed to load subjects');
         } finally {
             setLoading(false);
         }
@@ -78,20 +87,19 @@ const Classes: React.FC = () => {
 
     useEffect(() => {
         fetchCurrentAcademicYear();
-        fetchClasses();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchSubjects();
     }, []);
 
     const resetForm = () => {
         setFormData({
-            name: '',
-            medium: '',
-            section: '',
-            department: '',
+            subjectName: '',
+            subjectCode: '',
+            subjectType: 'THEORY',
+            description: '',
             status: 'active',
-            totalStudents: '',
+            isOptional: 'false',
         });
-        setEditingClass(null);
+        setEditingSubject(null);
     };
 
     const openCreateModal = () => {
@@ -103,16 +111,15 @@ const Classes: React.FC = () => {
         setModalOpen(true);
     };
 
-    const openEditModal = (item: ExtendedClassItem) => {
-        setEditingClass(item);
+    const openEditModal = (subject: SubjectItem) => {
+        setEditingSubject(subject);
         setFormData({
-            name: item.name || '',
-            medium: item.medium || '',
-            section: item.section || '',
-            department: item.department || '',
-            status: item.status || 'active',
-            totalStudents:
-                typeof item.totalStudents === 'number' ? item.totalStudents : '',
+            subjectName: subject.subjectName || '',
+            subjectCode: subject.subjectCode || '',
+            subjectType: subject.subjectType || 'THEORY',
+            description: subject.description || '',
+            status: subject.isActive ? 'active' : 'inactive',
+            isOptional: subject.isOptional ? 'true' : 'false',
         });
         setModalOpen(true);
     };
@@ -127,62 +134,68 @@ const Classes: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.name.trim()) {
-            showError('Class name is required');
+        if (!formData.subjectName.trim()) {
+            showError('Subject name is required');
             return;
         }
 
-        const payload: any = {
-            name: formData.name.trim(),
-            medium: formData.medium || undefined,
-            section: formData.section || undefined,
-            department: formData.department || undefined,
-            status: formData.status,
-            totalStudents:
-                formData.totalStudents !== ''
-                    ? Number(formData.totalStudents)
-                    : undefined,
+        if (!formData.subjectCode.trim()) {
+            showError('Subject code is required');
+            return;
+        }
+
+        const payload = {
+            subjectName: formData.subjectName.trim(),
+            subjectCode: formData.subjectCode.trim().toUpperCase(),
+            subjectType: formData.subjectType,
+            description: formData.description.trim() || undefined,
+            isActive: formData.status === 'active',
+            isOptional: formData.isOptional === 'true',
             academicYearId: currentYear?.id,
         };
 
         try {
             setLoading(true);
-            if (editingClass) {
-                await axios.put(`${API_BASE_URL}/classes/${editingClass.id}`, payload, {
-                    headers: authHeaders,
-                });
-                showSuccess('Class updated successfully');
+
+            if (editingSubject) {
+                await axios.put(
+                    `${API_BASE_URL}/subjects/${editingSubject.id}`,
+                    payload,
+                    { headers: authHeaders }
+                );
+                showSuccess('Subject updated successfully');
             } else {
-                await axios.post(`${API_BASE_URL}/classes`, payload, {
+                await axios.post(`${API_BASE_URL}/subjects`, payload, {
                     headers: authHeaders,
                 });
-                showSuccess('Class created successfully');
+                showSuccess('Subject created successfully');
             }
+
             setModalOpen(false);
             resetForm();
-            fetchClasses();
+            fetchSubjects();
         } catch (error: any) {
-            console.error('Error saving class:', error);
-            showError(error.response?.data?.message || 'Failed to save class');
+            console.error('Error saving subject:', error);
+            showError(error.response?.data?.message || 'Failed to save subject');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleDelete = async (item: ExtendedClassItem) => {
-        const result = await showDeleteConfirm('this class');
+    const handleDelete = async (subject: SubjectItem) => {
+        const result = await showDeleteConfirm('this subject');
         if (!result.isConfirmed) return;
 
         try {
             setLoading(true);
-            await axios.delete(`${API_BASE_URL}/classes/${item.id}`, {
+            await axios.delete(`${API_BASE_URL}/subjects/${subject.id}`, {
                 headers: authHeaders,
             });
-            showSuccess('Class deleted successfully');
-            fetchClasses();
+            showSuccess('Subject deleted successfully');
+            fetchSubjects();
         } catch (error) {
-            console.error('Error deleting class:', error);
-            showError('Failed to delete class');
+            console.error('Error deleting subject:', error);
+            showError('Failed to delete subject');
         } finally {
             setLoading(false);
         }
@@ -192,7 +205,7 @@ const Classes: React.FC = () => {
         {
             key: 'academicYear',
             label: 'Academic Year',
-            render: (val: any, row?: ExtendedClassItem) => {
+            render: (val: any, row?: SubjectItem) => {
                 const yearObj = row?.academicYear || val;
                 return yearObj?.year ? (
                     <span className="font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md text-xs">
@@ -203,38 +216,71 @@ const Classes: React.FC = () => {
                 );
             },
         },
-        { key: 'name', label: 'Class Name' },
-        { key: 'medium', label: 'Medium' },
-        { key: 'section', label: 'Section' },
-        { key: 'department', label: 'Department' },
-        { key: 'status', label: 'Status' },
-        { key: 'totalStudents', label: 'Total Students' },
+        {
+            key: 'subjectCode',
+            label: 'Subject Code',
+        },
+        {
+            key: 'subjectName',
+            label: 'Subject Name',
+        },
+        {
+            key: 'subjectType',
+            label: 'Type',
+        },
+        {
+            key: 'isActive',
+            label: 'Status',
+            render: (val: any) => {
+                const active = typeof val === 'object' && val !== null ? val.isActive : val;
+                return (
+                    <span className={active ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                        {active ? 'Active' : 'Inactive'}
+                    </span>
+                );
+            },
+        },
+        {
+            key: 'isOptional',
+            label: 'Is Optional',
+            render: (val: any) => {
+                const optional = typeof val === 'object' && val !== null ? val.isOptional : val;
+                return (
+                    <span className={optional ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                        {optional ? 'Yes' : 'No'}
+                    </span>
+                );
+            },
+        },
     ];
 
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between gap-2">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Class Management</h1>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Subject Management
+                    </h1>
                     <p className="text-sm text-gray-600">
-                        Manage classes, sections, mediums, and academic year assignments.
+                        Manage subjects, codes, types, and academic year assignments.
                     </p>
                 </div>
+
                 <Button
                     variant="primary"
                     size="md"
                     icon={<Plus className="w-4 h-4" />}
                     onClick={openCreateModal}
                 >
-                    Add Class
+                    Add Subject
                 </Button>
             </div>
 
-            <DataTable<ExtendedClassItem>
-                data={classes}
+            <DataTable<SubjectItem>
+                data={subjects}
                 columns={columns}
                 loading={loading}
-                searchPlaceholder="Search classes..."
+                searchPlaceholder="Search subjects..."
                 actions={row => (
                     <div className="flex items-center justify-end gap-2">
                         <Button
@@ -248,6 +294,7 @@ const Classes: React.FC = () => {
                         >
                             Edit
                         </Button>
+
                         <Button
                             variant="danger"
                             size="sm"
@@ -269,8 +316,8 @@ const Classes: React.FC = () => {
                     setModalOpen(false);
                     resetForm();
                 }}
-                title={editingClass ? 'Edit Class' : 'Add Class'}
-                size="md"
+                title={editingSubject ? 'Edit Subject' : 'Add Subject'}
+                size="lg"
                 footer={
                     <div className="flex justify-end gap-2">
                         <Button
@@ -282,13 +329,14 @@ const Classes: React.FC = () => {
                         >
                             Cancel
                         </Button>
+
                         <Button
                             variant="primary"
                             type="submit"
                             onClick={handleSubmit as any}
                             loading={loading}
                         >
-                            {editingClass ? 'Update' : 'Create'}
+                            {editingSubject ? 'Update' : 'Create'}
                         </Button>
                     </div>
                 }
@@ -303,7 +351,7 @@ const Classes: React.FC = () => {
                             label="Academic Year (Active Session)"
                             name="academicYearDisplay"
                             value={
-                                editingClass?.academicYear?.year ||
+                                editingSubject?.academicYear?.year ||
                                 currentYear?.year ||
                                 'No Active Session Set'
                             }
@@ -313,51 +361,64 @@ const Classes: React.FC = () => {
                     </div>
 
                     <FormInput
-                        label="Class Name"
-                        name="name"
+                        label="Subject Name"
+                        name="subjectName"
                         required
-                        value={formData.name}
+                        value={formData.subjectName}
                         onChange={handleChange}
+                        placeholder="e.g. Mathematics"
                     />
+
                     <FormInput
-                        label="Medium"
-                        name="medium"
-                        value={formData.medium}
+                        label="Subject Code"
+                        name="subjectCode"
+                        required
+                        value={formData.subjectCode}
                         onChange={handleChange}
-                        placeholder="e.g. English, Nepali"
+                        placeholder="e.g. MATH101"
                     />
-                    <FormInput
-                        label="Section"
-                        name="section"
-                        value={formData.section}
+
+                    <Select
+                        label="Subject Type"
+                        name="subjectType"
+                        value={formData.subjectType}
                         onChange={handleChange}
-                        placeholder="e.g. A, B"
+                        options={[
+                            { value: 'THEORY', label: 'Theory' },
+                            { value: 'PRACTICAL', label: 'Practical' },
+                            { value: 'BOTH', label: 'Both' },
+                        ]}
                     />
-                    <FormInput
-                        label="Department"
-                        name="department"
-                        value={formData.department}
+
+                    <Select
+                        label="Status"
+                        name="status"
+                        value={formData.status}
                         onChange={handleChange}
-                        placeholder="e.g. Science, Management"
+                        options={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'inactive', label: 'Inactive' },
+                        ]}
                     />
-                    <FormInput
-                        label="Total Students"
-                        name="totalStudents"
-                        type="number"
-                        min={0}
-                        value={formData.totalStudents}
+
+                    <Select
+                        label="Is Optional"
+                        name="isOptional"
+                        value={formData.isOptional}
                         onChange={handleChange}
+                        options={[
+                            { value: 'true', label: 'Yes' },
+                            { value: 'false', label: 'No' },
+                        ]}
                     />
+
                     <div className="md:col-span-2">
-                        <Select
-                            label="Status"
-                            name="status"
-                            value={formData.status}
+                        <FormInput
+                            label="Description"
+                            name="description"
+                            value={formData.description}
                             onChange={handleChange}
-                            options={[
-                                { value: 'active', label: 'Active' },
-                                { value: 'inactive', label: 'Inactive' },
-                            ]}
+                            placeholder="Optional subject description"
                         />
                     </div>
                 </form>
@@ -366,4 +427,4 @@ const Classes: React.FC = () => {
     );
 };
 
-export default Classes;
+export default Subjects;

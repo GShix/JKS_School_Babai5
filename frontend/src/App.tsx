@@ -12,8 +12,8 @@ import AnnouncementDetail from './pages/announcements/AnnouncementDetail'
 import Downloads from './pages/download/Downloads'
 import Career from './pages/career/Career'
 import Gallery from './pages/Gallery/Gallery'
-import JKSSTeachers from './pages/about/JKSSTeachers'
-import JKSSStaffs from './pages/about/JKSSStaffs'
+import Teachers from './pages/about/Teachers'
+import Staffs from './pages/about/Staffs'
 import AcademicPrograms from './pages/academicPrograms/AcademicPrograms'
 import Education from './pages/academicPrograms/Education'
 import Agriculture from './pages/academicPrograms/Agriculture'
@@ -27,7 +27,9 @@ import StudentLogin from './pages/auth/StudentLogin'
 // Admin Layout and Pages
 import AdminLayout from './layouts/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
+import AcademicYears from './pages/admin/AcademicYears'
 import AdminStudents from './pages/admin/Students'
+import AdminSubjects from './pages/admin/Subjects'
 import AdminClasses from './pages/admin/Classes'
 import AdminTeachers from './pages/admin/Teachers'
 import AdminStaff from './pages/admin/Staff'
@@ -51,6 +53,7 @@ import Blogs from './pages/blogs/Blogs'
 import BlogDetail from './pages/blogs/BlogDetail'
 
 function App() {
+
   return (
     <>
       <BrowserRouter>
@@ -59,9 +62,9 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/results' element={<Results />} />
           <Route path='/admission' element={<Admission />} />
-          <Route path='/about/jkss' element={<About />} />
-          <Route path='/about/teachers' element={<JKSSTeachers />} />
-          <Route path='/about/staffs' element={<JKSSStaffs />} />
+          <Route path='/about/intro' element={<About />} />
+          <Route path='/about/teachers' element={<Teachers />} />
+          <Route path='/about/staffs' element={<Staffs />} />
 
           {/* Group the academic program routes together */}
 
@@ -84,8 +87,10 @@ function App() {
           <Route path='/admin' element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path='dashboard' element={<Dashboard />} />
+            <Route path='academic-years' element={<AcademicYears />} />
             <Route path='students' element={<AdminStudents />} />
             <Route path='classes' element={<AdminClasses />} />
+            <Route path='subjects' element={<AdminSubjects />} />
             <Route path='teachers' element={<AdminTeachers />} />
             <Route path='grades' element={<Grades />} />
             <Route path='staff' element={<AdminStaff />} />

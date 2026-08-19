@@ -27,7 +27,7 @@ interface FeeTransaction {
     student: {
       fullName: string;
       rollNumber: string;
-      class: string;
+      currentClass: string;
       section: string;
       emisId?: string;
     };
@@ -39,7 +39,7 @@ interface FeeTransaction {
   student?: {
     fullName: string;
     rollNumber: string;
-    class: string;
+    currentClass: string;
     section: string;
     emisId?: string;
   };
@@ -146,7 +146,7 @@ const FeeTransactions: React.FC = () => {
         date: transaction.paymentDate,
         student: {
           fullName: student.fullName,
-          class: student.class,
+          currentClass: student.currentClass,
           section: student.section,
           rollNumber: student.rollNumber,
           emisId: student.emisId || '',
@@ -208,7 +208,7 @@ const FeeTransactions: React.FC = () => {
           <div>
             <p className="font-semibold">{student.fullName}</p>
             <p className="text-xs text-gray-500">
-              {student.rollNumber} | Class {student.class}-{student.section}
+              {student.rollNumber} | Class {student.currentClass}-{student.section}
             </p>
           </div>
         ) : (

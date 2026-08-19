@@ -92,8 +92,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   const menuItems: MenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'admins', label: 'Admins', icon: Shield, roles: ['superAdmin'] },
+    // { id: 'classes', label: 'Classes', icon: LayoutDashboard },
+    {
+      id: 'academics',
+      label: 'Academics',
+      icon: GraduationCap,
+      roles: ['superAdmin', 'admin'],
+      subItems: [
+        { id: 'academic-years', label: 'Academic Years' },
+        { id: 'subjects', label: 'Subjects' },
+        { id: 'classes', label: 'Classes' },
+      ]
+    },
+
     { id: 'students', label: 'Students', icon: GraduationCap },
-    { id: 'classes', label: 'Classes', icon: LayoutDashboard },
     {
       id: 'staff-menu',
       label: 'Teacher | Staff',
@@ -160,7 +172,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <Shield className="w-8 h-8" />
               <div>
                 <h1 className="font-bold text-lg">Admin Panel</h1>
-                <p className="text-xs text-blue-300">JKSS School</p>
+                <p className="text-xs text-blue-300">JKBS School</p>
               </div>
             </div>
           ) : (

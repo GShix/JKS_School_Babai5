@@ -1,47 +1,39 @@
-/**
- * Enhanced Fee Structure Manager
- * Professional two-step workflow - Step 1: Structure Management
- */
+import React, { useEffect, useState } from 'react';
+import { Plus, Edit, Trash2 } from 'lucide-react';
+import axios from 'axios';
 
-import React, { useState, useEffect } from 'react';
-import {
-  Plus,
-  Edit,
-  Copy,
-  Trash2,
-  X,
-  BookOpen,
-  GraduationCap,
-  FileText,
-  Bus,
-  Home,
-  Library,
-  Beaker,
-  Trophy,
-  Layers,
-  Check,
-  AlertCircle,
-} from 'lucide-react';
+import DataTable from '../../components/shared/DataTable';
 import Button from '../../components/shared/Button';
+import Modal from '../../components/shared/Modal';
 import FormInput from '../../components/shared/FormInput';
 import Select from '../../components/shared/Select';
-import Modal from '../../components/shared/Modal';
-import Badge from '../../components/shared/Badge';
-import axios from 'axios';
+
 import { API_BASE_URL } from '../../api/config';
-import { showSuccess, showError, showDeleteConfirm } from '../../utils/sweetAlert';
+import {
+  showError,
+  showSuccess,
+  showDeleteConfirm,
+} from '../../utils/sweetAlert';
+
+interface AcademicYear {
+  id: number;
+  year: string;
+  title?: string;
+  isCurrent?: boolean;
+}
 
 interface FeeCategory {
   id: number;
   name: string;
-  description: string;
-  isActive: boolean;
+  description?: string;
+  isActive?: boolean;
 }
 
 interface FeeStructureItem {
+  id?: number;
   feeCategoryId: number;
-  amount: number;
-  description: string;
+  amount: number | string;
+  description?: string;
   category?: FeeCategory;
 }
 
@@ -50,584 +42,995 @@ interface FeeStructure {
   name: string;
   academicYear: string;
   class: string;
-  section: string;
-  totalAmount: number;
+  section?: string | null;
+  totalAmount: number | string;
+  description?: string | null;
   isActive: boolean;
+  dueDate?: string | null;
   purpose: string;
-  dueDate: string;
-  description: string;
   isTemplate: boolean;
-  clonedFrom: number | null;
+  clonedFrom?: number | null;
   items?: FeeStructureItem[];
-  createdAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-const FeeStructureManager: React.FC = () => {
+const FeeStructurePage: React.FC = () => {
   const [structures, setStructures] = useState<FeeStructure[]>([]);
   const [categories, setCategories] = useState<FeeCategory[]>([]);
+  const [currentYear, setCurrentYear] = useState<AcademicYear | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingStructure, setEditingStructure] = useState<FeeStructure | null>(null);
-  const [filterPurpose, setFilterPurpose] = useState<string>('all');
-  const [filterClass, setFilterClass] = useState<string>('all');
+
+  const [editingStructure, setEditingStructure] =
+    useState<FeeStructure | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
-    academicYear: '2081-2082',
     class: '',
     section: '',
-    purpose: 'tuition',
     description: '',
     dueDate: '',
+    purpose: 'tuition',
     isTemplate: false,
-    items: [] as FeeStructureItem[],
   });
 
-  const getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token');
+  const [feeItems, setFeeItems] = useState<FeeStructureItem[]>([
+    {
+      feeCategoryId: 0,
+      amount: '',
+      description: '',
+    },
+  ]);
 
-  useEffect(() => {
-    fetchStructures();
-    fetchCategories();
-  }, []);
+  const token =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('token') ||
+      sessionStorage.getItem('token')
+      : null;
 
-  const fetchStructures = async () => {
+  const authHeaders = token
+    ? {
+      Authorization: `Bearer ${token}`,
+    }
+    : {};
+
+  // ============================================================
+  // FETCH CURRENT ACADEMIC YEAR
+  // ============================================================
+
+  const fetchCurrentAcademicYear = async () => {
+    try {
+      const res = await axios.get(
+        `${API_BASE_URL}/academic-years?isCurrent=true`,
+        {
+          headers: authHeaders,
+        }
+      );
+
+      if (res.data.data && res.data.data.length > 0) {
+        setCurrentYear(res.data.data[0]);
+      } else {
+        setCurrentYear(null);
+      }
+    } catch (error) {
+      console.error(
+        'Error fetching current academic year:',
+        error
+      );
+      setCurrentYear(null);
+    }
+  };
+
+  // ============================================================
+  // FETCH FEE STRUCTURES
+  // ============================================================
+
+  const fetchFeeStructures = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/fee-management/structures`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      setStructures(response.data.data || []);
+
+      const res = await axios.get(
+        `${API_BASE_URL}/fee-management/structures`,
+        {
+          headers: authHeaders,
+        }
+      );
+
+      setStructures(res.data.data || []);
     } catch (error) {
-      console.error('Error fetching structures:', error);
-      showError('Error fetching fee structures');
+      console.error('Error fetching fee structures:', error);
+      showError('Failed to load fee structures');
     } finally {
       setLoading(false);
     }
   };
 
+  // ============================================================
+  // FETCH FEE CATEGORIES
+  // ============================================================
+
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/fee-management/categories`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      setCategories(response.data.data.filter((cat: FeeCategory) => cat.isActive) || []);
+      const res = await axios.get(
+        `${API_BASE_URL}/fee-management/categories`,
+        {
+          headers: authHeaders,
+        }
+      );
+
+      setCategories(res.data.data || []);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error('Error fetching fee categories:', error);
+      showError('Failed to load fee categories');
     }
   };
+
+  // ============================================================
+  // INITIAL LOAD
+  // ============================================================
+
+  useEffect(() => {
+    fetchCurrentAcademicYear();
+    fetchFeeStructures();
+    fetchCategories();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ============================================================
+  // RESET FORM
+  // ============================================================
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      class: '',
+      section: '',
+      description: '',
+      dueDate: '',
+      purpose: 'tuition',
+      isTemplate: false,
+    });
+
+    setFeeItems([
+      {
+        feeCategoryId: 0,
+        amount: '',
+        description: '',
+      },
+    ]);
+
+    setEditingStructure(null);
+  };
+
+  // ============================================================
+  // CREATE MODAL
+  // ============================================================
+
+  const openCreateModal = () => {
+    if (!currentYear) {
+      showError(
+        'No active Academic Year found. Please configure an active Academic Year first.'
+      );
+      return;
+    }
+
+    resetForm();
+    setModalOpen(true);
+  };
+
+  // ============================================================
+  // EDIT MODAL
+  // ============================================================
+
+  const openEditModal = (item: FeeStructure) => {
+    setEditingStructure(item);
+
+    setFormData({
+      name: item.name || '',
+      class: item.class || '',
+      section: item.section || '',
+      description: item.description || '',
+      dueDate: item.dueDate || '',
+      purpose: item.purpose || 'tuition',
+      isTemplate: item.isTemplate || false,
+    });
+
+    setFeeItems(
+      item.items && item.items.length > 0
+        ? item.items.map(feeItem => ({
+          feeCategoryId: feeItem.feeCategoryId,
+          amount: feeItem.amount,
+          description: feeItem.description || '',
+        }))
+        : [
+          {
+            feeCategoryId: 0,
+            amount: '',
+            description: '',
+          },
+        ]
+    );
+
+    setModalOpen(true);
+  };
+
+  // ============================================================
+  // FORM CHANGE
+  // ============================================================
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // ============================================================
+  // FEE ITEM CHANGE
+  // ============================================================
+
+  const handleFeeItemChange = (
+    index: number,
+    field: keyof FeeStructureItem,
+    value: string | number
+  ) => {
+    setFeeItems(prev =>
+      prev.map((item, itemIndex) =>
+        itemIndex === index
+          ? {
+            ...item,
+            [field]: value,
+          }
+          : item
+      )
+    );
+  };
+
+  // ============================================================
+  // ADD FEE ITEM
+  // ============================================================
+
+  const addFeeItem = () => {
+    setFeeItems(prev => [
+      ...prev,
+      {
+        feeCategoryId: 0,
+        amount: '',
+        description: '',
+      },
+    ]);
+  };
+
+  // ============================================================
+  // REMOVE FEE ITEM
+  // ============================================================
+
+  const removeFeeItem = (index: number) => {
+    if (feeItems.length === 1) {
+      return;
+    }
+
+    setFeeItems(prev =>
+      prev.filter((_, itemIndex) => itemIndex !== index)
+    );
+  };
+
+  // ============================================================
+  // TOTAL AMOUNT
+  // ============================================================
+
+  const totalAmount = feeItems.reduce(
+    (sum, item) => sum + (parseFloat(String(item.amount)) || 0),
+    0
+  );
+
+  // ============================================================
+  // SUBMIT
+  // ============================================================
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.items.length === 0) {
-      showError('Please add at least one fee category');
+    if (!currentYear) {
+      showError(
+        'No active Academic Year found. Please configure an active Academic Year first.'
+      );
       return;
     }
 
+    if (!formData.name.trim()) {
+      showError('Fee structure name is required');
+      return;
+    }
+
+    if (!formData.class.trim()) {
+      showError('Class is required');
+      return;
+    }
+
+    if (!feeItems.length) {
+      showError('At least one fee item is required');
+      return;
+    }
+
+    const invalidItem = feeItems.some(
+      item =>
+        !item.feeCategoryId ||
+        parseFloat(String(item.amount)) < 0 ||
+        item.amount === ''
+    );
+
+    if (invalidItem) {
+      showError(
+        'Please select a category and enter a valid amount for every fee item'
+      );
+      return;
+    }
+
+    const payload = {
+      name: formData.name.trim(),
+
+      // Active Academic Year
+      academicYear: currentYear.year,
+
+      class: formData.class.trim(),
+
+      section: formData.section.trim() || undefined,
+
+      description:
+        formData.description.trim() || undefined,
+
+      dueDate:
+        formData.dueDate || undefined,
+
+      purpose: formData.purpose,
+
+      isTemplate: formData.isTemplate,
+
+      items: feeItems.map(item => ({
+        feeCategoryId: Number(item.feeCategoryId),
+        amount: parseFloat(String(item.amount)),
+        description:
+          item.description?.trim() || undefined,
+      })),
+    };
+
     try {
       setLoading(true);
-      const payload = {
-        ...formData,
-        totalAmount: formData.items.reduce((sum, item) => sum + parseFloat(item.amount.toString()), 0),
-      };
 
       if (editingStructure) {
         await axios.put(
           `${API_BASE_URL}/fee-management/structures/${editingStructure.id}`,
           payload,
-          { headers: { Authorization: `Bearer ${getToken()}` } }
+          {
+            headers: authHeaders,
+          }
         );
-        showSuccess('Fee structure updated successfully');
+
+        showSuccess(
+          'Fee structure updated successfully'
+        );
       } else {
         await axios.post(
           `${API_BASE_URL}/fee-management/structures`,
           payload,
-          { headers: { Authorization: `Bearer ${getToken()}` } }
+          {
+            headers: authHeaders,
+          }
         );
-        showSuccess('Fee structure created successfully');
+
+        showSuccess(
+          'Fee structure created successfully'
+        );
       }
 
-      fetchStructures();
-      handleCloseModal();
+      setModalOpen(false);
+      resetForm();
+      fetchFeeStructures();
     } catch (error: any) {
-      showError(error.response?.data?.message || 'Error saving fee structure');
+      console.error(
+        'Error saving fee structure:',
+        error
+      );
+
+      showError(
+        error.response?.data?.message ||
+        'Failed to save fee structure'
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleClone = async (structure: FeeStructure) => {
-    setFormData({
-      name: `${structure.name} (Copy)`,
-      academicYear: structure.academicYear,
-      class: structure.class,
-      section: structure.section,
-      purpose: structure.purpose,
-      description: structure.description || '',
-      dueDate: structure.dueDate || '',
-      isTemplate: false,
-      items: structure.items?.map(item => ({
-        feeCategoryId: item.feeCategoryId,
-        amount: item.amount,
-        description: item.description || '',
-      })) || [],
-    });
-    setEditingStructure(null);
-    setModalOpen(true);
-  };
+  // ============================================================
+  // DELETE
+  // ============================================================
 
-  const handleEdit = (structure: FeeStructure) => {
-    setEditingStructure(structure);
-    setFormData({
-      name: structure.name,
-      academicYear: structure.academicYear,
-      class: structure.class,
-      section: structure.section || '',
-      purpose: structure.purpose || 'tuition',
-      description: structure.description || '',
-      dueDate: structure.dueDate || '',
-      isTemplate: structure.isTemplate || false,
-      items: structure.items?.map(item => ({
-        feeCategoryId: item.feeCategoryId,
-        amount: item.amount,
-        description: item.description || '',
-      })) || [],
-    });
-    setModalOpen(true);
-  };
+  const handleDelete = async (item: FeeStructure) => {
+    const result = await showDeleteConfirm(
+      'this fee structure'
+    );
 
-  const handleDelete = async (id: number) => {
-    const confirmed = await showDeleteConfirm('This will deactivate the fee structure');
-    if (!confirmed) return;
+    if (!result.isConfirmed) return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/fee-management/structures/${id}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      showSuccess('Fee structure deactivated');
-      fetchStructures();
-    } catch (error: any) {
-      showError(error.response?.data?.message || 'Error deleting structure');
+      setLoading(true);
+
+      await axios.delete(
+        `${API_BASE_URL}/fee-management/structures/${item.id}`,
+        {
+          headers: authHeaders,
+        }
+      );
+
+      showSuccess(
+        'Fee structure deactivated successfully'
+      );
+
+      fetchFeeStructures();
+    } catch (error) {
+      console.error(
+        'Error deleting fee structure:',
+        error
+      );
+
+      showError(
+        'Failed to delete fee structure'
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleAddItem = () => {
-    if (categories.length === 0) {
-      showError('Please create fee categories first');
-      return;
-    }
-    setFormData({
-      ...formData,
-      items: [...formData.items, { feeCategoryId: categories[0].id, amount: 0, description: '' }],
-    });
-  };
+  // ============================================================
+  // TABLE COLUMNS
+  // ============================================================
 
-  const handleRemoveItem = (index: number) => {
-    setFormData({
-      ...formData,
-      items: formData.items.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleItemChange = (index: number, field: string, value: any) => {
-    const newItems = [...formData.items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    setFormData({ ...formData, items: newItems });
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    setEditingStructure(null);
-    setFormData({
-      name: '',
-      academicYear: '2081-2082',
-      class: '',
-      section: '',
-      purpose: 'tuition',
-      description: '',
-      dueDate: '',
-      isTemplate: false,
-      items: [],
-    });
-  };
-
-  const getPurposeIcon = (purpose: string) => {
-    const icons: Record<string, any> = {
-      admission: GraduationCap,
-      tuition: BookOpen,
-      examination: FileText,
-      event: Trophy,
-      transport: Bus,
-      hostel: Home,
-      library: Library,
-      lab: Beaker,
-      sports: Trophy,
-      other: null,
-    };
-    const Icon = icons[purpose];
-    if (!Icon) {
-      return <span className="text-lg font-bold">रु</span>;
-    }
-    return <Icon className="w-5 h-5" />;
-  };
-
-  const getPurposeColor = (purpose: string) => {
-    const colors: Record<string, string> = {
-      admission: 'bg-purple-100 text-purple-800 border-purple-200',
-      tuition: 'bg-blue-100 text-blue-800 border-blue-200',
-      examination: 'bg-orange-100 text-orange-800 border-orange-200',
-      event: 'bg-pink-100 text-pink-800 border-pink-200',
-      transport: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      hostel: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-      library: 'bg-cyan-100 text-cyan-800 border-cyan-200',
-      lab: 'bg-teal-100 text-teal-800 border-teal-200',
-      sports: 'bg-green-100 text-green-800 border-green-200',
-      other: 'bg-gray-100 text-gray-800 border-gray-200',
-    };
-    return colors[purpose] || colors['other'];
-  };
-
-  const filteredStructures = structures.filter(s => {
-    if (filterPurpose !== 'all' && s.purpose !== filterPurpose) return false;
-    if (filterClass !== 'all' && s.class !== filterClass) return false;
-    return true;
-  });
-
-  const totalAmount = formData.items.reduce((sum, item) => sum + parseFloat(item.amount.toString() || '0'), 0);
+  const columns = [
+    {
+      key: 'academicYear',
+      label: 'Academic Year',
+      render: (val: any) => {
+        return val ? (
+          <span className="font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md text-xs">
+            {val}
+          </span>
+        ) : (
+          '-'
+        );
+      },
+    },
+    {
+      key: 'name',
+      label: 'Name',
+    },
+    {
+      key: 'class',
+      label: 'Class',
+    },
+    {
+      key: 'section',
+      label: 'Section',
+      render: (val: any) => val || 'All',
+    },
+    {
+      key: 'purpose',
+      label: 'Purpose',
+      render: (val: any) => (
+        <span className="capitalize">
+          {val || '-'}
+        </span>
+      ),
+    },
+    {
+      key: 'totalAmount',
+      label: 'Total Amount',
+      render: (val: any) => (
+        <span className="font-semibold">
+          Rs. {Number(val || 0).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      key: 'isActive',
+      label: 'Status',
+      render: (val: boolean) =>
+        val ? (
+          <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-green-50 text-green-700">
+            Active
+          </span>
+        ) : (
+          <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-red-50 text-red-700">
+            Inactive
+          </span>
+        ),
+    },
+  ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
+    <div className="space-y-4">
+
+      {/* =====================================================
+                HEADER
+            ====================================================== */}
+
+      <div className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Layers className="w-7 h-7 text-blue-600" />
-            Fee Structure Manager
+          <h1 className="text-2xl font-bold text-gray-900">
+            Fee Structure Management
           </h1>
-          <p className="text-gray-600 mt-1">Create and manage fee templates for different classes</p>
+
+          <p className="text-sm text-gray-600">
+            Manage class-wise fee structures,
+            categories, amounts, and academic years.
+          </p>
         </div>
-        <Button onClick={() => setModalOpen(true)} icon={<Plus className="w-5 h-5" />}>
-          Create New Structure
+
+        <Button
+          variant="primary"
+          size="md"
+          icon={<Plus className="w-4 h-4" />}
+          onClick={openCreateModal}
+        >
+          Add Fee Structure
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Purpose</label>
-            <Select
-              value={filterPurpose}
-              onChange={(e) => setFilterPurpose(e.target.value)}
-              options={[
-                { value: 'all', label: 'All Purposes' },
-                { value: 'admission', label: 'Admission' },
-                { value: 'tuition', label: 'Tuition' },
-                { value: 'examination', label: 'Examination' },
-                { value: 'event', label: 'Event' },
-                { value: 'transport', label: 'Transport' },
-                { value: 'hostel', label: 'Hostel' },
-                { value: 'library', label: 'Library' },
-                { value: 'lab', label: 'Lab' },
-                { value: 'sports', label: 'Sports' },
-                { value: 'other', label: 'Other' },
-              ]}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Class</label>
-            <Select
-              value={filterClass}
-              onChange={(e) => setFilterClass(e.target.value)}
-              options={[
-                { value: 'all', label: 'All Classes' },
-                ...[...Array(12)].map((_, i) => ({ 
-                  value: `${i + 1}`, 
-                  label: `Class ${i + 1}` 
-                })),
-              ]}
-            />
-          </div>
-          <div className="flex items-end">
-            <div className="text-sm text-gray-600">
-              <span className="font-semibold">{filteredStructures.length}</span> structures found
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* =====================================================
+                TABLE
+            ====================================================== */}
 
-      {/* Structure Cards */}
-      {loading && structures.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="text-gray-600 mt-4">Loading structures...</p>
-        </div>
-      ) : filteredStructures.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-100">
-          <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No fee structures found</h3>
-          <p className="text-gray-600 mb-4">Create your first fee structure to get started</p>
-          <Button onClick={() => setModalOpen(true)} icon={<Plus className="w-5 h-5" />}>
-            Create Fee Structure
-          </Button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredStructures.map((structure) => (
-            <div
-              key={structure.id}
-              className={`bg-white rounded-xl shadow-sm border-2 transition-all hover:shadow-md ${
-                structure.isActive ? 'border-gray-200 hover:border-blue-300' : 'border-gray-100 opacity-60'
-              }`}
+      <DataTable<FeeStructure>
+        data={structures}
+        columns={columns}
+        loading={loading}
+        searchPlaceholder="Search fee structures..."
+        actions={row => (
+          <div className="flex items-center justify-end gap-2">
+
+            <Button
+              variant="outline"
+              size="sm"
+              icon={
+                <Edit className="w-4 h-4" />
+              }
+              onClick={e => {
+                e.stopPropagation();
+                openEditModal(row);
+              }}
             >
-              {/* Header */}
-              <div className="p-5 border-b border-gray-100">
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-bold text-gray-900">{structure.name}</h3>
-                      {structure.isTemplate && (
-                        <Badge variant="info">
-                          <span className="text-xs">Template</span>
-                        </Badge>
-                      )}
-                      {!structure.isActive && (
-                        <Badge variant="default">
-                          <span className="text-xs">Inactive</span>
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <GraduationCap className="w-4 h-4" />
-                        Class {structure.class}
-                        {structure.section && `-${structure.section}`}
-                      </span>
-                      <span>•</span>
-                      <span>{structure.academicYear}</span>
-                    </div>
-                    
-                    {/* Fee Categories Display */}
-                    {structure.items && structure.items.length > 0 && (
-                      <div className="mt-3">
-                        <p className="text-xs font-medium text-gray-500 mb-1.5">Fee Categories:</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {structure.items.map((item, idx) => (
-                            <span
-                              key={idx}
-                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-300"
-                            >
-                              {item.category?.name}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className={`px-3 py-1 rounded-full border text-sm font-medium flex items-center gap-1.5 ${getPurposeColor(structure.purpose)}`}>
-                    {getPurposeIcon(structure.purpose)}
-                    {structure.purpose.charAt(0).toUpperCase() + structure.purpose.slice(1)}
-                  </div>
-                </div>
-              </div>
+              Edit
+            </Button>
 
-              {/* Fee Items */}
-              <div className="p-5">
-                <div className="space-y-2 mb-4">
-                  {structure.items?.map((item, idx) => (
-                    <div key={idx} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                      <span className="text-sm text-gray-700">{item.category?.name}</span>
-                      <span className="font-semibold text-gray-900">NPR {parseFloat(item.amount.toString()).toLocaleString()}</span>
-                    </div>
-                  ))}
-                </div>
+            <Button
+              variant="danger"
+              size="sm"
+              icon={
+                <Trash2 className="w-4 h-4" />
+              }
+              onClick={e => {
+                e.stopPropagation();
+                handleDelete(row);
+              }}
+            >
+              Delete
+            </Button>
 
-                {/* Total */}
-                <div className="bg-blue-50 rounded-lg p-3 mb-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-blue-900">Total Amount</span>
-                    <span className="text-xl font-bold text-blue-900">
-                      NPR {parseFloat(structure.totalAmount.toString()).toLocaleString()}
-                    </span>
-                  </div>
-                  {structure.dueDate && (
-                    <div className="text-xs text-blue-700 mt-1">
-                      Due: {new Date(structure.dueDate).toLocaleDateString()}
-                    </div>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Button size="sm" variant="secondary" onClick={() => handleEdit(structure)} icon={<Edit className="w-4 h-4" />} className="flex-1">
-                    Edit
-                  </Button>
-                  <Button size="sm" variant="secondary" onClick={() => handleClone(structure)} icon={<Copy className="w-4 h-4" />} className="flex-1">
-                    Clone
-                  </Button>
-                  <Button size="sm" variant="danger" onClick={() => handleDelete(structure.id)} icon={<Trash2 className="w-4 h-4" />}>
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Create/Edit Modal */}
-      <Modal isOpen={modalOpen} onClose={handleCloseModal} title={editingStructure ? 'Edit Fee Structure' : 'Create Fee Structure'} size="xl">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
-              <FormInput
-                label="Structure Name *"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="e.g., Class 8 Annual Fee 2024-25"
-                required
-              />
-            </div>
-            <Select
-              label="Purpose/Type *"
-              value={formData.purpose}
-              onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-              options={[
-                { value: 'admission', label: 'Admission Fee' },
-                { value: 'tuition', label: 'Tuition Fee' },
-                { value: 'examination', label: 'Examination Fee' },
-                { value: 'event', label: 'Event Fee' },
-                { value: 'transport', label: 'Transport Fee' },
-                { value: 'hostel', label: 'Hostel Fee' },
-                { value: 'library', label: 'Library Fee' },
-                { value: 'lab', label: 'Lab Fee' },
-                { value: 'sports', label: 'Sports Fee' },
-                { value: 'other', label: 'Other' },
-              ]}
-              required
-            />
-            <FormInput
-              label="Academic Year *"
-              value={formData.academicYear}
-              onChange={(e) => setFormData({ ...formData, academicYear: e.target.value })}
-              placeholder="e.g., 2081-2082"
-              required
-            />
-            <Select
-              label="Class *"
-              value={formData.class}
-              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-              options={[
-                { value: '', label: 'Select Class' },
-                ...[...Array(12)].map((_, i) => ({ 
-                  value: `${i + 1}`, 
-                  label: `Class ${i + 1}` 
-                })),
-              ]}
-              required
-            />
-            <FormInput
-              label="Section (Optional)"
-              value={formData.section}
-              onChange={(e) => setFormData({ ...formData, section: e.target.value.toUpperCase() })}
-              placeholder="e.g., A, B, C"
-            />
-            <FormInput
-              label="Due Date"
-              type="date"
-              value={formData.dueDate}
-              onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-            />
-            <div className="md:col-span-2">
-              <FormInput
-                label="Description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Optional notes about this fee structure"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="flex items-center gap-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={formData.isTemplate}
-                  onChange={(e) => setFormData({ ...formData, isTemplate: e.target.checked })}
-                  className="rounded"
-                />
-                <span>Save as template (for easy cloning)</span>
-              </label>
-            </div>
           </div>
+        )}
+      />
 
-          {/* Fee Items */}
-          <div>
-            <div className="flex justify-between items-center mb-3">
-              <label className="block text-sm font-medium text-gray-700">Fee Categories *</label>
-              <Button type="button" size="sm" variant="secondary" onClick={handleAddItem} icon={<Plus className="w-4 h-4" />}>
-                Add Category
-              </Button>
-            </div>
+      {/* =====================================================
+                MODAL
+            ====================================================== */}
 
-            {formData.items.length === 0 ? (
-              <div className="bg-gray-50 rounded-lg p-6 text-center border-2 border-dashed border-gray-300">
-                <span className="text-5xl text-gray-400 inline-block mb-2">रु</span>
-                <p className="text-gray-600">No fee categories added yet</p>
-                <p className="text-sm text-gray-500">Click "Add Category" to start</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {formData.items.map((item, index) => (
-                  <div key={index} className="flex gap-3 items-start bg-gray-50 p-3 rounded-lg">
-                    <div className="flex-1">
-                      <Select
-                        value={item.feeCategoryId.toString()}
-                        onChange={(e) => handleItemChange(index, 'feeCategoryId', parseInt(e.target.value))}
-                        options={categories.map((cat) => ({ value: cat.id.toString(), label: cat.name }))}
-                        required
-                      />
-                    </div>
-                    <div className="w-40">
-                      <FormInput
-                        type="number"
-                        step="0.01"
-                        value={item.amount}
-                        onChange={(e) => handleItemChange(index, 'amount', parseFloat(e.target.value) || 0)}
-                        placeholder="Amount"
-                        required
-                      />
-                    </div>
-                    <Button type="button" size="sm" variant="danger" onClick={() => handleRemoveItem(index)} icon={<X className="w-4 h-4" />}>
-                      Remove
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          resetForm();
+        }}
+        title={
+          editingStructure
+            ? 'Edit Fee Structure'
+            : 'Add Fee Structure'
+        }
+        size="lg"
+        footer={
+          <div className="flex justify-end gap-2">
 
-            {formData.items.length > 0 && (
-              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-blue-900">Total Amount</span>
-                  <span className="text-2xl font-bold text-blue-900">NPR {totalAmount.toLocaleString()}</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-            <Button type="button" variant="secondary" onClick={handleCloseModal}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setModalOpen(false);
+                resetForm();
+              }}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} icon={<Check className="w-5 h-5" />}>
-              {loading ? 'Saving...' : editingStructure ? 'Update Structure' : 'Create Structure'}
+
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={handleSubmit as any}
+              loading={loading}
+            >
+              {editingStructure
+                ? 'Update'
+                : 'Create'}
             </Button>
+
           </div>
+        }
+      >
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
+
+          {/* =================================================
+                        ACTIVE ACADEMIC YEAR
+                    ================================================== */}
+
+          <div>
+            <FormInput
+              label="Academic Year (Active Session)"
+              name="academicYearDisplay"
+              value={
+                currentYear?.year ||
+                'No Active Session Set'
+              }
+              disabled
+              className="bg-gray-100 text-gray-700 font-semibold cursor-not-allowed"
+            />
+          </div>
+
+          {/* =================================================
+                        BASIC INFORMATION
+                    ================================================== */}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <FormInput
+              label="Fee Structure Name"
+              name="name"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="e.g. Class 8 Annual Fee"
+            />
+
+            <FormInput
+              label="Class"
+              name="class"
+              required
+              value={formData.class}
+              onChange={handleChange}
+              placeholder="e.g. LKG, Nursery, 1, 2, 10"
+            />
+
+            <FormInput
+              label="Section"
+              name="section"
+              value={formData.section}
+              onChange={handleChange}
+              placeholder="e.g. A, B"
+            />
+
+            <Select
+              label="Purpose"
+              name="purpose"
+              value={formData.purpose}
+              onChange={handleChange}
+              options={[
+                {
+                  value: 'admission',
+                  label: 'Admission',
+                },
+                {
+                  value: 'tuition',
+                  label: 'Tuition',
+                },
+                {
+                  value: 'examination',
+                  label: 'Examination',
+                },
+                {
+                  value: 'event',
+                  label: 'Event',
+                },
+                {
+                  value: 'transport',
+                  label: 'Transport',
+                },
+                {
+                  value: 'hostel',
+                  label: 'Hostel',
+                },
+                {
+                  value: 'library',
+                  label: 'Library',
+                },
+                {
+                  value: 'lab',
+                  label: 'Lab',
+                },
+                {
+                  value: 'sports',
+                  label: 'Sports',
+                },
+                {
+                  value: 'other',
+                  label: 'Other',
+                },
+              ]}
+            />
+
+            <FormInput
+              label="Due Date"
+              name="dueDate"
+              type="date"
+              value={formData.dueDate}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          {/* =================================================
+                        DESCRIPTION
+                    ================================================== */}
+
+          <FormInput
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Optional description or notes"
+          />
+
+          {/* =================================================
+                        FEE ITEMS
+                    ================================================== */}
+
+          <div className="border rounded-lg p-4">
+
+            <div className="flex items-center justify-between mb-4">
+
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  Fee Items
+                </h3>
+
+                <p className="text-xs text-gray-500">
+                  Add fee categories and their
+                  amounts.
+                </p>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                icon={
+                  <Plus className="w-4 h-4" />
+                }
+                onClick={addFeeItem}
+              >
+                Add Item
+              </Button>
+
+            </div>
+
+            <div className="space-y-3">
+
+              {feeItems.map(
+                (item, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end"
+                  >
+
+                    {/* Category */}
+
+                    <div className="md:col-span-4">
+
+                      <Select
+                        label={
+                          index === 0
+                            ? 'Fee Category'
+                            : ''
+                        }
+                        name={`feeCategory-${index}`}
+                        value={String(
+                          item.feeCategoryId ||
+                          ''
+                        )}
+                        onChange={e =>
+                          handleFeeItemChange(
+                            index,
+                            'feeCategoryId',
+                            Number(
+                              e.target
+                                .value
+                            )
+                          )
+                        }
+                        options={[
+                          {
+                            value: '',
+                            label: 'Select Category',
+                          },
+                          ...categories.map(
+                            category => ({
+                              value: String(
+                                category.id
+                              ),
+                              label:
+                                category.name,
+                            })
+                          ),
+                        ]}
+                      />
+
+                    </div>
+
+                    {/* Amount */}
+
+                    <div className="md:col-span-3">
+
+                      <FormInput
+                        label={
+                          index === 0
+                            ? 'Amount'
+                            : ''
+                        }
+                        name={`amount-${index}`}
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        value={
+                          item.amount
+                        }
+                        onChange={e =>
+                          handleFeeItemChange(
+                            index,
+                            'amount',
+                            e.target
+                              .value
+                          )
+                        }
+                        placeholder="0.00"
+                      />
+
+                    </div>
+
+                    {/* Description */}
+
+                    <div className="md:col-span-3">
+
+                      <FormInput
+                        label={
+                          index === 0
+                            ? 'Description'
+                            : ''
+                        }
+                        name={`itemDescription-${index}`}
+                        value={
+                          item.description ||
+                          ''
+                        }
+                        onChange={e =>
+                          handleFeeItemChange(
+                            index,
+                            'description',
+                            e.target
+                              .value
+                          )
+                        }
+                        placeholder="Optional"
+                      />
+
+                    </div>
+
+                    {/* Remove */}
+
+                    <div className="md:col-span-1">
+
+                      <Button
+                        type="button"
+                        variant="danger"
+                        size="sm"
+                        icon={
+                          <Trash2 className="w-5 h-7" />
+                        }
+                        onClick={() =>
+                          removeFeeItem(
+                            index
+                          )
+                        }
+                        disabled={
+                          feeItems.length ===
+                          1
+                        }
+                      >
+                      </Button>
+
+                    </div>
+
+                  </div>
+                )
+              )}
+
+            </div>
+
+            {/* Total */}
+
+            <div className="flex justify-end mt-5 pt-4 border-t">
+
+              <div className="text-right">
+
+                <p className="text-sm text-gray-500">
+                  Total Fee
+                </p>
+
+                <p className="text-xl font-bold text-gray-900">
+                  Rs.{' '}
+                  {totalAmount.toLocaleString(
+                    undefined,
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+                        TEMPLATE
+                    ================================================== */}
+
+          <div className="flex items-center gap-2">
+
+            <input
+              id="isTemplate"
+              type="checkbox"
+              name="isTemplate"
+              checked={formData.isTemplate}
+              onChange={e =>
+                setFormData(prev => ({
+                  ...prev,
+                  isTemplate:
+                    e.target.checked,
+                }))
+              }
+              className="w-4 h-4"
+            />
+
+            <label
+              htmlFor="isTemplate"
+              className="text-sm text-gray-700"
+            >
+              Save as template
+            </label>
+
+          </div>
+
         </form>
       </Modal>
     </div>
   );
 };
 
-export default FeeStructureManager;
+export default FeeStructurePage;

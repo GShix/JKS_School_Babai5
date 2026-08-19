@@ -1,16 +1,4 @@
-/**
- * Fee Allocation Controller
- * 
- * Manages allocation of fee structures to students
- */
-
-const {
-  feeAllocations,
-  feeStructures,
-  feeStructureItems,
-  feeCategories,
-  students,
-  feeTransactions,
+const { feeAllocations, feeStructures, feeStructureItems, feeCategories, students, feeTransactions,
 } = require('../database/connection');
 const { Op } = require('sequelize');
 
@@ -23,19 +11,48 @@ exports.allocateFeeToStudent = async (req, res) => {
       discount,
       discountReason,
       dueDate,
-      notes,
       allocationBatch,
       purpose,
     } = req.body;
 
-    // Validation
     if (!studentId || !feeStructureId) {
       return res.status(400).json({
         message: 'Student ID and Fee Structure ID are required',
       });
     }
 
-    // Validate discount
+    const [student, feeStructure] = await Promise.all([
+      students.findByPk(studentId),
+      feeStructures.findByPk(feeStructureId),
+    ]);
+
+    if (!student) {
+      return res.status(404).json({
+        message: 'Student not found',
+      });
+    }
+
+    if (!feeStructure) {
+      return res.status(404).json({
+        message: 'Fee structure not found',
+      });
+    }
+
+    const normalizedStudentClass = String(student.currentClass || '').trim().toLowerCase();
+    const normalizedStructureClass = String(feeStructure.class || '').trim().toLowerCase();
+
+    if (normalizedStructureClass && normalizedStudentClass !== normalizedStructureClass) {
+      return res.status(400).json({
+        message: 'Selected fee structure class does not match student current class',
+        code: 'FEE_STRUCTURE_CLASS_MISMATCH',
+        data: {
+          studentId: student.id,
+          studentClass: student.currentClass,
+          feeStructureClass: feeStructure.class,
+        },
+      });
+    }
+
     const discountAmount = parseFloat(discount) || 0;
     if (discountAmount < 0) {
       return res.status(400).json({
@@ -43,48 +60,26 @@ exports.allocateFeeToStudent = async (req, res) => {
       });
     }
 
-    // Check if student exists
-    const student = await students.findByPk(studentId);
-    if (!student) {
-      return res.status(404).json({
-        message: 'Student not found',
-      });
-    }
-
-    // Check if fee structure exists
-    const feeStructure = await feeStructures.findByPk(feeStructureId);
-    if (!feeStructure) {
-      return res.status(404).json({
-        message: 'Fee structure not found',
-      });
-    }
-
-    // Check if already allocated (same structure + batch combination)
-    // Allow multiple allocations if batch is different (e.g., different exams)
     const whereClause = {
       studentId,
       feeStructureId,
     };
-    
-    // If allocationBatch is provided, include it in duplicate check
-    if (allocationBatch) {
-      whereClause.allocationBatch = allocationBatch;
+
+    if (allocationBatch && allocationBatch.trim()) {
+      whereClause.allocationBatch = allocationBatch.trim();
     }
-    
+
     const existingAllocation = await feeAllocations.findOne({
       where: whereClause,
     });
 
     if (existingAllocation) {
-      return res.status(400).json({
-        message: allocationBatch 
-          ? `Fee structure already allocated to this student for batch: ${allocationBatch}`
-          : 'Fee structure already allocated to this student. Use allocationBatch to create multiple allocations.',
-        data: existingAllocation,
+      return res.status(409).json({
+        message: 'Fee already allocated for this student and batch',
+        code: 'FEE_ALREADY_ALLOCATED',
       });
     }
 
-    // Create allocation
     const totalAmount = parseFloat(feeStructure.totalAmount);
     const balance = totalAmount - discountAmount;
 
@@ -96,50 +91,209 @@ exports.allocateFeeToStudent = async (req, res) => {
       balance,
       status: 'pending',
       discount: discountAmount,
-      discountReason: discountReason?.trim(),
+      discountReason: discountReason?.trim() || null,
       dueDate: dueDate || feeStructure.dueDate,
       allocationDate: new Date(),
-      notes: notes?.trim(),
       allocationBatch: allocationBatch?.trim() || null,
       purpose: purpose || 'tuition',
       allocatedBy: req.user?.id || null,
     });
 
-    // Fetch complete allocation with relations
-    const completeAllocation = await feeAllocations.findByPk(allocation.id, {
+    return res.status(201).json({
+      message: 'Fee allocated successfully',
+      data: allocation,
+    });
+  } catch (error) {
+    console.error('Error allocating fee to student:', error);
+
+    return res.status(500).json({
+      message: 'Error allocating fee to student',
+      error: error.message,
+    });
+  }
+};
+
+// Allocate fee structure to all students in a class
+exports.allocateFeeToClass = async (req, res) => {
+  try {
+    const {
+      className,
+      class: legacyClassName,
+      section,
+      feeStructureId,
+      discount,
+      discountReason,
+      dueDate,
+      allocationBatch,
+      purpose,
+    } = req.body;
+
+    // Support both:
+    // { className: "1" }
+    // and legacy:
+    // { class: "1" }
+    const selectedClass = className || legacyClassName;
+
+    // --------------------------------------------------
+    // 1. Validate request
+    // --------------------------------------------------
+    if (!selectedClass || !feeStructureId) {
+      return res.status(400).json({
+        message: 'Class and Fee Structure ID are required',
+      });
+    }
+
+    // --------------------------------------------------
+    // 2. Validate fee structure
+    // --------------------------------------------------
+    const feeStructure = await feeStructures.findByPk(feeStructureId);
+
+    if (!feeStructure) {
+      return res.status(404).json({
+        message: 'Fee structure not found',
+      });
+    }
+
+    const normalizedSelectedClass = String(selectedClass).trim().toLowerCase();
+    const normalizedStructureClass = String(feeStructure.class || '').trim().toLowerCase();
+
+    if (normalizedStructureClass && normalizedSelectedClass !== normalizedStructureClass) {
+      return res.status(400).json({
+        message: 'Selected fee structure class does not match requested class',
+        code: 'FEE_STRUCTURE_CLASS_MISMATCH',
+        data: {
+          selectedClass,
+          feeStructureClass: feeStructure.class,
+        },
+      });
+    }
+
+    // --------------------------------------------------
+    // 3. Find students using students.currentClass
+    // --------------------------------------------------
+    const studentWhere = {
+      currentClass: String(selectedClass),
+    };
+
+    if (section && section.trim()) {
+      studentWhere.section = section.trim();
+    }
+
+    const studentsInClass = await students.findAll({
+      where: studentWhere,
+      attributes: ['id', 'fullName', 'currentClass', 'section'],
+    });
+
+    if (studentsInClass.length === 0) {
+      return res.status(404).json({
+        message: `No students found in class ${selectedClass}`,
+      });
+    }
+
+    const studentIds = studentsInClass.map((student) => student.id);
+
+    // --------------------------------------------------
+    // 4. IMPORTANT:
+    // Prevent the same fee structure from being
+    // allocated to the same class more than once.
+    //
+    // We check ALL students in the selected class.
+    // --------------------------------------------------
+    const existingAllocations = await feeAllocations.findAll({
+      where: {
+        studentId: {
+          [Op.in]: studentIds,
+        },
+        feeStructureId,
+      },
+      attributes: ['id', 'studentId', 'feeStructureId'],
       include: [
         {
           model: students,
           as: 'student',
-          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section'],
-        },
-        {
-          model: feeStructures,
-          as: 'feeStructure',
-          include: [
-            {
-              model: feeStructureItems,
-              as: 'items',
-              include: [
-                {
-                  model: feeCategories,
-                  as: 'category',
-                },
-              ],
-            },
-          ],
+          attributes: ['id', 'fullName', 'currentClass', 'section'],
         },
       ],
     });
 
-    res.status(201).json({
-      message: 'Fee allocated to student successfully',
-      data: completeAllocation,
+    if (existingAllocations.length > 0) {
+      return res.status(409).json({
+        message: `This fee structure has already been allocated to class ${selectedClass}.`,
+        code: 'FEE_ALREADY_ALLOCATED_TO_CLASS',
+        data: {
+          className: selectedClass,
+          feeStructureId,
+          alreadyAllocatedCount: existingAllocations.length,
+          totalStudents: studentsInClass.length,
+        },
+      });
+    }
+
+    // --------------------------------------------------
+    // 5. Allocate to all students
+    // --------------------------------------------------
+    const discountAmount = parseFloat(discount) || 0;
+
+    if (discountAmount < 0) {
+      return res.status(400).json({
+        message: 'Discount cannot be negative',
+      });
+    }
+
+    const totalAmount = parseFloat(feeStructure.totalAmount);
+    const balance = totalAmount - discountAmount;
+
+    const allocations = [];
+    const errors = [];
+
+    for (const student of studentsInClass) {
+      try {
+        const allocation = await feeAllocations.create({
+          studentId: student.id,
+          feeStructureId,
+          totalAmount,
+          paidAmount: 0,
+          balance,
+          status: 'pending',
+          discount: discountAmount,
+          discountReason: discountReason?.trim() || null,
+          dueDate: dueDate || feeStructure.dueDate,
+          allocationDate: new Date(),
+          allocationBatch: allocationBatch?.trim() || null,
+          purpose: purpose || 'tuition',
+          allocatedBy: req.user?.id || null,
+        });
+
+        allocations.push(allocation);
+      } catch (error) {
+        errors.push({
+          studentId: student.id,
+          studentName: student.fullName,
+          error: error.message,
+        });
+      }
+    }
+
+    // --------------------------------------------------
+    // 6. Return result
+    // --------------------------------------------------
+    return res.status(201).json({
+      message: `Fee allocated to ${allocations.length} students in class ${selectedClass}`,
+      data: {
+        className: selectedClass,
+        feeStructureId,
+        successful: allocations.length,
+        failed: errors.length,
+        totalStudents: studentsInClass.length,
+        allocations,
+        errors,
+      },
     });
   } catch (error) {
-    console.error('Error allocating fee to student:', error);
-    res.status(500).json({
-      message: 'Error allocating fee to student',
+    console.error('Error allocating fee to class:', error);
+
+    return res.status(500).json({
+      message: 'Error allocating fee to class',
       error: error.message,
     });
   }
@@ -200,11 +354,11 @@ exports.allocateFeeToMultipleStudents = async (req, res) => {
           studentId,
           feeStructureId,
         };
-        
+
         if (allocationBatch) {
           whereClause.allocationBatch = allocationBatch;
         }
-        
+
         const existingAllocation = await feeAllocations.findOne({
           where: whereClause,
         });
@@ -254,70 +408,6 @@ exports.allocateFeeToMultipleStudents = async (req, res) => {
     });
   }
 };
-
-// Allocate fee to all students in a class
-exports.allocateFeeToClass = async (req, res) => {
-  try {
-    const {
-      class: className,
-      section,
-      feeStructureId,
-      discount,
-      discountReason,
-      dueDate,
-      allocationBatch,
-      purpose,
-    } = req.body;
-
-    // Validation
-    if (!className || !feeStructureId) {
-      return res.status(400).json({
-        message: 'Class and Fee Structure ID are required',
-      });
-    }
-
-    // Find all students in the class
-    const where = { class: className };
-    if (section) where.section = section;
-
-    const studentsInClass = await students.findAll({
-      where,
-      attributes: ['id'],
-    });
-
-    if (studentsInClass.length === 0) {
-      return res.status(404).json({
-        message: 'No students found in this class',
-      });
-    }
-
-    const studentIds = studentsInClass.map(s => s.id);
-
-    // Use bulk allocation
-    return exports.allocateFeeToMultipleStudents(
-      {
-        body: {
-          studentIds,
-          feeStructureId,
-          discount,
-          discountReason,
-          dueDate,
-          allocationBatch,
-          purpose,
-        },
-        user: req.user,
-      },
-      res
-    );
-  } catch (error) {
-    console.error('Error allocating fee to class:', error);
-    res.status(500).json({
-      message: 'Error allocating fee to class',
-      error: error.message,
-    });
-  }
-};
-
 // Get all fee allocations
 exports.getAllFeeAllocations = async (req, res) => {
   try {
@@ -338,7 +428,7 @@ exports.getAllFeeAllocations = async (req, res) => {
       {
         model: students,
         as: 'student',
-        attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'phone'],
+        attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone'],
       },
       {
         model: feeStructures,
@@ -395,7 +485,7 @@ exports.getFeeAllocationById = async (req, res) => {
         {
           model: students,
           as: 'student',
-          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'phone', 'email'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone', 'email'],
         },
         {
           model: feeStructures,
@@ -549,7 +639,7 @@ exports.updateFeeAllocation = async (req, res) => {
         {
           model: students,
           as: 'student',
-          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section'],
         },
         {
           model: feeStructures,

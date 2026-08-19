@@ -78,7 +78,7 @@ exports.collectFeePayment = async (req, res) => {
         {
           model: students,
           as: 'student',
-          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'phone'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone'],
         },
         {
           model: feeStructures,
@@ -156,7 +156,7 @@ exports.collectFeePayment = async (req, res) => {
             {
               model: students,
               as: 'student',
-              attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'phone', 'email'],
+              attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone', 'email'],
             },
             {
               model: feeStructures,
@@ -252,7 +252,7 @@ exports.getAllFeeTransactions = async (req, res) => {
             {
               model: students,
               as: 'student',
-              attributes: ['id', 'fullName', 'rollNumber', 'class', 'section'],
+              attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section'],
             },
             {
               model: feeStructures,
@@ -264,7 +264,7 @@ exports.getAllFeeTransactions = async (req, res) => {
         {
           model: students,
           as: 'student', // Direct student relation for flexible collections
-          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section', 'emisId'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'studentId'],
         },
         {
           model: admins,
@@ -521,7 +521,7 @@ exports.cancelFeeTransaction = async (req, res) => {
             {
               model: students,
               as: 'student',
-              attributes: ['id', 'fullName', 'rollNumber', 'class', 'section'],
+              attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section'],
             },
           ],
         },
@@ -557,7 +557,7 @@ exports.getDailyCollectionReport = async (req, res) => {
         {
           model: students,
           as: 'student',
-          attributes: ['id', 'fullName', 'rollNumber', 'class', 'section'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section'],
         },
         {
           model: admins,
@@ -617,7 +617,6 @@ exports.collectFlexibleFeePayment = async (req, res) => {
   try {
     const {
       studentId,
-      emisId,
       feeItems, // Array of { feeCategoryId, amount }
       totalAmount,
       paidAmount,
@@ -714,10 +713,10 @@ exports.collectFlexibleFeePayment = async (req, res) => {
         transaction,
         student: {
           id: student.id,
-          emisId: student.emisId,
+          studentId: student.studentId,
           fullName: student.fullName,
           rollNumber: student.rollNumber,
-          class: student.class,
+          currentClass: student.currentClass,
           section: student.section,
         },
         feeItems: feeItemsDescription,

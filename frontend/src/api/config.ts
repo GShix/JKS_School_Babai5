@@ -81,6 +81,14 @@ export const API_ENDPOINTS = {
     DELETE: (id: number) => `/admins/${id}/delete`,
     GET_BY_ID: (id: number) => `/admins/${id}`,
   },
+  // Academic Years
+  ACADEMIC_YEARS: {
+    BASE: "/academic-years",
+    CREATE: "/academic-years/create",
+    UPDATE: (id: number) => `/academic-years/${id}/update`,
+    DELETE: (id: number) => `/academic-years/${id}/delete`,
+    GET_BY_ID: (id: number) => `/academic-years/${id}`,
+  },
 
   // Classes
   CLASSES: {
@@ -91,6 +99,13 @@ export const API_ENDPOINTS = {
     GET_BY_ID: (id: number) => `/classes/${id}`,
   },
 
+  SUBJECTS: {
+    BASE: "/subjects",
+    CREATE: "/subjects",
+    UPDATE: (id: number) => `/subjects/${id}`,
+    DELETE: (id: number) => `/subjects/${id}`,
+    GET_BY_ID: (id: number) => `/subjects/${id}`,
+  },
   // Announcements
   ANNOUNCEMENTS: {
     BASE: "/announcements",

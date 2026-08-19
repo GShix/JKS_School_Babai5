@@ -1,9 +1,9 @@
-const { classes } = require('../database/connection');
+const { classes, academicYears } = require('../database/connection');
 
 // Create a new class
 exports.createClass = async (req, res) => {
     try {
-        const { name, medium, section, department, status, totalStudents } = req.body;
+        const { name, medium, section, department, status, totalStudents, academicYearId } = req.body;
 
         if (!name) {
             return res.status(400).json({
@@ -11,7 +11,21 @@ exports.createClass = async (req, res) => {
             });
         }
 
+        let targetYearId = academicYearId;
+
+        // Fallback: If academicYearId not passed, resolve active current year automatically
+        if (!targetYearId) {
+            const currentYear = await academicYears.findOne({ where: { isCurrent: true } });
+            if (!currentYear) {
+                return res.status(400).json({
+                    message: 'No active current academic year configured. Please set one first.',
+                });
+            }
+            targetYearId = currentYear.id;
+        }
+
         const newClass = await classes.create({
+            academicYearId: targetYearId,
             name,
             medium,
             section,
@@ -36,7 +50,7 @@ exports.createClass = async (req, res) => {
 // Fetch all classes (with optional filters)
 exports.fetchClasses = async (req, res) => {
     try {
-        const { status, department } = req.query;
+        const { status, department, academicYearId } = req.query;
         const whereClause = {};
 
         if (status) {
@@ -47,8 +61,19 @@ exports.fetchClasses = async (req, res) => {
             whereClause.department = department;
         }
 
+        if (academicYearId) {
+            whereClause.academicYearId = academicYearId;
+        }
+
         const allClasses = await classes.findAll({
             where: whereClause,
+            include: [
+                {
+                    model: academicYears,
+                    as: 'academicYear',
+                    attributes: ['id', 'year', 'title', 'isCurrent'],
+                },
+            ],
             order: [['createdAt', 'DESC']],
         });
 
@@ -70,7 +95,15 @@ exports.fetchSingleClass = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const classItem = await classes.findByPk(id);
+        const classItem = await classes.findByPk(id, {
+            include: [
+                {
+                    model: academicYears,
+                    as: 'academicYear',
+                    attributes: ['id', 'year', 'title', 'isCurrent'],
+                },
+            ],
+        });
 
         if (!classItem) {
             return res.status(404).json({
@@ -104,9 +137,10 @@ exports.updateClass = async (req, res) => {
             });
         }
 
-        const { name, medium, section, department, status, totalStudents } = req.body;
+        const { name, medium, section, department, status, totalStudents, academicYearId } = req.body;
 
         await classItem.update({
+            academicYearId: academicYearId !== undefined ? academicYearId : classItem.academicYearId,
             name: name !== undefined ? name : classItem.name,
             medium: medium !== undefined ? medium : classItem.medium,
             section: section !== undefined ? section : classItem.section,

@@ -140,7 +140,7 @@ export default function Admission() {
     // In real app, send FormData with documents to server
     setSubmitting(false);
     setSuccess(true);
-    
+
     // Auto-close form after success
     setTimeout(() => {
       setShowForm(false);
@@ -152,10 +152,10 @@ export default function Admission() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       {/* Hero Banner */}
-      <div className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-center px-12" 
-           style={{backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.9}}>
+      <div className="about-top w-full h-[200px] bg-[#035CB0] flex items-center justify-center px-12"
+        style={{ backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.9 }}>
         <div className="text-center">
           <h1 className="text-5xl font-medium text-white mb-3">Admissions Open</h1>
           <p className="text-white text-lg">Academic Year 2082 BS (2025/26 AD)</p>
@@ -163,18 +163,18 @@ export default function Admission() {
       </div>
 
       <main className="container mx-auto px-4 sm:px-8 py-8">
-        
+
         {/* Introduction Section */}
         <section className="bg-white rounded-lg shadow px-2 py-3 text-justify mb-8">
           <h2 className="text-2xl font-bold text-[#035CB0] mb-4">Welcome to Janakalyan Secondary School</h2>
           <p className="text-gray-700 mb-4">
-            We are delighted to invite applications for admission to our school for the academic year 2082 BS. 
-            Janakalyan Secondary School is committed to providing quality education with a focus on academic excellence, 
+            We are delighted to invite applications for admission to our school for the academic year 2082 BS.
+            Janakalyan Secondary School is committed to providing quality education with a focus on academic excellence,
             character development, and holistic growth.
           </p>
           <p className="text-gray-700">
-            Our experienced faculty, modern facilities, and comprehensive curriculum ensure that every student receives 
-            the best possible education. We offer programs from Nursery to Class XII with specialized streams in 
+            Our experienced faculty, modern facilities, and comprehensive curriculum ensure that every student receives
+            the best possible education. We offer programs from Nursery to Class XII with specialized streams in
             Agriculture, Education, and Management.
           </p>
         </section>
@@ -193,7 +193,7 @@ export default function Admission() {
                   <div><strong>Deadline:</strong> {new Date(level.deadline).toLocaleDateString()}</div>
                 </div>
                 <p className="text-gray-700 text-sm mb-4">{level.description}</p>
-                <button 
+                <button
                   onClick={() => { setApplyingFor(level.title); setShowForm(true); }}
                   className="w-full px-4 py-2 bg-[#035CB0] text-white rounded hover:text-yellow-400 transition cursor-pointer"
                 >
@@ -323,13 +323,13 @@ export default function Admission() {
             <div>
               <i className="ri-mail-line text-4xl mb-2"></i>
               <h4 className="font-semibold mb-1">Email Us</h4>
-              <p>jksschoolp5@gmail.com</p>
+              <p>jankalyanbasicscl2056@gmail.com</p>
               <p className="text-sm">We reply within 24 hours</p>
             </div>
             <div>
               <i className="ri-map-pin-line text-4xl mb-2"></i>
               <h4 className="font-semibold mb-1">Visit Us</h4>
-              <p>Padampur-5, Dang</p>
+              <p>Bhangabari-1, Dang</p>
               <p className="text-sm">Nepal</p>
             </div>
           </div>
@@ -359,22 +359,22 @@ export default function Admission() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Student Full Name *</label>
-                    <input value={studentName} onChange={e => setStudentName(e.target.value)} 
-                           className="w-full border rounded px-3 py-2" placeholder="Enter full name" />
+                    <input value={studentName} onChange={e => setStudentName(e.target.value)}
+                      className="w-full border rounded px-3 py-2" placeholder="Enter full name" />
                     {errors.studentName && <div className="text-red-600 text-sm mt-1">{errors.studentName}</div>}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Date of Birth *</label>
-                    <input type="date" value={dob} onChange={e => setDob(e.target.value)} 
-                           className="w-full border rounded px-3 py-2" />
+                    <input type="date" value={dob} onChange={e => setDob(e.target.value)}
+                      className="w-full border rounded px-3 py-2" />
                     {errors.dob && <div className="text-red-600 text-sm mt-1">{errors.dob}</div>}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Gender *</label>
-                    <select value={gender} onChange={e => setGender(e.target.value)} 
-                            className="w-full border rounded px-3 py-2">
+                    <select value={gender} onChange={e => setGender(e.target.value)}
+                      className="w-full border rounded px-3 py-2">
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                       <option value="Other">Other</option>
@@ -383,8 +383,8 @@ export default function Admission() {
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Applying For *</label>
-                    <select value={applyingFor} onChange={e => setApplyingFor(e.target.value)} 
-                            className="w-full border rounded px-3 py-2">
+                    <select value={applyingFor} onChange={e => setApplyingFor(e.target.value)}
+                      className="w-full border rounded px-3 py-2">
                       <option value="">Select Level</option>
                       {admissionLevels.map(lvl => <option key={lvl.id} value={lvl.title}>{lvl.title}</option>)}
                     </select>
@@ -393,44 +393,44 @@ export default function Admission() {
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Previous School (if any)</label>
-                    <input value={previousSchool} onChange={e => setPreviousSchool(e.target.value)} 
-                           className="w-full border rounded px-3 py-2" placeholder="Name of previous school" />
+                    <input value={previousSchool} onChange={e => setPreviousSchool(e.target.value)}
+                      className="w-full border rounded px-3 py-2" placeholder="Name of previous school" />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Parent/Guardian Name *</label>
-                    <input value={parentName} onChange={e => setParentName(e.target.value)} 
-                           className="w-full border rounded px-3 py-2" placeholder="Full name" />
+                    <input value={parentName} onChange={e => setParentName(e.target.value)}
+                      className="w-full border rounded px-3 py-2" placeholder="Full name" />
                     {errors.parentName && <div className="text-red-600 text-sm mt-1">{errors.parentName}</div>}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Parent Phone *</label>
-                    <input value={parentPhone} onChange={e => setParentPhone(e.target.value)} 
-                           className="w-full border rounded px-3 py-2" placeholder="+977 9800000000" />
+                    <input value={parentPhone} onChange={e => setParentPhone(e.target.value)}
+                      className="w-full border rounded px-3 py-2" placeholder="+977 9800000000" />
                     {errors.parentPhone && <div className="text-red-600 text-sm mt-1">{errors.parentPhone}</div>}
                   </div>
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Parent Email *</label>
-                    <input type="email" value={parentEmail} onChange={e => setParentEmail(e.target.value)} 
-                           className="w-full border rounded px-3 py-2" placeholder="email@example.com" />
+                    <input type="email" value={parentEmail} onChange={e => setParentEmail(e.target.value)}
+                      className="w-full border rounded px-3 py-2" placeholder="email@example.com" />
                     {errors.parentEmail && <div className="text-red-600 text-sm mt-1">{errors.parentEmail}</div>}
                   </div>
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Address *</label>
-                    <textarea value={address} onChange={e => setAddress(e.target.value)} 
-                              className="w-full border rounded px-3 py-2 h-20" 
-                              placeholder="Ward No., Village/Town, District"></textarea>
+                    <textarea value={address} onChange={e => setAddress(e.target.value)}
+                      className="w-full border rounded px-3 py-2 h-20"
+                      placeholder="Ward No., Village/Town, District"></textarea>
                     {errors.address && <div className="text-red-600 text-sm mt-1">{errors.address}</div>}
                   </div>
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Upload Documents (Birth certificate, marksheet, photos)</label>
-                    <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png" 
-                           onChange={e => setDocuments(Array.from(e.target.files || []))}
-                           className="w-full border rounded px-3 py-2" />
+                    <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={e => setDocuments(Array.from(e.target.files || []))}
+                      className="w-full border rounded px-3 py-2" />
                     {documents.length > 0 && (
                       <div className="text-sm text-gray-600 mt-2">
                         {documents.length} file(s) selected
@@ -440,12 +440,12 @@ export default function Admission() {
                 </div>
 
                 <div className="flex gap-3 justify-end pt-4 border-t">
-                  <button type="button" onClick={() => { setShowForm(false); resetForm(); }} 
-                          className="cursor-pointer px-6 py-2 border rounded hover:bg-gray-100">
+                  <button type="button" onClick={() => { setShowForm(false); resetForm(); }}
+                    className="cursor-pointer px-6 py-2 border rounded hover:bg-gray-100">
                     Cancel
                   </button>
-                  <button type="submit" disabled={submitting} 
-                          className="cursor-pointer px-6 py-2 bg-[#035CB0] text-white rounded hover:bg-blue-700 disabled:opacity-50">
+                  <button type="submit" disabled={submitting}
+                    className="cursor-pointer px-6 py-2 bg-[#035CB0] text-white rounded hover:bg-blue-700 disabled:opacity-50">
                     {submitting ? 'Submitting...' : 'Submit Application'}
                   </button>
                 </div>

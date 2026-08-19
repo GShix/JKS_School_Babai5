@@ -29,10 +29,10 @@ exports.getActivePositions = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching active positions:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error fetching career positions',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -59,10 +59,10 @@ exports.getAllPositions = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching positions:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error fetching career positions',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -74,9 +74,9 @@ exports.getPositionById = async (req, res) => {
     const position = await CareerPosition.findByPk(id);
 
     if (!position) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'Position not found' 
+        message: 'Position not found'
       });
     }
 
@@ -86,10 +86,10 @@ exports.getPositionById = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching position:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error fetching position',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -113,9 +113,9 @@ exports.createPosition = async (req, res) => {
     } = req.body;
 
     if (!title || !department || !description) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Title, department, and description are required' 
+        message: 'Title, department, and description are required'
       });
     }
 
@@ -123,7 +123,7 @@ exports.createPosition = async (req, res) => {
       title: title.trim(),
       department: department.trim(),
       type: type || 'Full-time',
-      location: location || 'Padampur, Dang',
+      location: location || 'Bhangabari, Dang',
       description: description.trim(),
       requirements: requirements?.trim(),
       responsibilities: responsibilities?.trim(),
@@ -165,10 +165,10 @@ exports.createPosition = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating position:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error creating career position',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -180,9 +180,9 @@ exports.updatePosition = async (req, res) => {
     const position = await CareerPosition.findByPk(id);
 
     if (!position) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'Position not found' 
+        message: 'Position not found'
       });
     }
 
@@ -201,7 +201,7 @@ exports.updatePosition = async (req, res) => {
     } = req.body;
 
     const updateData = {};
-    
+
     if (title !== undefined) updateData.title = title.trim();
     if (department !== undefined) updateData.department = department.trim();
     if (type !== undefined) updateData.type = type;
@@ -224,7 +224,7 @@ exports.updatePosition = async (req, res) => {
           console.error('Error deleting old file:', err);
         }
       }
-      
+
       // Upload new file to Supabase
       try {
         const uploadResult = await uploadToSupabase(
@@ -254,10 +254,10 @@ exports.updatePosition = async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating position:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error updating career position',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -277,10 +277,10 @@ exports.getAllActivePositions = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching active positions:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error fetching active career positions',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -292,9 +292,9 @@ exports.deletePosition = async (req, res) => {
     const position = await CareerPosition.findByPk(id);
 
     if (!position) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'Position not found' 
+        message: 'Position not found'
       });
     }
 
@@ -314,10 +314,10 @@ exports.deletePosition = async (req, res) => {
     });
   } catch (error) {
     console.error('Error deleting position:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error deleting career position',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -330,40 +330,40 @@ exports.submitApplication = async (req, res) => {
     const { positionId, applicantName, email, phone, coverLetter } = req.body;
 
     if (!positionId || !applicantName || !email || !phone) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Position ID, name, email, and phone are required' 
+        message: 'Position ID, name, email, and phone are required'
       });
     }
 
     if (!req.file) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Resume file is required' 
+        message: 'Resume file is required'
       });
     }
 
     // Check if position exists and is active
     const position = await CareerPosition.findByPk(positionId);
     if (!position) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'Career position not found' 
+        message: 'Career position not found'
       });
     }
 
     if (position.status !== 'active') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'This position is no longer accepting applications' 
+        message: 'This position is no longer accepting applications'
       });
     }
 
     // Check if deadline has passed
     if (position.applicationDeadline && new Date(position.applicationDeadline) < new Date()) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Application deadline has passed' 
+        message: 'Application deadline has passed'
       });
     }
 
@@ -407,10 +407,10 @@ exports.submitApplication = async (req, res) => {
     });
   } catch (error) {
     console.error('Error submitting application:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error submitting application',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -436,10 +436,10 @@ exports.getAllApplications = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching applications:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error fetching applications',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -451,9 +451,9 @@ exports.getApplicationById = async (req, res) => {
     const application = await JobApplication.findByPk(id);
 
     if (!application) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'Application not found' 
+        message: 'Application not found'
       });
     }
 
@@ -463,10 +463,10 @@ exports.getApplicationById = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching application:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error fetching application',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -480,16 +480,16 @@ exports.updateApplicationStatus = async (req, res) => {
     const application = await JobApplication.findByPk(id);
 
     if (!application) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'Application not found' 
+        message: 'Application not found'
       });
     }
 
     const updateData = {};
     if (status) updateData.status = status;
     if (notes !== undefined) updateData.notes = notes;
-    
+
     if (status && status !== 'pending') {
       updateData.reviewedBy = req.adminId || null;
       updateData.reviewedAt = new Date();
@@ -504,10 +504,10 @@ exports.updateApplicationStatus = async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating application:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error updating application',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -519,9 +519,9 @@ exports.deleteApplication = async (req, res) => {
     const application = await JobApplication.findByPk(id);
 
     if (!application) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: 'Application not found' 
+        message: 'Application not found'
       });
     }
 
@@ -541,10 +541,10 @@ exports.deleteApplication = async (req, res) => {
     });
   } catch (error) {
     console.error('Error deleting application:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: 'Error deleting application',
-      error: error.message 
+      error: error.message
     });
   }
 };

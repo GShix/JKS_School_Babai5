@@ -33,7 +33,7 @@ const getPositionRank = (position?: string) => {
   return idx === -1 ? POSITION_ORDER.length : idx;
 };
 
-const JKSSTeachers = () => {
+const Teachers = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,14 +107,14 @@ const JKSSTeachers = () => {
   }, [teachers, selectedPosition]);
 
   return (
-    <div className="JKSSTeachers-page min-h-screen bg-[#F7F7F7]">
+    <div className="Teachers-page min-h-screen bg-[#F7F7F7]">
       <Header />
       <main className="min-h-screen">
         <div
           className="teachers-top w-full h-[200px] bg-[#035CB0] flex items-center justify-start px-12"
           style={{ backgroundImage: 'url(/img/running-shield-blur.jpg)', backgroundSize: 'cover', color: 'yellow', backgroundPosition: 'center', opacity: 0.9 }}
         >
-          <h1 className="text-5xl font-medium text-center my-8 text-white">JKSS Teachers</h1>
+          <h1 className="text-5xl font-medium text-center my-8 text-white">JKBS Teachers</h1>
         </div>
 
         <div className="teachers-content w-full mx-auto px-4 py-4 sm:px-6 md:px-10 lg:px-12 max-w-7xl">
@@ -190,5 +190,5 @@ const JKSSTeachers = () => {
   );
 };
 
-export default JKSSTeachers
+export default Teachers;
 

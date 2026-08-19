@@ -14,7 +14,7 @@ exports.isAuthenticated = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    
+
     if (decoded.type === 'admin') {
       const admin = await admins.findByPk(decoded.id);
       if (!admin) {
@@ -42,7 +42,7 @@ exports.isAuthenticated = async (req, res, next) => {
         id: student.id,
         email: student.email,
         fullName: student.fullName,
-        class: student.class,
+        currentClass: student.currentClass,
         type: 'student',
       };
     } else {
@@ -75,7 +75,7 @@ exports.protectAdmin = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    
+
     if (decoded.type !== 'admin') {
       return res.status(403).json({ message: 'Admin access required' });
     }
@@ -119,7 +119,7 @@ exports.protectStudent = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    
+
     if (decoded.type !== 'student') {
       return res.status(403).json({ message: 'Student access required' });
     }
@@ -138,7 +138,7 @@ exports.protectStudent = async (req, res, next) => {
       id: student.id,
       email: student.email,
       fullName: student.fullName,
-      class: student.class,
+      currentClass: student.currentClass,
       type: 'student',
     };
 

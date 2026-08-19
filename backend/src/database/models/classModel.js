@@ -1,5 +1,13 @@
 const classModel = (sequelize, DataTypes) => {
     const Class = sequelize.define('class', {
+        academicYearId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'academic_years',
+                key: 'id',
+            },
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -28,7 +36,7 @@ const classModel = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: true,
             defaultValue: 0,
-        }
+        },
     });
 
     return Class;

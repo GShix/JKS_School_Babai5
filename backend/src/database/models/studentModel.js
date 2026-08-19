@@ -1,13 +1,21 @@
 const studentModel = (sequelize, DataTypes) => {
   const Student = sequelize.define('student', {
     // Basic Information
-    emisId: {
+    iemisCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    currentSchool: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    studentId: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     middleName: {
       type: DataTypes.STRING,
@@ -15,7 +23,7 @@ const studentModel = (sequelize, DataTypes) => {
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     fullName: {
       type: DataTypes.STRING,
@@ -34,15 +42,15 @@ const studentModel = (sequelize, DataTypes) => {
       allowNull: true,
       comment: 'Password for student portal login',
     },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     contactNumber: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    dateOfBirth: {
+    dob: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    dobNepali: {
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
@@ -55,11 +63,15 @@ const studentModel = (sequelize, DataTypes) => {
     },
     isForeignStudent: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
 
     // Permanent Address (Not required for foreign students)
+    permanentAddress: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     permanentProvince: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -76,8 +88,16 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    permanentTole: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
 
     // Temporary/Current Address (Required for all students)
+    temporaryAddress: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     temporaryProvince: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -94,9 +114,13 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    temporaryTole: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     sameAsPermAddress: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
 
@@ -136,7 +160,7 @@ const studentModel = (sequelize, DataTypes) => {
     },
 
     // Academic Information
-    class: {
+    currentClass: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -154,6 +178,10 @@ const studentModel = (sequelize, DataTypes) => {
       allowNull: true,
     },
     admissionDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    admissionDateNepali: {
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
@@ -201,11 +229,14 @@ const studentModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-
+    currentScholarship: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     // Status and Media
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       defaultValue: 'active',
       validate: {
         isIn: [['active', 'inactive', 'graduated', 'transferred']],
@@ -222,6 +253,19 @@ const studentModel = (sequelize, DataTypes) => {
     },
 
     // Additional Information
+    isTransferred: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
+    transferedToSchool: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    transferDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
     medicalInfo: {
       type: DataTypes.TEXT,
       allowNull: true,

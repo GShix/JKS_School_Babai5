@@ -41,6 +41,8 @@ db.programs = require('./models/programModel')(sequelize, DataTypes);
 db.activities = require('./models/activityModel')(sequelize, DataTypes);
 db.admins = require('./models/adminModel')(sequelize, DataTypes);
 db.students = require('./models/studentModel')(sequelize, DataTypes);
+db.academicYears = require('./models/academicYearModel')(sequelize, DataTypes);
+db.subjects = require('./models/subjectModel')(sequelize, DataTypes);
 db.classes = require('./models/classModel')(sequelize, DataTypes);
 db.teacher = require('./models/teacherModel')(sequelize, DataTypes);
 db.staff = require('./models/staffModel')(sequelize, DataTypes);
@@ -140,28 +142,35 @@ db.feeTransactions.belongsTo(db.admins, {
   as: 'collector',
 });
 
+// Database Associations
+db.academicYears.hasMany(db.subjects, { foreignKey: 'academicYearId', as: 'subjects' });
+db.subjects.belongsTo(db.academicYears, { foreignKey: 'academicYearId', as: 'academicYear' });
+// Database Associations
+db.academicYears.hasMany(db.classes, { foreignKey: 'academicYearId', as: 'classes' });
+db.classes.belongsTo(db.academicYears, { foreignKey: 'academicYearId', as: 'academicYear' });
+
 if (process.env.NODE_ENV === 'development') {
   sequelize.sync({ alter: false }).then(async () => {
     console.log('✅ Database connected');
-
     try {
-      await db.feeCategories.sync();
-      await db.feeStructures.sync();
-      await db.feeStructureItems.sync();
-      await db.feeAllocations.sync();
-      await db.feeTransactions.sync();
-      await db.admins.sync({ alter: true }); // Alter admin table to add new roles
-      console.log('✅ Fee management tables created successfully');
-    } catch (err) {
-      console.error('❌ Fee management tables sync error:', err.message);
+      await db.subjects.sync({ alter: true });
+      console.log('✅ Subjects table schema updated');
+    } catch (error) {
+      console.error('❌ Subjects table sync error:', error.message);
+    }
+    try {
+      await db.academicYears.sync({ alter: true });
+      console.log('✅ Academic Years table schema updated');
+    } catch (error) {
+      console.error('❌ Academic Years table sync error:', error.message);
+    }
+    try {
+      await db.classes.sync({ alter: true });
+      console.log('✅ Classes table schema updated');
+    } catch (error) {
+      console.error('❌ Classes table sync error:', error.message);
     }
 
-    try {
-      await db.teacher.sync({ alter: true });
-      console.log('✅ Teacher table schema updated');
-    } catch (err) {
-      console.error('❌ Teacher table sync error:', err.message);
-    }
   }).catch(err => {
     console.error('❌ Database sync error:', err.message);
   });
@@ -183,7 +192,9 @@ exports.admins = db.admins;
 exports.students = db.students;
 exports.staff = db.staff;
 exports.teacher = db.teacher;
+exports.academicYears = db.academicYears;
 exports.classes = db.classes;
+exports.subjects = db.subjects;
 exports.attendance = db.attendance;
 exports.grades = db.grades;
 exports.fees = db.fees;
