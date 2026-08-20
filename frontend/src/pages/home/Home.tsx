@@ -309,53 +309,17 @@ const Home = ({ schoolProfile: initialSchoolProfile }: HomeProps) => {
             {heroLoading && <LoadingSpinner />}
 
             <header className="header w-full">
-                <div
-                    className="
-                        header-top
-                        bg-[#035CB0]
-                        text-white
-                        flex
-                        justify-between
-                        items-center
-                        w-full
-                        gap-5
-                        max-sm:text-2xl
-                        py-2.5
-                        px-3
-                        sm:px-11
-                        text-[15px]
-                    "
-                >
-                    <ul
-                        className="
-                            header-top-list
-                            flex
-                            items-center
-                            gap-3
-                            sm:gap-5
-                            justify-center
-                            font-['poppins']
-                            max-sm:text-sm
-                        "
-                    >
+                <div className="header-top bg-[#035CB0] text-white flex justify-between items-center w-full gap-5 max-sm:text-2xl py-2.5 px-3 sm:px-11 text-[15px] ">
+                    <ul className="header-top-list flex items-center gap-3 sm:gap-5 justify-center font-['poppins'] max-sm:text-sm">
                         <li
-                            className="
-                                border-r-2
-                                max-sm:pr-3
-                                sm:pr-6
-                                hover:text-yellow-400
-                            "
-                        >
-                            <a
-                                href={`tel:${schoolProfile?.phone ||
-                                    '+977980000000'
-                                    }`}
+                            className="border-r-2 max-sm:pr-3 sm:pr-6 hover:text-yellow-400">
+                            <a href={`tel:${schoolProfile?.phone ||
+                                '+977980000000'
+                                }`}
                                 className="
                                     transition-all
                                     duration-500
-                                    ease-in-out
-                                "
-                            >
+                                    ease-in-out">
                                 <i className="ri-phone-fill mr-2"></i>
 
                                 <span className="max-sm:text-xs text-nowrap">
@@ -366,17 +330,16 @@ const Home = ({ schoolProfile: initialSchoolProfile }: HomeProps) => {
                         </li>
 
                         <li className="hover:text-yellow-400">
-                            <a
-                                href={`mailto:${schoolProfile?.email ||
-                                    'school gmail'
-                                    }`}
-                            >
+                            <a href={`mailto:${schoolProfile?.email ||
+                                'school gmail'
+                                }`} >
                                 <i className="ri-mail-send-line mr-2"></i>
 
-                                <span className="max-sm:text-xs info-text">
+                                <span className="max-sm:text-xs info-text max-sm:hidden">
                                     {schoolProfile?.email ||
                                         'School G-mail'}
                                 </span>
+                                <span className="max-sm:text-xs info-text sm:hidden">Send Email</span>
                             </a>
                         </li>
                     </ul>
@@ -384,23 +347,9 @@ const Home = ({ schoolProfile: initialSchoolProfile }: HomeProps) => {
                     {/* Desktop top links */}
 
                     <div
-                        className="
-                            header-top
-                            flex
-                            justify-between
-                            gap-10
-                            max-sm:hidden
-                        "
-                    >
+                        className="header-top flex justify-between gap-10 max-sm:hidden">
                         <ul
-                            className="
-                                header-top-list
-                                flex
-                                items-center
-                                gap-5
-                                justify-content-center
-                            "
-                        >
+                            className="header-top-list flex items-center gap-5 justify-content-center">
                             <li className="border-r-2 pr-6 hover:text-yellow-400">
                                 <Link to="/results">
                                     Result
@@ -422,15 +371,13 @@ const Home = ({ schoolProfile: initialSchoolProfile }: HomeProps) => {
 
                         <ul className="header-top-social">
                             <li>
-                                <a
-                                    href={
-                                        schoolProfile?.facebookUrl ||
-                                        '#'
-                                    }
+                                <a href={
+                                    schoolProfile?.facebookUrl ||
+                                    '#'
+                                }
                                     target="_blank"
                                     rel="noreferrer"
-                                    aria-label="Facebook"
-                                >
+                                    aria-label="Facebook">
                                     <i className="ri-facebook-fill hover:text-yellow-400"></i>
                                 </a>
                             </li>
@@ -439,64 +386,18 @@ const Home = ({ schoolProfile: initialSchoolProfile }: HomeProps) => {
                 </div>
                 <nav
                     ref={menuRef}
-                    className="
-                        navbar
-                        relative
-                        bg-white
-                        text-white
-                        w-full
-                        gap-5
-                        max-sm:text-3xl
-                    "
-                >
-
+                    className="navbar relative bg-white text-white w-full gap-5 max-sm:text-3xl">
                     <div
-                        className="
-                            large-nav-logo
-                            sm:flex
-                            items-center
-                            justify-between
-                            w-full
-                            max-sm:flex-col
-                            py-4
-                            sm:px-11
-                        "
-                    >
+                        className="large-nav-logo sm:flex items-center justify-between w-full max-sm:flex-col py-4 sm:px-11">
                         <div
-                            className="
-                                one
-                                flex
-                                max-sm:flex-col
-                                items-center
-                                gap-2.5
-                                w-2/2
-                            "
-                        >
+                            className="one flex max-sm:flex-col items-center gap-2.5 w-2/2">
                             <Link
                                 to="/"
-                                className="
-                                    flex
-                                    max-sm:flex-col
-                                    items-center
-                                    gap-4
-                                    text-center
-                                "
-                            >
+                                className="flex max-sm:flex-col items-center gap-4 text-center">
                                 <img
-                                    className="
-                                        h-20
-                                        sm:h-24
-                                        w-auto
-                                        object-contain
-                                    "
-                                    src={
-                                        schoolProfile?.logoUrl ||
-                                        ''
-                                    }
-                                    alt={
-                                        schoolProfile?.schoolName ||
-                                        'School logo'
-                                    }
+                                    className="h-20 sm:h-24 w-auto object-contain"
+                                    src='img/school_logo.png'
+                                    alt='School logo'
                                 />
 
                                 <div className="schoolname sm:text-start">
