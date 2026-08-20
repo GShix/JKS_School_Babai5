@@ -573,7 +573,7 @@ const Home = ({ schoolProfile: initialSchoolProfile }: HomeProps) => {
                                     duration-500
                                     ease-out
                                 "
-                                src="/img/school_logo.png"
+                                src="/img/school_logo_white.png"
                                 alt="Logo"
                             />
                         )}
