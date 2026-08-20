@@ -77,7 +77,7 @@ app.use("/api/contacts", contactRoute);
 app.use("/api/career", careerRoute);
 
 app.get('/', (req, res) => {
-  res.send('Welcome to the JKS School API');
+  res.send('Welcome to the JKBS School API');
 });
 
 // Health check endpoint for debugging

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jks-school-babai5.vercel.app/sitemap.xml
+Sitemap: https://jkbsp5bhangari.vercel.app/sitemap.xml
