@@ -125,7 +125,8 @@ const Header = () => {
                     <li className=" hover:text-yellow-400">
                         <a href={`mailto:${schoolProfile?.email || 'school gmail'}`}>
                             <i className="ri-mail-send-line mr-2"></i>
-                            <span className="max-sm:text-xs info-text ">{schoolProfile?.email || 'School G-mail'}</span>
+                            <span className="max-sm:text-xs info-text max-sm:hidden">{schoolProfile?.email || 'School G-mail'}</span>
+                            <span className="max-sm:text-xs info-text sm:hidden">Send Email</span>
                         </a>
                     </li>
                 </ul>
@@ -194,7 +195,8 @@ const Header = () => {
                 >
                     {isSticky && (
                         // <div className="logo h-16 mr-4 transition-all duration-500 ease-out">
-                        <img className="h-12 sm:h-14 w-auto object-contain mr-4 transition-all duration-500 ease-out" src="/img/school_logo.png" alt="Logo" />
+                        <img className="h-12 sm:h-14 w-auto object-contain mr-4 transition-all duration-500 ease-out" src="/img/school_logo
+                        .png" alt="Logo" />
                         // </div>
                     )}
                     <ul className="flex items-center justify-between text-white gap-8">
