@@ -80,7 +80,7 @@ export default function Hero({ slides, loading }: HeroProps) {
       )}
 
       {/* Image carousel with left/right arrow navigation */}
-      <div className="image-carousel w-full max-sm:w-full h-125 px-0">
+      <div className="image-carousel w-full max-sm:w-full h-120 px-0">
         <div className="carousel-wrapper relative overflow-hidden h-full">
           <img
             className="carousel-image w-full max-sm:w-full h-full object-fit object-cover transition-all duration-500"
@@ -94,7 +94,7 @@ export default function Hero({ slides, loading }: HeroProps) {
           {/* Optional title overlay */}
           {slides[current].title && (
             <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black to-transparent p-8 flex justify-center">
-              <h2 className="text-white text-xl">{slides[current].title}</h2>
+              <h2 className="text-white text-sm sm:text-xl">{slides[current].title}</h2>
             </div>
           )}
 
@@ -153,8 +153,8 @@ export default function Hero({ slides, loading }: HeroProps) {
                     key={idx}
                     onClick={() => setCurrent(idx)}
                     className={`w-3 h-3 rounded-full transition-all ${idx === current
-                        ? 'bg-white w-8'
-                        : 'bg-white/50 hover:bg-white/75'
+                      ? 'bg-white w-8'
+                      : 'bg-white/50 hover:bg-white/75'
                       }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
