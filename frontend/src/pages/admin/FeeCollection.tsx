@@ -39,7 +39,7 @@ interface Student {
   rollNumber: string;
   currentClass: string;
   section: string;
-  phone: string;
+  contactNumber: string;
   email: string;
   emisId?: string;
 
@@ -2623,7 +2623,7 @@ const FeeCollection: React.FC = () => {
 
                           <p className="text-sm text-gray-600">
                             {
-                              student.phone
+                              student.contactNumber
                             }
                           </p>
 
@@ -2839,12 +2839,12 @@ const FeeCollection: React.FC = () => {
 
             <div className="bg-white p-3 rounded-lg border border-gray-200">
               <p className="text-xs text-gray-600 mb-1">
-                Phone
+                contactNumber
               </p>
 
               <p className="font-bold text-gray-900">
                 {
-                  selectedStudent.phone ||
+                  selectedStudent.contactNumber ||
                   'N/A'
                 }
               </p>

@@ -17,7 +17,7 @@ interface Student {
   rollNumber: string;
   currentClass: string;
   section: string;
-  phone: string;
+  contactNumber: string;
   email: string;
 }
 
