@@ -78,7 +78,7 @@ exports.collectFeePayment = async (req, res) => {
         {
           model: students,
           as: 'student',
-          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'contactNumber'],
         },
         {
           model: feeStructures,
@@ -156,7 +156,7 @@ exports.collectFeePayment = async (req, res) => {
             {
               model: students,
               as: 'student',
-              attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone', 'email'],
+              attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'contactNumber', 'email'],
             },
             {
               model: feeStructures,
@@ -264,7 +264,7 @@ exports.getAllFeeTransactions = async (req, res) => {
         {
           model: students,
           as: 'student', // Direct student relation for flexible collections
-          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'studentId'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'contactNumber', 'studentId'],
         },
         {
           model: admins,

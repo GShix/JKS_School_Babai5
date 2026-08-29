@@ -428,7 +428,7 @@ exports.getAllFeeAllocations = async (req, res) => {
       {
         model: students,
         as: 'student',
-        attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone'],
+        attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'contactNumber'],
       },
       {
         model: feeStructures,
@@ -485,7 +485,7 @@ exports.getFeeAllocationById = async (req, res) => {
         {
           model: students,
           as: 'student',
-          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'phone', 'email'],
+          attributes: ['id', 'fullName', 'rollNumber', 'currentClass', 'section', 'contactNumber', 'email'],
         },
         {
           model: feeStructures,

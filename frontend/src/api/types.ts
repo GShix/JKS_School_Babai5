@@ -52,7 +52,7 @@ export interface Student {
   id: number;
   fullName: string;
   email: string;
-  phone: string;
+  contactNumber: string;
   dateOfBirth?: string;
   gender?: Gender;
   address?: string;
@@ -496,7 +496,7 @@ export interface JobApplication {
   positionTitle: string;
   applicantName: string;
   email: string;
-  phone: string;
+  k: string;
   coverLetter?: string;
   resumeFileName: string;
   resumeFileUrl: string;
