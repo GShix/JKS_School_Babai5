@@ -3920,47 +3920,43 @@ const FeeCollection: React.FC = () => {
       {/* ======================================================
           PRINT STYLES
       ====================================================== */}
-
-      <style>
-        {`
-          @media print {
-            body * {
-              visibility: hidden;
-            }
-
-            #receipt-content,
-            #receipt-content * {
-              visibility: visible !important;
-            }
-
-            #receipt-content {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              margin: 0;
-              padding: 0;
-            }
-
-            @page {
-              size: A4 portrait;
-              margin: 8mm;
-            }
-
-            body,
-            html {
-              margin: 0;
-              padding: 0;
-              height: auto;
-              overflow: visible;
-            }
-
-            .no-print {
-              display: none !important;
-            }
+      <style>{`
+        @media print {
+          /* Hide everything except the receipt content */
+          body * {
+            visibility: hidden;
           }
-        `}
-      </style>
+          
+          /* Show only receipt and its children */
+          #receipt-content,
+          #receipt-content * {
+            visibility: visible !important;
+          }
+          
+          /* Position receipt at top of page */
+          #receipt-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+          }
+          
+          /* Page setup */
+          @page {
+            size: A4 portrait;
+            margin: 8mm;
+          }
+          
+          body, html {
+            margin: 0;
+            padding: 0;
+            height: auto;
+            overflow: visible;
+          }
+        }
+      `}</style>
     </div>
   );
 };

@@ -1,68 +1,159 @@
 import React, { useEffect, useState } from 'react';
-import { Users, GraduationCap, ClipboardCheck, DollarSign, BookOpen, FileText, Calendar, Bell } from 'lucide-react';
-import StatCard from '../shared/StatCard';
+import {
+  Users,
+  GraduationCap,
+  ClipboardCheck,
+  Wallet,
+  AlertCircle,
+  Bell,
+} from 'lucide-react';
 import axios from 'axios';
-import { API_BASE_URL } from '../../api/config';
+import { API_BASE_URL } from '../../api';
+import StatCard from '../shared/StatCard';
 
 interface DashboardStatsProps {
   onStatClick?: (stat: string) => void;
+  refreshKey?: number;
 }
 
-const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
-  const [stats, setStats] = useState({
+interface Stats {
+  totalStudents: number;
+  totalTeachers: number;
+  totalAttendanceToday: number;
+  attendanceRate: number;
+  feesCollected: number;
+  pendingFees: number;
+  pendingLeaves: number;
+}
+
+const DashboardStats: React.FC<DashboardStatsProps> = ({
+  onStatClick,
+  refreshKey = 0,
+}) => {
+  const [stats, setStats] = useState<Stats>({
     totalStudents: 0,
     totalTeachers: 0,
     totalAttendanceToday: 0,
+    attendanceRate: 0,
+    feesCollected: 0,
     pendingFees: 0,
-    totalAssignments: 0,
-    totalGrades: 0,
-    upcomingEvents: 0,
-    pendingLeaves: 0
+    pendingLeaves: 0,
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [refreshKey]);
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      setLoading(true);
 
-      // Fetch students count
-      const studentsRes = await axios.get(`${API_BASE_URL}/students`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const token =
+        localStorage.getItem('token') ||
+        sessionStorage.getItem('token');
 
-      // Fetch teachers count  
-      const teachersRes = await axios.get(`${API_BASE_URL}/teachers`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
 
+      /*
+       * ----------------------------------------------------
+       * Students
+       * ----------------------------------------------------
+       */
+      const studentsRes = await axios.get(
+        `${API_BASE_URL}/students`,
+        { headers }
+      );
+
+      /*
+       * ----------------------------------------------------
+       * Teachers
+       * ----------------------------------------------------
+       */
+      const teachersRes = await axios.get(
+        `${API_BASE_URL}/teachers`,
+        { headers }
+      );
+
+      /*
+       * ----------------------------------------------------
+       * Pending Fees
+       *
+       * feeAllocations.balance is the source of truth.
+       * ----------------------------------------------------
+       */
+      const pendingFeesRes = await axios.get(
+        `${API_BASE_URL}/fee-management/allocations/pending`,
+        { headers }
+      );
+
+      /*
+       * ----------------------------------------------------
+       * Update dashboard stats
+       * ----------------------------------------------------
+       */
       setStats({
-        totalStudents: studentsRes.data.data?.length || 0,
-        totalTeachers: teachersRes.data.data?.length || 0,
-        totalAttendanceToday: 0, // TODO: Implement attendance count
-        pendingFees: 0, // TODO: Implement fees calculation
-        totalAssignments: 0, // TODO: Implement assignments count
-        totalGrades: 0, // TODO: Implement grades count
-        upcomingEvents: 0, // TODO: Implement events count
-        pendingLeaves: 0 // TODO: Implement leaves count
+        totalStudents:
+          studentsRes.data.data?.length || 0,
+
+        totalTeachers:
+          teachersRes.data.data?.length || 0,
+
+        // TODO: connect attendance API
+        totalAttendanceToday: 0,
+
+        // TODO: calculate from attendance API
+        attendanceRate: 0,
+
+        // TODO: connect fee collection API
+        feesCollected: 0,
+
+        // feeAllocations.balance
+        pendingFees:
+          Number(
+            pendingFeesRes.data.summary?.totalPending
+          ) || 0,
+
+        // TODO: connect leaves API
+        pendingLeaves: 0,
       });
     } catch (error) {
-      console.error('Failed to fetch stats:', error);
+      console.error(
+        'Failed to fetch dashboard stats:',
+        error
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  /*
+   * ----------------------------------------------------
+   * Loading state
+   * ----------------------------------------------------
+   */
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {[1, 2, 3, 4, 5, 6].map((item) => (
+          <div
+            key={item}
+            className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+          >
+            <div className="flex items-start justify-between">
+              <div className="w-full">
+                <div className="mb-3 h-4 w-28 animate-pulse rounded bg-gray-200" />
+
+                <div className="mb-3 h-8 w-20 animate-pulse rounded bg-gray-200" />
+
+                <div className="h-3 w-32 animate-pulse rounded bg-gray-200" />
+              </div>
+
+              <div className="h-11 w-11 animate-pulse rounded-xl bg-gray-200" />
+            </div>
           </div>
         ))}
       </div>
@@ -70,78 +161,77 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ onStatClick }) => {
   }
 
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard
-          title="Total Students"
-          value={stats.totalStudents}
-          icon={GraduationCap}
-          color="bg-blue-500"
-          // trend={{ value: '+12% this month', isPositive: true }}
-          onClick={() => onStatClick?.('students')}
-        />
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
 
-        <StatCard
-          title="Total Teachers"
-          value={stats.totalTeachers}
-          icon={Users}
-          color="bg-purple-500"
-          // trend={{ value: '+3 new teachers', isPositive: true }}
-          onClick={() => onStatClick?.('teachers')}
-        />
+      {/* -----------------------------------------------
+          Total Students
+      ------------------------------------------------ */}
+      <StatCard
+        title="Total Students"
+        value={stats.totalStudents}
+        icon={GraduationCap}
+        color="bg-blue-500"
+        onClick={() => onStatClick?.('students')}
+      />
 
-        <StatCard
-          title="Today's Attendance"
-          value={stats.totalAttendanceToday}
-          icon={ClipboardCheck}
-          color="bg-green-500"
-          // trend={{ value: '85% average', isPositive: true }}
-          onClick={() => onStatClick?.('attendance')}
-        />
+      {/* -----------------------------------------------
+          Teachers & Staff
+      ------------------------------------------------ */}
+      <StatCard
+        title="Teachers & Staff"
+        value={stats.totalTeachers}
+        icon={Users}
+        color="bg-purple-500"
+        onClick={() => onStatClick?.('teachers')}
+      />
 
-        <StatCard
-          title="Pending Fees"
-          value={`रु${stats.pendingFees}`}
-          icon={DollarSign}
-          color="bg-red-500"
-          // trend={{ value: '-5% from last month', isPositive: true }}
-          onClick={() => onStatClick?.('fees')}
-        />
-      </div>
+      {/* -----------------------------------------------
+          Today's Attendance
+      ------------------------------------------------ */}
+      <StatCard
+        title="Today's Attendance"
+        value={
+          stats.attendanceRate > 0
+            ? `${stats.attendanceRate}%`
+            : stats.totalAttendanceToday
+        }
+        icon={ClipboardCheck}
+        color="bg-green-500"
+        onClick={() => onStatClick?.('attendance')}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Active Assignments"
-          value={stats.totalAssignments}
-          icon={BookOpen}
-          color="bg-indigo-500"
-          onClick={() => onStatClick?.('assignments')}
-        />
+      {/* -----------------------------------------------
+          Fees Collected
+      ------------------------------------------------ */}
+      <StatCard
+        title="Fees Collected"
+        value={`रु ${stats.feesCollected.toLocaleString('en-IN')}`}
+        icon={Wallet}
+        color="bg-indigo-500"
+        onClick={() => onStatClick?.('fees')}
+      />
 
-        <StatCard
-          title="Total Grades"
-          value={stats.totalGrades}
-          icon={FileText}
-          color="bg-yellow-500"
-          onClick={() => onStatClick?.('grades')}
-        />
+      {/* -----------------------------------------------
+          Outstanding Fees
+      ------------------------------------------------ */}
+      <StatCard
+        title="Outstanding Fees"
+        value={`रु ${stats.pendingFees.toLocaleString('en-IN')}`}
+        icon={AlertCircle}
+        color="bg-red-500"
+        onClick={() => onStatClick?.('fees')}
+      />
 
-        <StatCard
-          title="Upcoming Events"
-          value={stats.upcomingEvents}
-          icon={Calendar}
-          color="bg-pink-500"
-          onClick={() => onStatClick?.('events')}
-        />
-
-        <StatCard
-          title="Pending Leaves"
-          value={stats.pendingLeaves}
-          icon={Bell}
-          color="bg-orange-500"
-          onClick={() => onStatClick?.('leaves')}
-        />
-      </div>
+      {/* -----------------------------------------------
+          Pending Leaves
+      ------------------------------------------------ */}
+      <StatCard
+        title="Pending Leaves"
+        value={stats.pendingLeaves}
+        icon={Bell}
+        color="bg-orange-500"
+        onClick={() => onStatClick?.('leaves')}
+      />
     </div>
   );
 };

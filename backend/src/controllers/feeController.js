@@ -50,7 +50,7 @@ exports.recordPayment = async (req, res) => {
 
     const totalPaid = (feeRecord.paidAmount || 0) + paidAmount;
     let status = 'pending';
-    
+
     if (totalPaid >= feeRecord.amount) {
       status = 'paid';
     } else if (totalPaid > 0) {
@@ -93,10 +93,10 @@ exports.getStudentFees = async (req, res) => {
       pending: studentFees.reduce((sum, f) => sum + (f.amount - f.paidAmount), 0),
     };
 
-    return res.json({ 
-      message: 'Student fees fetched successfully', 
+    return res.json({
+      message: 'Student fees fetched successfully',
       data: studentFees,
-      summary 
+      summary
     });
   } catch (error) {
     return res.status(500).json({ message: 'Could not fetch student fees', error: error.message });

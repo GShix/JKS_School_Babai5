@@ -496,7 +496,7 @@ export interface JobApplication {
   positionTitle: string;
   applicantName: string;
   email: string;
-  k: string;
+  phone: string;
   coverLetter?: string;
   resumeFileName: string;
   resumeFileUrl: string;

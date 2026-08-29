@@ -2,6 +2,7 @@ const { feeAllocations, feeStructures, feeStructureItems, feeCategories, student
 } = require('../database/connection');
 const { Op } = require('sequelize');
 
+
 // Allocate fee structure to a single student
 exports.allocateFeeToStudent = async (req, res) => {
   try {
@@ -471,6 +472,47 @@ exports.getAllFeeAllocations = async (req, res) => {
     res.status(500).json({
       message: 'Error fetching fee allocations',
       error: error.message,
+    });
+  }
+};
+exports.getPendingFees = async (req, res) => {
+  try {
+    const pendingFees = await feeAllocations.findAll({
+      where: {
+        balance: {
+          [Op.gt]: 0
+        }
+      },
+      attributes: [
+        'id',
+        'studentId',
+        'totalAmount',
+        'paidAmount',
+        'balance',
+        'status'
+      ]
+    });
+
+    const totalPending = pendingFees.reduce(
+      (sum, fee) => sum + parseFloat(fee.balance || 0),
+      0
+    );
+
+    return res.json({
+      message: 'Pending fees fetched successfully',
+      data: pendingFees,
+      summary: {
+        totalPending,
+        pendingCount: pendingFees.length
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching pending fees:', error);
+
+    return res.status(500).json({
+      message: 'Could not fetch pending fees',
+      error: error.message
     });
   }
 };

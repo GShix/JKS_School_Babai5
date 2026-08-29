@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { allocateFeeToStudent, allocateFeeToMultipleStudents, allocateFeeToClass, getAllFeeAllocations, getFeeAllocationById, getStudentFeeAllocations, updateFeeAllocation, deleteFeeAllocation,
+const { allocateFeeToStudent, allocateFeeToMultipleStudents, allocateFeeToClass, getAllFeeAllocations, getFeeAllocationById, getStudentFeeAllocations, updateFeeAllocation, deleteFeeAllocation, getPendingFees,
 } = require('../controllers/feeAllocationController');
 
 const { protectAdmin, requireAdmin,
@@ -26,6 +26,7 @@ router.get('/', getAllFeeAllocations);
 // IMPORTANT: This must come BEFORE /:id
 router.get('/student/:studentId', getStudentFeeAllocations);
 
+router.get('/pending', getPendingFees);
 // Get one fee allocation
 router.get('/:id', getFeeAllocationById);
 
