@@ -69,7 +69,26 @@ db.schoolMessages = require('./models/schoolMessageModel')(sequelize, DataTypes)
 db.contacts = require('./models/contactModel')(sequelize, DataTypes);
 db.careerPositions = require('./models/careerPositionModel')(sequelize, DataTypes);
 db.jobApplications = require('./models/jobApplicationModel')(sequelize, DataTypes);
+db.classSubjects = require('./models/classSubjectModel')(sequelize, DataTypes);
+db.classes.hasMany(db.classSubjects, {
+  foreignKey: 'classId',
+  as: 'classSubjects',
+});
 
+db.subjects.hasMany(db.classSubjects, {
+  foreignKey: 'subjectId',
+  as: 'classSubjects',
+});
+
+db.classSubjects.belongsTo(db.classes, {
+  foreignKey: 'classId',
+  as: 'class',
+});
+
+db.classSubjects.belongsTo(db.subjects, {
+  foreignKey: 'subjectId',
+  as: 'subject',
+});
 // FeeStructure has many FeeStructureItems
 db.feeStructures.hasMany(db.feeStructureItems, {
   foreignKey: 'feeStructureId',
@@ -195,6 +214,7 @@ exports.teacher = db.teacher;
 exports.academicYears = db.academicYears;
 exports.classes = db.classes;
 exports.subjects = db.subjects;
+exports.classSubjects = db.classSubjects;
 exports.attendance = db.attendance;
 exports.grades = db.grades;
 exports.fees = db.fees;
