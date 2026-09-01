@@ -121,16 +121,21 @@ exports.getAdminProfile = async (req, res) => {
 exports.updateAdminProfile = async (req, res) => {
   try {
     const admin = await admins.findByPk(req.user.id);
+
     if (!admin) {
-      return res.status(404).json({ message: 'Admin not found' });
+      return res.status(404).json({
+        message: 'Admin not found',
+      });
     }
 
-    const { fullName, phone, profileImage } = req.body;
+    const { fullName, email, phone, profileImage } = req.body;
 
     await admin.update({
       fullName: fullName || admin.fullName,
+      email: email || admin.email,
       phone: phone !== undefined ? phone : admin.phone,
-      profileImage: profileImage !== undefined ? profileImage : admin.profileImage,
+      profileImage:
+        profileImage !== undefined ? profileImage : admin.profileImage,
     });
 
     return res.json({
@@ -138,7 +143,10 @@ exports.updateAdminProfile = async (req, res) => {
       data: toSafeAdmin(admin),
     });
   } catch (error) {
-    return res.status(500).json({ message: 'Could not update profile', error: error.message });
+    return res.status(500).json({
+      message: 'Could not update profile',
+      error: error.message,
+    });
   }
 };
 
