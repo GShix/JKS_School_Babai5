@@ -72,17 +72,19 @@ db.jobApplications = require('./models/jobApplicationModel')(sequelize, DataType
 db.classSubjects = require('./models/classSubjectModel')(sequelize, DataTypes);
 db.classes.hasMany(db.classSubjects, {
   foreignKey: 'classId',
-  as: 'classSubjects',
-});
-
-db.subjects.hasMany(db.classSubjects, {
-  foreignKey: 'subjectId',
-  as: 'classSubjects',
+  as: 'subjectAssignments',
+  onDelete: 'CASCADE',
 });
 
 db.classSubjects.belongsTo(db.classes, {
   foreignKey: 'classId',
   as: 'class',
+});
+
+db.subjects.hasMany(db.classSubjects, {
+  foreignKey: 'subjectId',
+  as: 'classAssignments',
+  onDelete: 'CASCADE',
 });
 
 db.classSubjects.belongsTo(db.subjects, {

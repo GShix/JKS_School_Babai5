@@ -100,8 +100,9 @@ const Sidebar: React.FC<SidebarProps> = ({
       roles: ['superAdmin', 'admin'],
       subItems: [
         { id: 'academic-years', label: 'Academic Years' },
-        { id: 'subjects', label: 'Subjects' },
         { id: 'classes', label: 'Classes' },
+        { id: 'subjects', label: 'Subjects' },
+        { id: 'assign-subjects', label: 'Assign Subjects' },
       ]
     },
 

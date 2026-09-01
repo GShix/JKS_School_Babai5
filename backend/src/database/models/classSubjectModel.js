@@ -15,8 +15,8 @@ const classSubjectModel = (sequelize, DataTypes) => {
                     model: 'classes',
                     key: 'id',
                 },
-                onDelete: 'CASCADE',
                 onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             },
 
             subjectId: {
@@ -26,8 +26,8 @@ const classSubjectModel = (sequelize, DataTypes) => {
                     model: 'subjects',
                     key: 'id',
                 },
-                onDelete: 'CASCADE',
                 onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             },
 
             isCompulsory: {
@@ -37,15 +37,17 @@ const classSubjectModel = (sequelize, DataTypes) => {
             },
 
             status: {
-                type: DataTypes.ENUM('active', 'inactive'),
+                type: DataTypes.STRING,
                 allowNull: false,
                 defaultValue: 'active',
+                validate: {
+                    isIn: [['active', 'inactive']],
+                },
             },
         },
         {
             tableName: 'class_subjects',
             timestamps: true,
-
             indexes: [
                 {
                     unique: true,

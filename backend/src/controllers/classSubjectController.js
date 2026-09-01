@@ -1,130 +1,122 @@
-const { ClassSubject, Class, Subject } = require('../models');
+const {
+    classSubjects,
+    classes,
+    subjects,
+    academicYears,
+} = require('../database/connection');
+
+const { Op } = require('sequelize');
 
 /**
- * Assign a subject to a class
+ * Get all class-subject assignments
  */
-const assignSubjectToClass = async (req, res) => {
+exports.getAllClassSubjects = async (req, res) => {
     try {
-        const { classId, subjectId, isCompulsory = true } = req.body;
+        const { classId, subjectId, academicYearId, status } = req.query;
 
-        if (!classId || !subjectId) {
-            return res.status(400).json({
-                success: false,
-                message: 'classId and subjectId are required',
-            });
+        const where = {};
+
+        if (classId) {
+            where.classId = classId;
         }
 
-        // Check class
-        const classData = await Class.findByPk(classId);
-
-        if (!classData) {
-            return res.status(404).json({
-                success: false,
-                message: 'Class not found',
-            });
+        if (subjectId) {
+            where.subjectId = subjectId;
         }
 
-        // Check subject
-        const subject = await Subject.findByPk(subjectId);
-
-        if (!subject) {
-            return res.status(404).json({
-                success: false,
-                message: 'Subject not found',
-            });
+        if (status) {
+            where.status = status;
         }
 
-        // Make sure class and subject belong to same academic year
-        if (classData.academicYearId !== subject.academicYearId) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    'Class and subject must belong to the same academic year',
-            });
+        const classWhere = {};
+
+        if (academicYearId) {
+            classWhere.academicYearId = academicYearId;
         }
 
-        // Check existing assignment
-        const existingAssignment = await ClassSubject.findOne({
-            where: {
-                classId,
-                subjectId,
-            },
-        });
-
-        if (existingAssignment) {
-            return res.status(409).json({
-                success: false,
-                message: 'Subject is already assigned to this class',
-                data: existingAssignment,
-            });
-        }
-
-        const assignment = await ClassSubject.create({
-            classId,
-            subjectId,
-            isCompulsory,
-            status: 'active',
-        });
-
-        const result = await ClassSubject.findByPk(assignment.id, {
+        const assignments = await classSubjects.findAll({
+            where,
             include: [
                 {
-                    model: Class,
+                    model: classes,
                     as: 'class',
+                    attributes: [
+                        'id',
+                        'academicYearId',
+                        'name',
+                        'medium',
+                        'section',
+                        'department',
+                        'status',
+                    ],
+                    ...(Object.keys(classWhere).length > 0
+                        ? { where: classWhere }
+                        : {}),
                 },
                 {
-                    model: Subject,
+                    model: subjects,
                     as: 'subject',
+                    attributes: [
+                        'id',
+                        'academicYearId',
+                        'subjectName',
+                        'subjectCode',
+                        'description',
+                        'subjectType',
+                        'isOptional',
+                        'isActive',
+                    ],
                 },
             ],
+            order: [['createdAt', 'DESC']],
         });
 
-        return res.status(201).json({
-            success: true,
-            message: 'Subject assigned to class successfully',
-            data: result,
+        return res.status(200).json({
+            message: 'Class subjects fetched successfully',
+            data: assignments,
         });
     } catch (error) {
-        console.error('Assign subject error:', error);
+        console.error('Error fetching class subjects:', error);
 
         return res.status(500).json({
-            success: false,
-            message: 'Failed to assign subject to class',
+            message: 'Error fetching class subjects',
             error: error.message,
         });
     }
 };
 
 /**
- * Get all subjects assigned to a class
+ * Get assignments for one class
  */
-const getSubjectsByClass = async (req, res) => {
+exports.getSubjectsByClass = async (req, res) => {
     try {
         const { classId } = req.params;
 
-        const classData = await Class.findByPk(classId);
+        const classItem = await classes.findByPk(classId);
 
-        if (!classData) {
+        if (!classItem) {
             return res.status(404).json({
-                success: false,
                 message: 'Class not found',
             });
         }
 
-        const assignments = await ClassSubject.findAll({
+        const assignments = await classSubjects.findAll({
             where: {
                 classId,
                 status: 'active',
             },
             include: [
                 {
-                    model: Subject,
+                    model: subjects,
                     as: 'subject',
+                    where: {
+                        isActive: true,
+                    },
                 },
             ],
             order: [
                 [
-                    { model: Subject, as: 'subject' },
+                    { model: subjects, as: 'subject' },
                     'subjectName',
                     'ASC',
                 ],
@@ -132,97 +124,260 @@ const getSubjectsByClass = async (req, res) => {
         });
 
         return res.status(200).json({
-            success: true,
+            message: 'Class subjects fetched successfully',
             data: assignments,
         });
     } catch (error) {
-        console.error('Get class subjects error:', error);
+        console.error('Error fetching subjects by class:', error);
 
         return res.status(500).json({
-            success: false,
-            message: 'Failed to fetch class subjects',
+            message: 'Error fetching subjects by class',
             error: error.message,
         });
     }
 };
 
 /**
- * Get all classes assigned to a subject
+ * Assign one subject to a class
  */
-const getClassesBySubject = async (req, res) => {
+exports.assignSubject = async (req, res) => {
     try {
-        const { subjectId } = req.params;
+        const {
+            classId,
+            subjectId,
+            isCompulsory = true,
+        } = req.body;
 
-        const subject = await Subject.findByPk(subjectId);
+        if (!classId || !subjectId) {
+            return res.status(400).json({
+                message: 'Class ID and Subject ID are required',
+            });
+        }
+
+        const [classItem, subject] = await Promise.all([
+            classes.findByPk(classId),
+            subjects.findByPk(subjectId),
+        ]);
+
+        if (!classItem) {
+            return res.status(404).json({
+                message: 'Class not found',
+            });
+        }
 
         if (!subject) {
             return res.status(404).json({
-                success: false,
                 message: 'Subject not found',
             });
         }
 
-        const assignments = await ClassSubject.findAll({
-            where: {
-                subjectId,
-                status: 'active',
-            },
-            include: [
-                {
-                    model: Class,
-                    as: 'class',
-                },
-            ],
-        });
+        /**
+         * Subject and class must belong to same academic year
+         */
+        if (
+            Number(classItem.academicYearId) !==
+            Number(subject.academicYearId)
+        ) {
+            return res.status(400).json({
+                message:
+                    'Class and subject must belong to the same academic year',
+                code: 'ACADEMIC_YEAR_MISMATCH',
+            });
+        }
 
-        return res.status(200).json({
-            success: true,
-            data: assignments,
-        });
-    } catch (error) {
-        console.error('Get subject classes error:', error);
+        if (!subject.isActive) {
+            return res.status(400).json({
+                message: 'Cannot assign an inactive subject',
+            });
+        }
 
-        return res.status(500).json({
-            success: false,
-            message: 'Failed to fetch subject classes',
-            error: error.message,
-        });
-    }
-};
-
-/**
- * Remove subject from class
- */
-const removeSubjectFromClass = async (req, res) => {
-    try {
-        const { classId, subjectId } = req.params;
-
-        const assignment = await ClassSubject.findOne({
+        const existingAssignment = await classSubjects.findOne({
             where: {
                 classId,
                 subjectId,
             },
         });
 
-        if (!assignment) {
-            return res.status(404).json({
-                success: false,
-                message: 'Subject assignment not found',
+        if (existingAssignment) {
+            if (existingAssignment.status === 'inactive') {
+                existingAssignment.status = 'active';
+                existingAssignment.isCompulsory =
+                    Boolean(isCompulsory);
+
+                await existingAssignment.save();
+
+                return res.status(200).json({
+                    message: 'Subject assigned successfully',
+                    data: existingAssignment,
+                });
+            }
+
+            return res.status(409).json({
+                message: 'Subject is already assigned to this class',
+                code: 'SUBJECT_ALREADY_ASSIGNED',
             });
         }
 
-        await assignment.destroy();
+        const assignment = await classSubjects.create({
+            classId,
+            subjectId,
+            isCompulsory: Boolean(isCompulsory),
+            status: 'active',
+        });
 
-        return res.status(200).json({
-            success: true,
-            message: 'Subject removed from class successfully',
+        return res.status(201).json({
+            message: 'Subject assigned successfully',
+            data: assignment,
         });
     } catch (error) {
-        console.error('Remove class subject error:', error);
+        console.error('Error assigning subject:', error);
 
         return res.status(500).json({
-            success: false,
-            message: 'Failed to remove subject from class',
+            message: 'Error assigning subject',
+            error: error.message,
+        });
+    }
+};
+
+/**
+ * Assign multiple subjects to a class
+ */
+exports.assignMultipleSubjects = async (req, res) => {
+    try {
+        const {
+            classId,
+            subjects: subjectList,
+        } = req.body;
+
+        if (!classId) {
+            return res.status(400).json({
+                message: 'Class ID is required',
+            });
+        }
+
+        if (
+            !Array.isArray(subjectList) ||
+            subjectList.length === 0
+        ) {
+            return res.status(400).json({
+                message: 'At least one subject is required',
+            });
+        }
+
+        const classItem = await classes.findByPk(classId);
+
+        if (!classItem) {
+            return res.status(404).json({
+                message: 'Class not found',
+            });
+        }
+
+        const subjectIds = subjectList.map(item =>
+            typeof item === 'string'
+                ? item
+                : item.subjectId
+        );
+
+        const uniqueSubjectIds = [
+            ...new Set(subjectIds),
+        ];
+
+        const dbSubjects = await subjects.findAll({
+            where: {
+                id: {
+                    [Op.in]: uniqueSubjectIds,
+                },
+                isActive: true,
+            },
+        });
+
+        if (dbSubjects.length !== uniqueSubjectIds.length) {
+            return res.status(400).json({
+                message:
+                    'One or more selected subjects were not found or are inactive',
+            });
+        }
+
+        const invalidAcademicYear = dbSubjects.find(
+            subject =>
+                Number(subject.academicYearId) !==
+                Number(classItem.academicYearId)
+        );
+
+        if (invalidAcademicYear) {
+            return res.status(400).json({
+                message:
+                    'All selected subjects must belong to the same academic year as the class',
+                code: 'ACADEMIC_YEAR_MISMATCH',
+            });
+        }
+
+        const existingAssignments =
+            await classSubjects.findAll({
+                where: {
+                    classId,
+                    subjectId: {
+                        [Op.in]: uniqueSubjectIds,
+                    },
+                },
+            });
+
+        const existingMap = new Map(
+            existingAssignments.map(item => [
+                item.subjectId,
+                item,
+            ])
+        );
+
+        const assignments = [];
+
+        for (const item of subjectList) {
+            const subjectId =
+                typeof item === 'string'
+                    ? item
+                    : item.subjectId;
+
+            const isCompulsory =
+                typeof item === 'string'
+                    ? true
+                    : item.isCompulsory !== undefined
+                        ? Boolean(item.isCompulsory)
+                        : true;
+
+            const existing = existingMap.get(subjectId);
+
+            if (existing) {
+                existing.status = 'active';
+                existing.isCompulsory = isCompulsory;
+
+                await existing.save();
+
+                assignments.push(existing);
+            } else {
+                const assignment =
+                    await classSubjects.create({
+                        classId,
+                        subjectId,
+                        isCompulsory,
+                        status: 'active',
+                    });
+
+                assignments.push(assignment);
+            }
+        }
+
+        return res.status(201).json({
+            message: `${assignments.length} subject(s) assigned successfully`,
+            data: assignments,
+        });
+    } catch (error) {
+        console.error(
+            'Error assigning multiple subjects:',
+            error
+        );
+
+        return res.status(500).json({
+            message: 'Error assigning multiple subjects',
             error: error.message,
         });
     }
@@ -231,50 +386,86 @@ const removeSubjectFromClass = async (req, res) => {
 /**
  * Update assignment
  */
-const updateClassSubject = async (req, res) => {
+exports.updateClassSubject = async (req, res) => {
     try {
         const { id } = req.params;
         const { isCompulsory, status } = req.body;
 
-        const assignment = await ClassSubject.findByPk(id);
+        const assignment = await classSubjects.findByPk(id);
 
         if (!assignment) {
             return res.status(404).json({
-                success: false,
                 message: 'Subject assignment not found',
             });
         }
 
         if (isCompulsory !== undefined) {
-            assignment.isCompulsory = isCompulsory;
+            assignment.isCompulsory = Boolean(isCompulsory);
         }
 
         if (status !== undefined) {
+            if (!['active', 'inactive'].includes(status)) {
+                return res.status(400).json({
+                    message: 'Invalid status',
+                });
+            }
+
             assignment.status = status;
         }
 
         await assignment.save();
 
         return res.status(200).json({
-            success: true,
             message: 'Subject assignment updated successfully',
             data: assignment,
         });
     } catch (error) {
-        console.error('Update class subject error:', error);
+        console.error(
+            'Error updating class subject:',
+            error
+        );
 
         return res.status(500).json({
-            success: false,
-            message: 'Failed to update subject assignment',
+            message: 'Error updating class subject',
             error: error.message,
         });
     }
 };
 
-module.exports = {
-    assignSubjectToClass,
-    getSubjectsByClass,
-    getClassesBySubject,
-    removeSubjectFromClass,
-    updateClassSubject,
+/**
+ * Remove subject from class
+ */
+exports.removeSubjectFromClass = async (req, res) => {
+    try {
+        const { classId, subjectId } = req.params;
+
+        const assignment = await classSubjects.findOne({
+            where: {
+                classId,
+                subjectId,
+            },
+        });
+
+        if (!assignment) {
+            return res.status(404).json({
+                message: 'Subject assignment not found',
+            });
+        }
+
+        await assignment.destroy();
+
+        return res.status(200).json({
+            message: 'Subject removed from class successfully',
+        });
+    } catch (error) {
+        console.error(
+            'Error removing subject from class:',
+            error
+        );
+
+        return res.status(500).json({
+            message: 'Error removing subject from class',
+            error: error.message,
+        });
+    }
 };

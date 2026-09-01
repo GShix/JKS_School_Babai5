@@ -51,6 +51,7 @@ import FeeStructureManager from './pages/admin/FeeStructureManager'
 import SmartAllocation from './pages/admin/SmartAllocation'
 import Blogs from './pages/blogs/Blogs'
 import BlogDetail from './pages/blogs/BlogDetail'
+import AssignSubjects from './pages/admin/AssignSubjects'
 
 function App() {
 
@@ -91,6 +92,7 @@ function App() {
             <Route path='students' element={<AdminStudents />} />
             <Route path='classes' element={<AdminClasses />} />
             <Route path='subjects' element={<AdminSubjects />} />
+            <Route path='assign-subjects' element={<AssignSubjects />} />
             <Route path='teachers' element={<AdminTeachers />} />
             <Route path='grades' element={<Grades />} />
             <Route path='staff' element={<AdminStaff />} />

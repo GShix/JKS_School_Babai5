@@ -1,31 +1,61 @@
-const express = require('express');
-
-const router = express.Router();
+const router = require('express').Router();
 
 const {
-    assignSubjectToClass,
+    getAllClassSubjects,
     getSubjectsByClass,
-    getClassesBySubject,
-    removeSubjectFromClass,
+    assignSubject,
+    assignMultipleSubjects,
     updateClassSubject,
+    removeSubjectFromClass,
 } = require('../controllers/classSubjectController');
 
-// Assign subject to class
-router.post('/', assignSubjectToClass);
+const {
+    protectAdmin,
+    requireAdmin,
+} = require('../middlewares/authMiddleware');
 
-// Get subjects assigned to a class
-router.get('/class/:classId', getSubjectsByClass);
+// Public routes
+router
+    .route('/class-subjects')
+    .get(getAllClassSubjects);
 
-// Get classes assigned to a subject
-router.get('/subject/:subjectId', getClassesBySubject);
+router
+    .route('/class-subjects/class/:classId')
+    .get(getSubjectsByClass);
 
-// Update assignment
-router.patch('/:id', updateClassSubject);
+// Protected routes (admin only)
+router
+    .route('/class-subjects')
+    .post(
+        protectAdmin,
+        requireAdmin,
+        assignSubject
+    );
 
-// Remove subject from class
-router.delete(
-    '/class/:classId/subject/:subjectId',
-    removeSubjectFromClass
-);
+router
+    .route('/class-subjects/bulk')
+    .post(
+        protectAdmin,
+        requireAdmin,
+        assignMultipleSubjects
+    );
+
+router
+    .route('/class-subjects/:id')
+    .put(
+        protectAdmin,
+        requireAdmin,
+        updateClassSubject
+    );
+
+router
+    .route(
+        '/class-subjects/class/:classId/subject/:subjectId'
+    )
+    .delete(
+        protectAdmin,
+        requireAdmin,
+        removeSubjectFromClass
+    );
 
 module.exports = router;
